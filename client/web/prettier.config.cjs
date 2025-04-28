@@ -38,5 +38,5 @@ module.exports = {
     bracketSameLine: false,
 
     // 운영체제에 맞게 자동으로 줄바꿈 문자 설정 (CRLF, LF)
-    endOfLine: 'auto',
+    endOfLine: 'lf',
 };
