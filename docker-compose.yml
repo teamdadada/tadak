@@ -1,0 +1,107 @@
+version: '3.8'
+
+services:
+  #MySQL 배포용 컨테이너
+  mysql_deploy:
+    image: mysql:latest
+    container_name: tadak-mysql-deploy
+    ports:
+      - '${MYSQL_PORT_DEPLOY}:3306'
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD_DEPLOY}
+      MYSQL_DATABASE: ${MYSQL_DATABASE_DEPLOY}
+    volumes:
+      - ./data/mysql_deploy:/var/lib/mysql
+  #MySQL 개발용 컨테이너
+  mysql_dev:
+    image: mysql:latest
+    container_name: tadak-mysql-dev
+    ports:
+      - '${MYSQL_PORT_DEV}:3307'
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD_DEV}
+      MYSQL_DATABASE: ${MYSQL_DATABASE_DEV}
+    volumes:
+      - ./data/mysql_dev:/var/lib/mysql
+
+  #Redis 배포용 컨테이너
+  redis_deploy:
+    image: redis:latest
+    container_name: tadak-redis-deploy
+    ports:
+      - '${REDIS_PORT_DEPLOY}:6379'
+    command: redis-server --requirepass ${REDIS_PASSWORD_DEPLOY}
+    volumes:
+      - ./data/redis_deploy:/data
+  #Redis 개발용 컨테이너
+  redis_dev:
+    image: redis:latest
+    container_name: tadak-redis-dev
+    ports:
+      - '${REDIS_PORT_DEV}:6380'
+    command: redis-server --requirepass ${REDIS_PASSWORD_DEV}
+    volumes:
+      - ./data/redis_dev:/data
+
+  #MongoDB 배포용 컨테이너
+  mongodb_deploy:
+    image: mongo:latest
+    container_name: tadak-mongo-deploy
+    ports:
+      - '${MONGO_PORT_DEPLOY}:27017'
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USERNAME_DEPLOY}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD_DEPLOY}
+    volumes:
+      - ./data/mongo_deploy:/data/db
+  #MongoDB 개발용 컨테이너
+  mongodb_dev:
+    image: mongo:latest
+    container_name: tadak-mongo-dev
+    ports:
+      - '${MONGO_PORT_DEV}:27018'
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USERNAME_DEV}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD_DEV}
+    volumes:
+      - ./data/mongo_dev:/data/db
+
+#Elasticsearch 배포용 컨테이너
+  elasticsearch_deploy:
+    image: elasticsearch:latest
+    container_name: tadak-elasticsearch-deploy
+    environment:
+      - discovery.type=single-node
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD_DEPLOY}
+      - http.port=9200
+      - transport.port=9300
+    volumes:
+      - ./data/elasticsearch_deploy:/usr/share/elasticsearch/data
+#Elasticsearch 개발용 컨테이너
+  elasticsearch_dev:
+    image: elasticsearch:latest
+    container_name: tadak-elasticsearch-dev
+    environment:
+      - discovery.type=single-node
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD_DEV}
+      - http.port=9201
+      - transport.port=9301
+    volumes:
+      - ./data/elasticsearch_dev:/usr/share/elasticsearch/data
+
+#Qdrant 배포용 컨테이너
+  qdrant_deploy:
+    image: qdrant/qdrant:latest
+    container_name: tadak-qdrant-deploy
+    environment:
+      - QDRANT__SERVICE__HTTP_PORT=6333
+    volumes:
+      - ./data/qdrant_deploy:/qdrant/storage
+#Qdrant 개발용 컨테이너
+  qdrant_dev:
+    image: qdrant/qdrant:latest
+    container_name: tadak-qdrant-dev
+    environment:
+      - QDRANT__SERVICE__HTTP_PORT=6334
+    volumes:
+      - ./data/qdrant_dev:/qdrant/storage
