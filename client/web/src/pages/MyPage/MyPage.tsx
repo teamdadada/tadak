@@ -1,10 +1,10 @@
-const MainPage = () => {
+const KbtiPage = () => {
     return (
-        <div>
-            <h1 className="text-2xl font-bold">🏠 메인 페이지</h1>
-            <p>여기는 로그인 이후 보여지는 메인 페이지입니다.</p>
+        <div className="p-4">
+            <h1 className="text-2xl font-bold">마이 페이지</h1>
+            <p>마이 페이지 입니다.</p>
         </div>
     )
 }
 
-export default MainPage
+export default KbtiPage  
