@@ -5,6 +5,8 @@ import com.tadak.dto.SignUpRequest
 import com.tadak.dto.response.SignUpResponse
 import com.tadak.exception.ErrorCode
 import com.tadak.exception.GlobalException
+import com.tadak.exception.error_code.AuthErrorCode
+import com.tadak.exception.status.ForbiddenException
 import com.tadak.util.PasswordUtil
 import io.ktor.http.*
 import io.ktor.server.request.*
@@ -45,7 +47,7 @@ fun Route.authRoutes() {
         }
 
         get("/") {
-            throw GlobalException(ErrorCode(code="T4000", message = "오류발생"), HttpStatusCode.BadRequest)
+            throw ForbiddenException(AuthErrorCode.FORBIDDEN.toErrorCode())
         }
     }
 
