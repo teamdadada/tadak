@@ -1,0 +1,36 @@
+/* Tailwind 기본 레이어 불러오기 */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 폰트 설정 */
+@font-face {
+  font-family: 'Montserrat';
+  src: url('/fonts/Montserrat-VariableFont_wght.ttf');
+}
+
+@font-face {
+  font-family: 'Pretendard';
+  src: url('/fonts/PretendardVariable.ttf');
+  font-weight: 100 900;
+  font-style: normal;
+}
+
+/* Base 스타일 */
+@layer base {
+
+  html,
+  body,
+  #root {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  body {
+    font-family: 'Montserrat', 'Pretendard', sans-serif;
+    background-color: #ffffff;
+    color: #242424;
+  }
+}
