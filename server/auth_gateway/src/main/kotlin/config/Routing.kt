@@ -1,8 +1,7 @@
-package com.tadak
+package com.tadak.config
 
-import com.tadak.Presentation.authRoutes
+import com.tadak.presentation.authRoutes
 import io.ktor.server.application.*
-import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
 fun Application.configureRouting() {

@@ -33,16 +33,22 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-jdbc:0.61.0")
     implementation("org.jetbrains.exposed:exposed-kotlin-datetime:0.61.0")
     implementation("org.jetbrains.exposed:exposed-java-time:0.61.0")
-    implementation("mysql:mysql-connector-java:8.0.33") // MySQL 연결
-    implementation("com.zaxxer:HikariCP:5.1.0") // 커넥션 풀
+    implementation("mysql:mysql-connector-java:8.0.33")
+    implementation("com.zaxxer:HikariCP:5.1.0")
 
+    implementation("io.ktor:ktor-server-status-pages:2.3.7")
 
-    implementation("io.ktor:ktor-server-content-negotiation:2.3.7") //
+    implementation("io.ktor:ktor-server-content-negotiation:2.3.7")
 
-    implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.7") // 네 Ktor 버전에 맞춰!
+    implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.7")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
     implementation("org.mindrot:jbcrypt:0.4")
 
     testImplementation("io.ktor:ktor-server-test-host")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }

@@ -1,8 +1,9 @@
 package com.tadak
 
 import com.tadak.config.DatabaseFactory
+import com.tadak.config.configureRouting
+import com.tadak.exception.configureExceptionHandler
 import io.ktor.server.application.*
-import io.ktor.server.routing.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.serialization.kotlinx.json.*
 
@@ -15,9 +16,8 @@ fun Application.module() {
     install(ContentNegotiation) {
         json()
     }
+
     DatabaseFactory.init()
-
+    configureExceptionHandler()
     configureRouting()
-
-
 }

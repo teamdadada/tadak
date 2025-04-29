@@ -1,8 +1,10 @@
-package com.tadak.Presentation
+package com.tadak.presentation
 
 import com.tadak.domain.Users
 import com.tadak.dto.SignUpRequest
 import com.tadak.dto.response.SignUpResponse
+import com.tadak.exception.ErrorCode
+import com.tadak.exception.GlobalException
 import com.tadak.util.PasswordUtil
 import io.ktor.http.*
 import io.ktor.server.request.*
@@ -15,7 +17,7 @@ import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import java.util.*
 
 fun Route.authRoutes() {
-    route("/auth") {
+    route("/") {
         post("/signup") {
             val request = call.receive<SignUpRequest>()
 
@@ -29,7 +31,6 @@ fun Route.authRoutes() {
                 return@post
             }
 
-            val userUuid = UUID.randomUUID().toString()
             val hashedPassword = PasswordUtil.hashPassword(request.password)
 
             transaction {
@@ -42,5 +43,10 @@ fun Route.authRoutes() {
 
             call.respond(HttpStatusCode.Created, "회원가입 성공")
         }
+
+        get("/") {
+            throw GlobalException(ErrorCode(code="T4000", message = "오류발생"), HttpStatusCode.BadRequest)
+        }
     }
+
 }
