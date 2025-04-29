@@ -1,27 +1,80 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],  // TailwindCSS가 사용할 파일 경로
+    darkMode: ['class'],
+    content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],  // TailwindCSS가 사용할 파일 경로
   theme: {
-    extend: {
-      // 타닥 프로젝트 전용 색상
-      colors: {
-        'tadak-black': '#242424',          // 기본 블랙
-        'tadak-primary': '#FCA41C',         // 주요 포인트 (주황색)
-        'tadak-secondary': '#A4D232',       // 보조 포인트 (연두색)
-        'tadak-warning': '#F16363',          // 경고 색상 (빨간색)
-        'tadak-light-gray': '#F4F4F4',       // 밝은 회색
-        'tadak-gray': '#BDBDBD',             // 중간 회색
-        'tadak-dark-gray': '#909090',        // 진한 회색
-        'tadak-white': '#FFFFFF',            // 흰색
-      },
-
-      // 사용자 정의 폰트
-      fontFamily: {
-        sans: ['Montserrat', 'Pretendard', 'sans-serif'], // 기본 폰트
-        montserrat: ['Montserrat', 'sans-serif'],         // 몬트세라트 전용
-        pretendard: ['Pretendard', 'sans-serif'],          // 프리텐다드 전용
-      },
-    },
+  	extend: {
+  		colors: {
+  			'tadak-black': '#242424',
+  			'tadak-primary': '#FCA41C',
+  			'tadak-secondary': '#A4D232',
+  			'tadak-warning': '#F16363',
+  			'tadak-light-gray': '#F4F4F4',
+  			'tadak-gray': '#BDBDBD',
+  			'tadak-dark-gray': '#909090',
+  			'tadak-white': '#FFFFFF',
+  			background: 'hsl(var(--background))',
+  			foreground: 'hsl(var(--foreground))',
+  			card: {
+  				DEFAULT: 'hsl(var(--card))',
+  				foreground: 'hsl(var(--card-foreground))'
+  			},
+  			popover: {
+  				DEFAULT: 'hsl(var(--popover))',
+  				foreground: 'hsl(var(--popover-foreground))'
+  			},
+  			primary: {
+  				DEFAULT: 'hsl(var(--primary))',
+  				foreground: 'hsl(var(--primary-foreground))'
+  			},
+  			secondary: {
+  				DEFAULT: 'hsl(var(--secondary))',
+  				foreground: 'hsl(var(--secondary-foreground))'
+  			},
+  			muted: {
+  				DEFAULT: 'hsl(var(--muted))',
+  				foreground: 'hsl(var(--muted-foreground))'
+  			},
+  			accent: {
+  				DEFAULT: 'hsl(var(--accent))',
+  				foreground: 'hsl(var(--accent-foreground))'
+  			},
+  			destructive: {
+  				DEFAULT: 'hsl(var(--destructive))',
+  				foreground: 'hsl(var(--destructive-foreground))'
+  			},
+  			border: 'hsl(var(--border))',
+  			input: 'hsl(var(--input))',
+  			ring: 'hsl(var(--ring))',
+  			chart: {
+  				'1': 'hsl(var(--chart-1))',
+  				'2': 'hsl(var(--chart-2))',
+  				'3': 'hsl(var(--chart-3))',
+  				'4': 'hsl(var(--chart-4))',
+  				'5': 'hsl(var(--chart-5))'
+  			}
+  		},
+  		fontFamily: {
+  			sans: [
+  				'Montserrat',
+  				'Pretendard',
+  				'sans-serif'
+  			],
+  			montserrat: [
+  				'Montserrat',
+  				'sans-serif'
+  			],
+  			pretendard: [
+  				'Pretendard',
+  				'sans-serif'
+  			]
+  		},
+  		borderRadius: {
+  			lg: 'var(--radius)',
+  			md: 'calc(var(--radius) - 2px)',
+  			sm: 'calc(var(--radius) - 4px)'
+  		}
+  	}
   },
-  plugins: [],
+  plugins: [require("tailwindcss-animate")],
 }
