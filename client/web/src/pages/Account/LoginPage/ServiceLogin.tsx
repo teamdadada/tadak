@@ -25,7 +25,7 @@ const ServiceLogin = () => {
           placeholder="비밀번호를 입력하세요."
         />
       </div>
-      <Button className="w-full py-6 rounded-lg bg-orange-400 hover:bg-orange-500">
+      <Button className="w-full py-6 rounded-lg bg-orange-400 hover:bg-orange-400 shadow-none">
         로그인
       </Button>
     </div>
