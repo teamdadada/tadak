@@ -51,7 +51,7 @@ const SignupPage = () => {
   return (
     <div className="flex flex-col items-center justify-center">
       <div className="w-full max-w-sm space-y-4">
-        <Link to="/" className="flex justify-center">
+        <Link to="/main" className="flex justify-center">
           <img src={LogoImage} alt="타닥 로고" className="h-16" />
         </Link>
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
