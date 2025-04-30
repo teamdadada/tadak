@@ -69,14 +69,15 @@ def get_docs_split_list(docs):
     return text_splitter.split_documents(docs)
 
 
-def embed_documents():
+def embed_documents(docs):
     embeddings = UpstageEmbeddings(
         api_key=UPSTAGE_API_KEY,
         model="solar-embedding-1-large"
     )
 
-    vector_stores = Qdrant(
+    Qdrant.from_documents(
         client=qdrantClient,  # 기존 qdrant client 인스턴스를 langchain wrapper에 연결
         collection=CHATBOT_COLLECTION,
-        embedding=embeddings
+        embedding=embeddings,
+        documents=docs
     )
