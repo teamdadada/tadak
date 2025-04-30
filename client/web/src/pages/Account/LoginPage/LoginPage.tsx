@@ -5,7 +5,7 @@ import ServiceLogin from './ServiceLogin'
 
 const LoginPage = () => {
   return (
-    <div className="flex flex-col items-center justify-center my-11">
+    <div className="flex flex-col items-center justify-center">
       <div className="w-full max-w-sm space-y-4">
         <ServiceLogin />
         <Divider text="OR" />

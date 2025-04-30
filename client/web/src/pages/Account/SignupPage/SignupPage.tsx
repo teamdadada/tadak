@@ -1,11 +1,16 @@
 import InputField from '@/components/account/InputField'
+import LogoImage from '@/assets/images/logo.png'
+
 import { Button } from '@/components/ui/button'
+import { Link } from 'react-router-dom'
 
 const SignupPage = () => {
   return (
-    <div className="flex flex-col items-center justify-center my-11">
+    <div className="flex flex-col items-center justify-center">
       <div className="w-full max-w-sm space-y-4">
-        <h1 className="text-3xl text-center font-bold">Sign In</h1>
+        <Link to="/" className="flex justify-center">
+          <img src={LogoImage} alt="타닥 로고" className="h-16" />
+        </Link>
         <div className="flex flex-col gap-4">
           <InputField
             id="nickname"
