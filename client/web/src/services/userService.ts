@@ -71,12 +71,14 @@ export const useSignUp = () => {
       }
     },
     onError: (error: AxiosError<ErrorResponse>) => {
-      if (error.status === 409) {
-        if (error.code === 'U4090') {
-          toast(error.response?.data?.message)
-        }
+      const status = error.response?.status
+      const code = error.response?.data?.code
+      const message = error.response?.data?.message
+
+      if (status === 409 && code === 'U4090') {
+        toast.error(message ?? '이미 존재하는 아이디입니다.')
       } else {
-        toast('회원가입에 실패했습니다. 다시 시도해주세요.')
+        toast.error('회원가입에 실패했습니다. 다시 시도해주세요.')
       }
     },
   })
