@@ -1,13 +1,14 @@
-import logoImage from '@/assets/images/logo.png'
+import LogoImage from '@/assets/images/logo.png'
 import InputField from '@/components/account/InputField'
 import { Button } from '@/components/ui/button'
+import { Link } from 'react-router-dom'
 
 const ServiceLogin = () => {
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex justify-center">
-        <img src={logoImage} alt="logo" className="h-20 w-auto" />
-      </div>
+      <Link to="/" className="flex justify-center">
+        <img src={LogoImage} alt="타닥 로고" className="h-16" />
+      </Link>
       <p className="text-center text-sm">내 타닥 계정으로 로그인하기</p>
 
       <div className="flex flex-col gap-4">
@@ -25,7 +26,7 @@ const ServiceLogin = () => {
           placeholder="비밀번호를 입력하세요."
         />
       </div>
-      <Button className="w-full py-6 rounded-lg bg-orange-400 hover:bg-orange-500">
+      <Button className="w-full py-6 rounded-lg shadow-none bg-tadak-primary hover:bg-tadak-primary">
         로그인
       </Button>
     </div>

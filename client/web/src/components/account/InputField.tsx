@@ -10,15 +10,17 @@ interface InputFieldProps {
 
 const InputField = ({ id, type, label, placeholder }: InputFieldProps) => {
   return (
-    <>
-      <Label htmlFor={id}>{label}</Label>
+    <div className="flex flex-col gap-4">
+      <Label htmlFor={id} className="font-semibold">
+        {label}
+      </Label>
       <Input
         id={id}
         type={type}
         placeholder={placeholder}
         className="w-full px-4 py-6 rounded-lg"
       />
-    </>
+    </div>
   )
 }
 

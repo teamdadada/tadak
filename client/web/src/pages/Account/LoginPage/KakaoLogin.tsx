@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button'
 const KakaoLogin = () => {
   return (
     <Button
-      className="w-full h-12 rounded-lg flex items-center justify-center bg-[#FEE500] hover:bg-[#F0D700] text-[#191919] font-medium"
+      className="w-full h-12 rounded-lg flex items-center justify-center bg-[#FEE500] hover:bg-[#FEE500] text-[#191919] font-medium shadow-none"
       onClick={() => console.log('카카오 로그인')}
     >
       <div className="flex items-center">

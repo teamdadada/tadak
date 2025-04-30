@@ -1,10 +1,63 @@
+import InputField from '@/components/account/InputField'
+import LogoImage from '@/assets/images/logo.png'
+
+import { Button } from '@/components/ui/button'
+import { Link } from 'react-router-dom'
+
 const SignupPage = () => {
-    return (
-        <div className="p-4">
-            <h1 className="text-2xl font-bold">📝 회원가입 페이지</h1>
-            <p>새로운 계정을 생성할 수 있습니다.</p>
+  return (
+    <div className="flex flex-col items-center justify-center">
+      <div className="w-full max-w-sm space-y-4">
+        <Link to="/" className="flex justify-center">
+          <img src={LogoImage} alt="타닥 로고" className="h-16" />
+        </Link>
+        <div className="flex flex-col gap-4">
+          <InputField
+            id="nickname"
+            type="text"
+            label="닉네임"
+            placeholder="닉네임을 입력하세요."
+          />
+          <InputField
+            id="id"
+            type="text"
+            label="아이디"
+            placeholder="아이디를 입력하세요."
+          />
+          <div>
+            <InputField
+              id="password1"
+              type="password"
+              label="비밀번호"
+              placeholder="비밀번호를 입력하세요."
+            />
+            <p className="text-xs mt-1 ml-1">
+              영문, 숫자를 포함한 8자 이상의 비밀번호를 입력해주세요.
+            </p>
+          </div>
+          <InputField
+            id="password2"
+            type="password"
+            label="비밀번호 확인"
+            placeholder="비밀번호를 한 번 더 입력하세요."
+          />
         </div>
-    )
+
+        <Button className="w-full py-6 rounded-lg bg-tadak-primary hover:bg-tadak-primary shadow-none">
+          회원가입
+        </Button>
+
+        <div className="flex justify-center text-sm text-tadak-dark-gray">
+          <p>
+            이미 계정이 있다면?{' '}
+            <a href="/account/login" className="hover:underline">
+              로그인
+            </a>
+          </p>
+        </div>
+      </div>
+    </div>
+  )
 }
 
-export default SignupPage  
+export default SignupPage

@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button'
 const NaverLogin = () => {
   return (
     <Button
-      className="w-full h-12 rounded-lg flex items-center justify-center bg-[#03C75A] hover:bg-[#02b350] text-white font-medium"
+      className="w-full h-12 rounded-lg flex items-center justify-center bg-[#03C75A] hover:bg-[#03C75A] text-white font-medium shadow-none"
       onClick={() => console.log('네이버 로그인')}
     >
       <div className="flex items-center">

@@ -5,14 +5,14 @@ import ServiceLogin from './ServiceLogin'
 
 const LoginPage = () => {
   return (
-    <div className="flex flex-col items-center justify-center my-11">
+    <div className="flex flex-col items-center justify-center">
       <div className="w-full max-w-sm space-y-4">
         <ServiceLogin />
         <Divider text="OR" />
         <KakaoLogin />
         <NaverLogin />
 
-        <div className="flex justify-center text-sm text-gray-500">
+        <div className="flex justify-center text-sm text-tadak-dark-gray">
           <p>
             회원이 아니신가요?{' '}
             <a href="/account/signup" className="hover:underline">
