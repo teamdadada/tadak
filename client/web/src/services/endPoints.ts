@@ -2,7 +2,6 @@
 // 예시로 작성해 둔 것이라 필요에 따라 수정 가능
 export const USER_END_POINT = {
   SIGNUP: '/user/signup',
-  LOGIN: '/auth/login',
 
   SOCIAL_LOGIN: (socialType: string, code: string) =>
     `/auth/login/${socialType}?code=${code}`,
@@ -12,6 +11,12 @@ export const USER_END_POINT = {
   SEND_EMAIL_CODE: '/users/emails/send',
   VERIFY_EMAIL_CODE: (code: string) => `/users/emails/verify?code=${code}`,
   DELETE_USER: '/users',
+}
+
+export const AUTH_END_POINT = {
+  LOGIN: '/auth/login',
+  CHECK: '/auth/check',
+  REISSUE: '/auth/reissue'
 }
 
 // mainService
