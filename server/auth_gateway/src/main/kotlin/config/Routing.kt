@@ -10,6 +10,6 @@ fun Application.configureRouting() {
     routing {
         authRoutes()
         userRoutes()
-        proxyRoutes()
+        proxyRoutes(environment)
     }
 }

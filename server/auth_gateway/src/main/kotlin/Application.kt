@@ -3,6 +3,7 @@ package com.tadak
 import com.tadak.config.DatabaseFactory
 import com.tadak.config.configureRouting
 import com.tadak.exception.configureExceptionHandler
+import com.tadak.util.JwtUtil
 import io.ktor.server.application.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.serialization.kotlinx.json.*
@@ -17,7 +18,8 @@ fun Application.module() {
         json()
     }
     configureRouting()
-    DatabaseFactory.init()
+    DatabaseFactory.init(environment)
+    JwtUtil.init(environment.config)
     configureExceptionHandler()
 
 }

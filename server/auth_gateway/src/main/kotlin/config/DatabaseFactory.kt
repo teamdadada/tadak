@@ -2,22 +2,23 @@ package com.tadak.config
 
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
+import io.ktor.server.application.*
 import org.jetbrains.exposed.sql.Database
 
 object DatabaseFactory {
-    fun init() {
-        Database.connect(hikari())
+    fun init(env: ApplicationEnvironment) {
+        Database.connect(hikari(env))
     }
 
-    private fun hikari(): HikariDataSource {
+    private fun hikari(env: ApplicationEnvironment): HikariDataSource {
         val config = HikariConfig().apply {
-            jdbcUrl = "jdbc:mysql://k12a703.p.ssafy.io:3310/tadakuser?serverTimezone=Asia/Seoul"
-            driverClassName = "com.mysql.cj.jdbc.Driver"
-            username = "dadada"
-            password = "dadada!"
-            maximumPoolSize = 10
+            jdbcUrl = env.config.property("ktor.datasource.jdbcUrl").getString()
+            driverClassName = env.config.property("ktor.datasource.driver").getString()
+            username = env.config.property("ktor.datasource.username").getString()
+            password = env.config.property("ktor.datasource.password").getString()
+            maximumPoolSize = env.config.property("ktor.datasource.maximumPoolSize").getString().toInt()
+            transactionIsolation = env.config.property("ktor.datasource.transactionIsolation").getString()
             isAutoCommit = false
-            transactionIsolation = "TRANSACTION_REPEATABLE_READ"
             validate()
         }
         return HikariDataSource(config)

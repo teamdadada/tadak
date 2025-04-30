@@ -5,14 +5,19 @@ import com.auth0.jwt.algorithms.Algorithm
 import com.tadak.dto.UserMetaDto
 import com.tadak.exception.error_code.AuthErrorCode
 import com.tadak.exception.status.UnauthorizedException
+import io.ktor.server.config.*
 import java.util.*
 
 object JwtUtil {
-    private const val secretKey = "tadaktadaktadaktadaktadaktadaktadaktadaktadaktadaktadaktadaktadaktadak"
-    private const val issuer = "tadak-auth-gateway"
+    private lateinit var secretKey: String
+    private lateinit var issuer: String
+    private lateinit var algorithm: Algorithm
 
-    private val algorithm = Algorithm.HMAC256(secretKey)
-
+    fun init(config: ApplicationConfig) {
+        secretKey = config.property("ktor.jwt.secret").getString()
+        issuer = config.property("ktor.jwt.issuer").getString()
+        algorithm = Algorithm.HMAC256(secretKey)
+    }
 
     fun generateToken(user: UserMetaDto, type: String): String {
         val now = System.currentTimeMillis()
