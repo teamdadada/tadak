@@ -51,6 +51,11 @@ interface SignUpRequest {
   nickname: string
 }
 
+interface SignInRequest {
+  userId: string
+  password: string
+}
+
 interface ErrorResponse {
   status: number
   code: string
@@ -83,5 +88,31 @@ export const useSignUp = () => {
     },
   })
 
+  return mutate
+}
+
+const signIn = async (data: SignInRequest) => {
+  const response = await http.post(USER_END_POINT.LOGIN, data)
+  return response
+}
+
+export const useSignIn = () => {
+  const { mutate } = useMutation({
+    mutationFn: signIn,
+    onSuccess: () => {},
+    onError: (error: AxiosError<ErrorResponse>) => {
+      const status = error.response?.status
+      // const code = error.response?.data?.code
+      const message = error.response?.data?.message
+
+      if (status == 401) {
+        toast.error(message)
+      } else if (status == 500) {
+        toast.error(message)
+      } else {
+        toast.error('로그인에 실패하였습니다. 다시 시도해주세요.')
+      }
+    },
+  })
   return mutate
 }
