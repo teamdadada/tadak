@@ -3,16 +3,20 @@ import InputField from '@/components/account/InputField'
 import { Button } from '@/components/ui/button'
 import { useSignIn } from '@/services/userService'
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 const ServiceLogin = () => {
   const [userId, setUserId] = useState('')
   const [password, setPassword] = useState('')
 
   const signIn = useSignIn()
+  const navigate = useNavigate()
 
   const handleLogin = async () => {
-    signIn({ userId, password })
+    const res = await signIn({ userId, password })
+    const accessToken = res.headers['authorization']
+    localStorage.setItem('accessToken', accessToken)
+    navigate('/main')
   }
 
   return (

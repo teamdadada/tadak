@@ -68,7 +68,7 @@ const signUp = async (data: SignUpRequest) => {
 }
 
 export const useSignUp = () => {
-  const { mutate } = useMutation({
+  const { mutateAsync } = useMutation({
     mutationFn: signUp,
     onSuccess: (response) => {
       if (response.status == 201) {
@@ -88,7 +88,7 @@ export const useSignUp = () => {
     },
   })
 
-  return mutate
+  return mutateAsync
 }
 
 const signIn = async (data: SignInRequest) => {
@@ -97,7 +97,7 @@ const signIn = async (data: SignInRequest) => {
 }
 
 export const useSignIn = () => {
-  const { mutate } = useMutation({
+  const { mutateAsync } = useMutation({
     mutationFn: signIn,
     onSuccess: () => {},
     onError: (error: AxiosError<ErrorResponse>) => {
@@ -114,5 +114,5 @@ export const useSignIn = () => {
       }
     },
   })
-  return mutate
+  return mutateAsync
 }

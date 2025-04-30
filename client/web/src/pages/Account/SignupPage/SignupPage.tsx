@@ -2,12 +2,12 @@ import InputField from '@/components/account/InputField'
 import LogoImage from '@/assets/images/logo.png'
 
 import { Button } from '@/components/ui/button'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useSignUp } from '@/services/userService'
+import { useSignIn, useSignUp } from '@/services/userService'
 
 const signupSchema = z
   .object({
@@ -51,10 +51,24 @@ const SignupPage = () => {
   })
 
   const signUp = useSignUp()
+  const signIn = useSignIn()
+  const navigate = useNavigate()
 
-  const onSubmit = (data: SignupFormData) => {
-    signUp(data)
-    console.log(data)
+  const onSubmit = async (data: SignupFormData) => {
+    try {
+      const signUpResponse = await signUp(data)
+      if (signUpResponse.status === 201) {
+        const signInResponse = await signIn({
+          userId: data.userId,
+          password: data.password,
+        })
+        const accessToken = signInResponse.headers['authorization']
+        localStorage.setItem('accessToken', accessToken)
+        navigate('/main')
+      }
+    } catch {
+      // 회원가입 실패
+    }
   }
 
   return (
