@@ -14,9 +14,11 @@ const ServiceLogin = () => {
 
   const handleLogin = async () => {
     const res = await signIn({ userId, password })
-    const accessToken = res.headers['authorization']
-    localStorage.setItem('accessToken', accessToken)
-    navigate('/main')
+    if (res.status === 200) {
+      const accessToken = res.headers['authorization']
+      localStorage.setItem('accessToken', accessToken)
+      navigate('/main')
+    }
   }
 
   return (

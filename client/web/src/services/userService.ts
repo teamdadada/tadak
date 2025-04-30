@@ -70,11 +70,7 @@ const signUp = async (data: SignUpRequest) => {
 export const useSignUp = () => {
   const { mutateAsync } = useMutation({
     mutationFn: signUp,
-    onSuccess: (response) => {
-      if (response.status == 201) {
-        // 로그인 후 홈 화면 리다이렉트 로직 추가 예정
-      }
-    },
+    onSuccess: () => {},
     onError: (error: AxiosError<ErrorResponse>) => {
       const status = error.response?.status
       const code = error.response?.data?.code
