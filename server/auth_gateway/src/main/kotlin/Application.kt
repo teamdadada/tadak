@@ -16,8 +16,8 @@ fun Application.module() {
     install(ContentNegotiation) {
         json()
     }
-
+    configureRouting()
     DatabaseFactory.init()
     configureExceptionHandler()
-    configureRouting()
+
 }

@@ -1,10 +1,9 @@
-package com.tadak.dto
+package com.tadak.dto.request
 
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class SignUpRequest(
+data class LoginRequest(
     val userId: String,
     val password: String,
-    val nickname: String
 )

@@ -1,10 +1,9 @@
-package com.tadak.domain
+package com.tadak.domain.table
 
-import org.jetbrains.exposed.sql.Table
+import org.jetbrains.exposed.dao.id.LongIdTable
 import org.jetbrains.exposed.sql.javatime.datetime
 
-object Users : Table("user") {
-    val userUuid = varchar("user_uuid", 36)
+object Users : LongIdTable("users", "user_uuid") {
     val userId = varchar("user_id", 50)
     val userPassword = varchar("user_password", 255)
     val userName = varchar("user_name", 30)
@@ -12,6 +11,4 @@ object Users : Table("user") {
     val createdAt = datetime("created_at")
     val updatedAt = datetime("updated_at")
     val userType = varchar("user_type", 10)
-
-    override val primaryKey = PrimaryKey(userUuid)
 }

@@ -28,6 +28,10 @@ dependencies {
     implementation("io.ktor:ktor-server-core")
     implementation("io.ktor:ktor-server-config-yaml")
 
+    implementation("io.ktor:ktor-client-core")
+    implementation("io.ktor:ktor-client-cio") // 또는 apache 등 엔진
+    implementation("io.ktor:ktor-client-content-negotiation")
+
     implementation("org.jetbrains.exposed:exposed-core:0.61.0")
     implementation("org.jetbrains.exposed:exposed-dao:0.61.0")
     implementation("org.jetbrains.exposed:exposed-jdbc:0.61.0")
@@ -43,6 +47,8 @@ dependencies {
     implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.7")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
     implementation("org.mindrot:jbcrypt:0.4")
+
+    implementation("com.auth0:java-jwt:4.4.0")
 
     testImplementation("io.ktor:ktor-server-test-host")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
