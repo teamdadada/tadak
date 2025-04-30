@@ -285,4 +285,5 @@ pip-selfcheck.json
 
 # End of https://www.toptal.com/developers/gitignore/api/venv
 
-# End of https://www.toptal.com/developers/gitignore/api/intellij,pycharm,windows,macos,visualstudiocode
+!client/web/src/lib/
+!client/web/src/lib/**
