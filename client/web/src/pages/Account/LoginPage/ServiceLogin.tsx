@@ -1,7 +1,7 @@
 import LogoImage from '@/assets/images/logo.png'
 import InputField from '@/components/account/InputField'
 import { Button } from '@/components/ui/button'
-import { useSignIn } from '@/services/userService'
+import { useSignIn } from '@/hooks/useAuth'
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
