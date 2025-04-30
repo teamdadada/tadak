@@ -17,8 +17,8 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 
 fun Route.userRoutes() {
-    route("{...}") {
-        handle {
+    route("/user") {
+        post("/signup") {
             val request = call.receive<SignUpRequest>()
 
             val userExists = transaction {
