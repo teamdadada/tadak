@@ -1,3 +1,4 @@
+import { forwardRef } from 'react'
 import { Input } from '../ui/input'
 import { Label } from '../ui/label'
 
@@ -6,22 +7,35 @@ interface InputFieldProps {
   type: string
   label: string
   placeholder: string
+  error?: string
 }
 
-const InputField = ({ id, type, label, placeholder }: InputFieldProps) => {
+const InputField = forwardRef<
+  HTMLInputElement,
+  InputFieldProps & React.InputHTMLAttributes<HTMLInputElement>
+>(({ id, type, label, placeholder, error, ...props }, ref) => {
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 h-24">
       <Label htmlFor={id} className="font-semibold">
         {label}
       </Label>
-      <Input
-        id={id}
-        type={type}
-        placeholder={placeholder}
-        className="w-full px-4 py-6 rounded-lg"
-      />
+      <div>
+        <Input
+          id={id}
+          type={type}
+          placeholder={placeholder}
+          ref={ref}
+          className="w-full px-4 py-6 rounded-lg"
+          {...props}
+        />
+        {error && (
+          <p className="text-tadak-warning text-xs font-bold ml-1 mt-1">
+            {error}
+          </p>
+        )}
+      </div>
     </div>
   )
-}
+})
 
 export default InputField
