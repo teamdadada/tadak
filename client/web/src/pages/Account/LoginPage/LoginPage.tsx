@@ -12,7 +12,7 @@ const LoginPage = () => {
         <KakaoLogin />
         <NaverLogin />
 
-        <div className="flex justify-center text-sm text-gray-500">
+        <div className="flex justify-center text-sm text-tadak-dark-gray">
           <p>
             회원이 아니신가요?{' '}
             <a href="/account/signup" className="hover:underline">

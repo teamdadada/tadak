@@ -43,11 +43,11 @@ const SignupPage = () => {
           />
         </div>
 
-        <Button className="w-full py-6 rounded-lg bg-orange-400 hover:bg-orange-400 shadow-none">
+        <Button className="w-full py-6 rounded-lg bg-tadak-primary hover:bg-tadak-primary shadow-none">
           회원가입
         </Button>
 
-        <div className="flex justify-center text-sm text-gray-500">
+        <div className="flex justify-center text-sm text-tadak-dark-gray">
           <p>
             이미 계정이 있다면?{' '}
             <a href="/account/login" className="hover:underline">
