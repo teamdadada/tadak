@@ -77,6 +77,7 @@ const SignupPage = () => {
             type="text"
             label="아이디"
             placeholder="아이디를 입력하세요."
+            autoComplete="username"
             error={errors.userId?.message}
             {...register('userId')}
           />
@@ -85,6 +86,7 @@ const SignupPage = () => {
             type="password"
             label="비밀번호"
             placeholder="비밀번호를 입력하세요."
+            autoComplete="new-password"
             error={errors.password?.message}
             {...register('password')}
           />
@@ -93,6 +95,7 @@ const SignupPage = () => {
             type="password"
             label="비밀번호 확인"
             placeholder="비밀번호를 한 번 더 입력하세요."
+            autoComplete="new-password"
             error={errors.confirm?.message}
             {...register('confirm')}
           />

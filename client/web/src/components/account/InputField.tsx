@@ -25,6 +25,7 @@ const InputField = forwardRef<
           type={type}
           placeholder={placeholder}
           ref={ref}
+          autoComplete={props.autoComplete}
           className="px-4 py-6 focus-visible:ring-tadak-secondary"
           {...props}
         />
