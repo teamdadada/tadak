@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useSignUp } from '@/services/userService'
 
 const signupSchema = z
   .object({
@@ -15,7 +16,7 @@ const signupSchema = z
       .min(1, ' ')
       .max(10, '닉네임은 10자 이하여야 합니다.')
       .regex(/^[가-힣]+$/, '닉네임은 한글만 입력 가능합니다.'),
-    id: z
+    userId: z
       .string()
       .min(1, ' ')
       .max(50, '아이디는 50자 이하여야 합니다.')
@@ -43,13 +44,16 @@ const SignupPage = () => {
     mode: 'onBlur',
     defaultValues: {
       nickname: '',
-      id: '',
+      userId: '',
       password: '',
       confirm: '',
     },
   })
 
+  const signUp = useSignUp()
+
   const onSubmit = (data: SignupFormData) => {
+    signUp(data)
     console.log(data)
   }
 
@@ -73,8 +77,8 @@ const SignupPage = () => {
             type="text"
             label="아이디"
             placeholder="아이디를 입력하세요."
-            error={errors.id?.message}
-            {...register('id')}
+            error={errors.userId?.message}
+            {...register('userId')}
           />
           <InputField
             id="password"

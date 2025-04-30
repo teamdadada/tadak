@@ -1,5 +1,6 @@
 import { Outlet } from 'react-router-dom'
 import Header from '@/components/layout/Header'
+import { Toaster } from 'sonner'
 
 const BaseLayout = () => {
     return (
@@ -7,6 +8,7 @@ const BaseLayout = () => {
             <Header />
             <main className="flex-1">
                 <Outlet />
+                <Toaster />
             </main>
         </div>
     )
