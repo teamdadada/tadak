@@ -25,7 +25,7 @@ const InputField = forwardRef<
           type={type}
           placeholder={placeholder}
           ref={ref}
-          className="w-full px-4 py-6 rounded-lg"
+          className="px-4 py-6 focus-visible:ring-tadak-secondary"
           {...props}
         />
         {error && (

@@ -12,14 +12,19 @@ const signupSchema = z
   .object({
     nickname: z
       .string()
+      .min(1, ' ')
       .max(10, '닉네임은 10자 이하여야 합니다.')
       .regex(/^[가-힣]+$/, '닉네임은 한글만 입력 가능합니다.'),
     id: z
       .string()
+      .min(1, ' ')
       .max(50, '아이디는 50자 이하여야 합니다.')
       .regex(/^[a-zA-Z0-9]+$/, '아이디는 영문과 숫자만 사용 가능합니다.'),
-    password: z.string().max(50, '비밀번호는 50자 이하여아 합니다.'),
-    confirm: z.string(),
+    password: z
+      .string()
+      .min(1, ' ')
+      .max(50, '비밀번호는 50자 이하여아 합니다.'),
+    confirm: z.string().min(1, ' '),
   })
   .refine((data) => data.password === data.confirm, {
     message: '비밀번호가 일치하지 않습니다.',
