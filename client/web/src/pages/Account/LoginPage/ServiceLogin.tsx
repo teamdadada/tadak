@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom'
 const ServiceLogin = () => {
   return (
     <div className="flex flex-col gap-4">
-      <Link to="/" className="flex justify-center">
+      <Link to="/main" className="flex justify-center">
         <img src={LogoImage} alt="타닥 로고" className="h-16" />
       </Link>
       <p className="text-center text-sm">내 타닥 계정으로 로그인하기</p>
