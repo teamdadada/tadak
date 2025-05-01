@@ -3,6 +3,10 @@ import http from './http-common'
 import { USER_END_POINT } from './endPoints'
 import { SignUpRequest } from '@/types/user'
 
+export const signUp = async (data: SignUpRequest) => {
+  const response = await http.post(USER_END_POINT.SIGNUP, data)
+  return response
+}
 
 // // 로그인
 // // 예시로 작성해 둔 것이라 필요에 따라 수정 가능
@@ -46,7 +50,3 @@ import { SignUpRequest } from '@/types/user'
 // }
 
 
-export const signUp = async (data: SignUpRequest) => {
-  const response = await http.post(USER_END_POINT.SIGNUP, data)
-  return response
-}

@@ -8,7 +8,12 @@ export const signIn = async (data: SignInRequest) => {
   return response
 }
 
-export const getAuthCheck = async () => {
+export const checkAuthStatus = async () => {
   const response = await http.get(AUTH_END_POINT.CHECK)
+  return response.status
+}
+
+export const refreshToken = async () => {
+  const response = await http.post(AUTH_END_POINT.REISSUE)
   return response
 }
