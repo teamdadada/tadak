@@ -8,6 +8,6 @@ chatbot_router = APIRouter(
 )
 
 @chatbot_router.post("/docs")
-def upload_files (files: List[UploadFile] = File(...), file_detail: str = Form(...)):
-    response = chatbot_service.upload_files(files, file_detail)
+async def upload_files (files: List[UploadFile] = File(...), file_detail: str = Form(...)):
+    response = await chatbot_service.upload_files(files, file_detail)
     return response
