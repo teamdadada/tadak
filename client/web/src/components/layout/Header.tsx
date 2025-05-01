@@ -1,9 +1,12 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { FiMenu, FiX } from 'react-icons/fi'
 import logo from '@/assets/images/logo.png'
 
 const Header = () => {
+    const location = useLocation()
+    const isOnboarding = location.pathname === '/'
+
     const [isMenuOpen, setIsMenuOpen] = useState(false)
 
     return (
@@ -13,68 +16,72 @@ const Header = () => {
                 {/* 로고 */}
                 <Link
                     to="/main"
-                    className="flex items-center justify-center lg:justify-start w-full lg:w-auto lg:pl-2"
+                    className="flex items-center justify-center min-[1060px]:justify-start w-full min-[1060px]:w-auto min-[1060px]:pl-2"
                 >
                     <img src={logo} alt="logo" className="w-12" />
                 </Link>
 
-                {/* PC/태블릿 검색창 */}
-                <div className="flex-1 mx-16 hidden lg:block">
-                    <input
-                        type="text"
-                        placeholder="검색어를 입력하세요"
-                        className="w-full h-9 px-4 border rounded-md focus:outline-none focus:ring-1 focus:ring-orange-400"
-                    />
-                </div>
-
-                {/* PC/태블릿 네비게이션 */}
-                <div className="hidden lg:flex items-center space-x-10 text-sm text-[#242424] font-medium">
-                    <Link to="/shop" className="px-3 py-1 rounded-md hover:bg-gray-100">쇼핑</Link>
-                    <Link to="/customkeyboard" className="px-3 py-1 rounded-md hover:bg-gray-100">타닥 키보드 만들기</Link>
-                    <Link to="/soundtest" className="px-3 py-1 rounded-md hover:bg-gray-100">타닥 타건샵</Link>
-                    <Link to="/kbti" className="px-3 py-1 rounded-md hover:bg-gray-100">KBTI</Link>
-                    <Link to="/mypage" className="px-3 py-1 rounded-md hover:bg-gray-100">마이페이지</Link>
-                    <Link to="/account/login" className="w-20 py-1 text-sm font-semibold text-white text-center rounded-full bg-orange-400 hover:bg-orange-500">
+                {/* 온보딩일 경우 로그인 버튼만 */}
+                {isOnboarding ? (
+                    <Link to="/account/login" className="w-20 py-1 text-sm font-semibold text-white text-center rounded-full bg-orange-400 hover:bg-orange-500 whitespace-nowrap">
                         Login
                     </Link>
-                </div>
-
-                {/* 모바일 햄버거 버튼 */}
-                <div className="flex items-center lg:hidden ml-auto">
-                    <button onClick={() => setIsMenuOpen(!isMenuOpen)}>
-                        {isMenuOpen ? <FiX size={28} /> : <FiMenu size={28} />}
-                    </button>
-                </div>
-
-                {/* 모바일 메뉴 오버레이 */}
-                {isMenuOpen && (
-                    <div className="fixed top-0 right-0 w-3/5 h-screen bg-white shadow-lg border-l flex flex-col p-6 space-y-6 z-50">
-                        {/* 닫기 버튼만 (로고 제거) */}
-                        <div className="flex items-center justify-end mb-1">
-                            <button onClick={() => setIsMenuOpen(false)}>
-                                <FiX size={28} />
-                            </button>
-                        </div>
-
+                ) : (
+                    <>
                         {/* 검색창 */}
-                        <div>
+                        <div className="flex-1 mx-8 hidden min-[1060px]:block">
                             <input
                                 type="text"
                                 placeholder="검색어를 입력하세요"
-                                className="w-full h-10 px-4 border rounded-md focus:outline-none focus:ring-1 focus:ring-orange-400"
+                                className="w-full min-w-[12rem] h-9 px-4 border rounded-md focus:outline-none focus:ring-1 focus:ring-orange-400"
                             />
                         </div>
 
-                        {/* 메뉴 항목 */}
-                        <nav className="flex flex-col space-y-6 text-lg font-medium text-[#242424]">
-                            <Link to="/shop" onClick={() => setIsMenuOpen(false)} className="hover:bg-gray-100 rounded-md px-2 py-1">쇼핑</Link>
-                            <Link to="/customkeyboard" onClick={() => setIsMenuOpen(false)} className="hover:bg-gray-100 rounded-md px-2 py-1">타닥 키보드 만들기</Link>
-                            <Link to="/soundtest" onClick={() => setIsMenuOpen(false)} className="hover:bg-gray-100 rounded-md px-2 py-1">타닥 타건샵</Link>
-                            <Link to="/kbti" onClick={() => setIsMenuOpen(false)} className="hover:bg-gray-100 rounded-md px-2 py-1">KBTI</Link>
-                            <Link to="/mypage" onClick={() => setIsMenuOpen(false)} className="hover:bg-gray-100 rounded-md px-2 py-1">마이페이지</Link>
-                            <Link to="/account/login" onClick={() => setIsMenuOpen(false)} className="hover:bg-gray-100 rounded-md px-2 py-1">Login</Link>
-                        </nav>
-                    </div>
+                        {/* 네비게이션 */}
+                        <div className="hidden min-[1060px]:flex items-center space-x-8 text-sm text-[#242424] font-medium">
+                            <Link to="/shop" className="px-3 py-1 rounded-md hover:bg-gray-100 whitespace-nowrap">쇼핑</Link>
+                            <Link to="/customkeyboard" className="px-3 py-1 rounded-md hover:bg-gray-100 whitespace-nowrap">타닥 키보드 만들기</Link>
+                            <Link to="/soundtest" className="px-3 py-1 rounded-md hover:bg-gray-100 whitespace-nowrap">타닥 타건샵</Link>
+                            <Link to="/kbti" className="px-3 py-1 rounded-md hover:bg-gray-100 whitespace-nowrap">KBTI</Link>
+                            <Link to="/mypage" className="px-3 py-1 rounded-md hover:bg-gray-100 whitespace-nowrap">마이페이지</Link>
+                            <Link to="/account/login" className="w-20 py-1 text-sm font-semibold text-white text-center rounded-full bg-orange-400 hover:bg-orange-500 whitespace-nowrap">
+                                Login
+                            </Link>
+                        </div>
+
+                        {/* 모바일 햄버거 버튼 */}
+                        <div className="flex min-[1060px]:hidden ml-auto">
+                            <button onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                                {isMenuOpen ? <FiX size={28} /> : <FiMenu size={28} />}
+                            </button>
+                        </div>
+
+                        {/* 모바일 메뉴 오버레이 */}
+                        {isMenuOpen && (
+                            <div className="fixed top-0 right-0 w-3/5 h-screen bg-white shadow-lg border-l flex flex-col p-6 space-y-6 z-50">
+                                <div className="flex items-center justify-end mb-1">
+                                    <button onClick={() => setIsMenuOpen(false)}>
+                                        <FiX size={28} />
+                                    </button>
+                                </div>
+                                <div>
+                                    <input
+                                        type="text"
+                                        placeholder="검색어를 입력하세요"
+                                        className="w-full h-10 px-4 border rounded-md focus:outline-none focus:ring-1 focus:ring-orange-400"
+                                    />
+                                </div>
+                                <nav className="flex flex-col space-y-6 text-lg font-medium text-[#242424]">
+                                    <Link to="/shop" onClick={() => setIsMenuOpen(false)} className="hover:bg-gray-100 rounded-md px-2 py-1">쇼핑</Link>
+                                    <Link to="/customkeyboard" onClick={() => setIsMenuOpen(false)} className="hover:bg-gray-100 rounded-md px-2 py-1">타닥 키보드 만들기</Link>
+                                    <Link to="/soundtest" onClick={() => setIsMenuOpen(false)} className="hover:bg-gray-100 rounded-md px-2 py-1">타닥 타건샵</Link>
+                                    <Link to="/kbti" onClick={() => setIsMenuOpen(false)} className="hover:bg-gray-100 rounded-md px-2 py-1">KBTI</Link>
+                                    <Link to="/mypage" onClick={() => setIsMenuOpen(false)} className="hover:bg-gray-100 rounded-md px-2 py-1">마이페이지</Link>
+                                    <Link to="/account/login" onClick={() => setIsMenuOpen(false)} className="hover:bg-gray-100 rounded-md px-2 py-1">Login</Link>
+                                </nav>
+                            </div>
+                        )}
+                    </>
                 )}
             </div>
         </header>
