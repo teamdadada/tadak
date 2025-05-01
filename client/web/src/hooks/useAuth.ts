@@ -1,6 +1,6 @@
-import { getAuthCheck, signIn } from "@/services/authService"
+import { signIn } from "@/services/authService"
 import { ErrorResponse } from "@/types/user"
-import { useMutation, useQuery } from "@tanstack/react-query"
+import { useMutation } from "@tanstack/react-query"
 import { AxiosError } from "axios"
 import { toast } from "sonner"
 
@@ -25,11 +25,4 @@ export const useSignIn = () => {
     },
   })
   return mutateAsync
-}
-
-export const useGetAuthCheck = () => {
-  useQuery({
-    queryKey: ['authCheck'],
-    queryFn: () => getAuthCheck()
-  })
 }
