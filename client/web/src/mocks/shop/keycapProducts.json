@@ -1,0 +1,37 @@
+[
+  {
+    "id": 11,
+    "name": "PBT 한글 키캡 104개",
+    "price": 25000,
+    "imageUrl": "https://cataas.com/cat?11",
+    "liked": true
+  },
+  {
+    "id": 12,
+    "name": "ABS 이색사출 키캡 87개",
+    "price": 22000,
+    "imageUrl": "https://cataas.com/cat?12",
+    "liked": false
+  },
+  {
+    "id": 13,
+    "name": "무각인 키캡 61개",
+    "price": 27000,
+    "imageUrl": "https://cataas.com/cat?13",
+    "liked": false
+  },
+  {
+    "id": 14,
+    "name": "측각 레트로 키캡 104개",
+    "price": 29000,
+    "imageUrl": "https://cataas.com/cat?14",
+    "liked": true
+  },
+  {
+    "id": 15,
+    "name": "한글 폰트 키캡 87개",
+    "price": 21000,
+    "imageUrl": "https://cataas.com/cat?15",
+    "liked": false
+  }
+]
