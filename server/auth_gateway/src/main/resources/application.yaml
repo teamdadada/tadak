@@ -21,3 +21,10 @@ ktor:
   proxy:
     spring: "http://td-spring-dev"
     fastapi: "http://td-fastapi-dev"
+
+  minio:
+    url: "https://minio.tadak.kr"
+    accessKey: "dadada"
+    secretKey: "dadada!!"
+    bucket: "image"
+    baseUrl: "https://minio.tadak.kr"
