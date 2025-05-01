@@ -12,7 +12,7 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <AppRoutes />
       </QueryClientProvider>
-      <Toaster />
+      <Toaster position="top-center" />
     </>
     // react-query 전역 설정
   )

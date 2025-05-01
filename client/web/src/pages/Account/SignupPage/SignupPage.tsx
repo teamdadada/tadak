@@ -2,12 +2,14 @@ import InputField from '@/components/account/InputField'
 import LogoImage from '@/assets/images/logo.png'
 
 import { Button } from '@/components/ui/button'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useSignUp } from '@/services/userService'
+
+import { useSignUp } from '@/hooks/useUser'
+import { useSignIn } from '@/hooks/useAuth'
 
 const signupSchema = z
   .object({
@@ -51,10 +53,24 @@ const SignupPage = () => {
   })
 
   const signUp = useSignUp()
+  const signIn = useSignIn()
+  const navigate = useNavigate()
 
-  const onSubmit = (data: SignupFormData) => {
-    signUp(data)
-    console.log(data)
+  const onSubmit = async (data: SignupFormData) => {
+    try {
+      const signUpResponse = await signUp(data)
+      if (signUpResponse.status === 201) {
+        const signInResponse = await signIn({
+          userId: data.userId,
+          password: data.password,
+        })
+        const accessToken = signInResponse.headers['authorization']
+        localStorage.setItem('accessToken', accessToken)
+        navigate('/main')
+      }
+    } catch {
+      // 회원가입 실패
+    }
   }
 
   return (
@@ -77,6 +93,7 @@ const SignupPage = () => {
             type="text"
             label="아이디"
             placeholder="아이디를 입력하세요."
+            autoComplete="username"
             error={errors.userId?.message}
             {...register('userId')}
           />
@@ -85,6 +102,7 @@ const SignupPage = () => {
             type="password"
             label="비밀번호"
             placeholder="비밀번호를 입력하세요."
+            autoComplete="new-password"
             error={errors.password?.message}
             {...register('password')}
           />
@@ -93,6 +111,7 @@ const SignupPage = () => {
             type="password"
             label="비밀번호 확인"
             placeholder="비밀번호를 한 번 더 입력하세요."
+            autoComplete="new-password"
             error={errors.confirm?.message}
             {...register('confirm')}
           />
