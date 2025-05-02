@@ -1,13 +1,6 @@
 import { cn } from '@/lib/utils'
 import { FaHeart, FaRegHeart } from 'react-icons/fa'
-
-interface ItemCardProps {
-  name: string
-  price: number
-  imageUrl: string
-  liked?: boolean
-  className?: string
-}
+import { Link } from 'react-router-dom'
 
 interface ItemCardProps {
   name: string
@@ -15,6 +8,7 @@ interface ItemCardProps {
   imageUrl: string
   liked?: boolean
   size?: 'sm' | 'md' | 'lg'
+  to: string;
 }
 
 const sizeClasses = {
@@ -29,9 +23,11 @@ const ItemCard = ({
   imageUrl,
   liked = true,
   size = 'md', // 기본은 중간 크기
+  to,
 }: ItemCardProps) => {
   return (
-    <div
+    <Link
+      to={to}
       className={cn(
         'border rounded-lg p-4 flex flex-col justify-between items-center relative bg-white',
         sizeClasses[size],
@@ -49,10 +45,10 @@ const ItemCard = ({
       </div>
 
       <div className="flex flex-col justify-center w-full h-16 mt-4 text-left">
-        <div className="font-semibold">{name}</div>
+        <div className="font-semibold truncate">{name}</div>
         <div className="mt-1">{price.toLocaleString()}원</div>
       </div>
-    </div>
+    </Link>
   )
 }
 
