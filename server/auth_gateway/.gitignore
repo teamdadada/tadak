@@ -36,4 +36,4 @@ out/
 .vscode/
 
 ### 민감정 ###
-src/main/resources/application.yml
+src/main/resources/application.yaml
