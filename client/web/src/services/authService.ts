@@ -2,14 +2,14 @@ import http from './http-common'
 
 import { AUTH_END_POINT } from './endPoints'
 import { SignInRequest } from '@/types/auth'
+import { useAuthStore } from '@/store/authStore'
 
 export const signIn = async (data: SignInRequest) => {
   const response = await http.post(AUTH_END_POINT.LOGIN, data)
-
   const authHeader = response.headers['authorization']
   if (authHeader) {
     const accessToken = authHeader.replace('Bearer ', '').trim()
-    localStorage.setItem('accessToken', accessToken)
+    useAuthStore.getState().setAccessToken(accessToken)
   }
 
   return response

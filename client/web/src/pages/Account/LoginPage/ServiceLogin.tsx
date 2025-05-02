@@ -13,11 +13,11 @@ const ServiceLogin = () => {
   const navigate = useNavigate()
 
   const handleLogin = async () => {
-    const res = await signIn({ userId, password })
-    if (res.status === 200) {
-      const accessToken = res.headers['authorization']
-      localStorage.setItem('accessToken', accessToken)
+    try {
+      await signIn({ userId, password })
       navigate('/main')
+    } catch {
+      // 실패
     }
   }
 

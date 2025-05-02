@@ -7,7 +7,9 @@ import { toast } from 'sonner'
 export const useSignIn = () => {
   const { mutateAsync } = useMutation({
     mutationFn: signIn,
-    onSuccess: () => {},
+    onSuccess: () => {
+      toast.success('로그인 성공! 🧡')
+    },
     onError: (error: AxiosError<ErrorResponse>) => {
       const status = error.response?.status
       const message = error.response?.data?.message

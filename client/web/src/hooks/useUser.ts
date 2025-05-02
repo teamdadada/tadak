@@ -17,7 +17,7 @@ export const useSignUp = () => {
       return signUpResponse
     },
     onSuccess: () => {
-      toast.success('회원가입 완료!')
+      toast.success('회원가입이 완료되었습니다 🎉')
     },
     onError: (error: AxiosError<ErrorResponse>) => {
       const status = error.response?.status
