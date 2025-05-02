@@ -13,9 +13,10 @@ export const useSignIn = () => {
     },
     onError: (error: AxiosError<ErrorResponse>) => {
       const status = error.response?.status
+      const code = error.response?.data?.code
       const message = error.response?.data?.message
 
-      if (status == 401) {
+      if (status == 401 && code === 'B4010') {
         toast.error(message)
       } else if (status == 500) {
         toast.error(message)
@@ -37,10 +38,11 @@ export const useRefreshToken = () => {
     },
     onError: (error: AxiosError<ErrorResponse>) => {
       const status = error.response?.status
+      const code = error.response?.data?.code
 
-      if (status === 400) {
+      if (status === 400 && code === 'B4000') {
         toast.error('로그인 정보가 만료되었습니다. 다시 로그인해 주세요.')
-      } else if (status === 401) {
+      } else if (status === 401 && code === 'B4011') {
         toast.error('인증이 만료되었습니다. 다시 로그인해 주세요.')
       } else {
         toast.error('인증 과정에서 오류가 발생했습니다. 다시 로그인해 주세요.')
