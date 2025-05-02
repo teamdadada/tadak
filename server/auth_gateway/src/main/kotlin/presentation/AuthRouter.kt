@@ -13,6 +13,7 @@ import io.ktor.http.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import io.netty.handler.codec.http.cookie.CookieHeaderNames
 import org.jetbrains.exposed.sql.transactions.transaction
 
 fun Route.authRoutes() {
@@ -46,7 +47,8 @@ fun Route.authRoutes() {
                     httpOnly = true,
                     secure = true,
                     path = "/",
-                    maxAge = 60 * 60 * 24 * 31 // 31일
+                    maxAge = 60 * 60 * 24 * 31,
+                    extensions = mapOf("SameSite" to "None") // 👈 핵심!
                 )
             )
 

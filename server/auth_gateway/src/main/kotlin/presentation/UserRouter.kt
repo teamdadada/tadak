@@ -13,6 +13,7 @@ import com.tadak.exception.status.BadRequestException
 import com.tadak.exception.status.ConflictException
 import com.tadak.exception.status.ForbiddenException
 import com.tadak.exception.status.NotFoundException
+import com.tadak.exception.status.UnauthorizedException
 import com.tadak.util.PasswordUtil
 import io.ktor.http.*
 import io.ktor.http.content.*
@@ -29,11 +30,11 @@ fun Route.userRoutes() {
         post("/signup") {
             val request = call.receive<SignUpRequest>()
 
-            val userExists = transaction {
-                Users.select(Users.userId eq request.userId).count() > 0
+            val user = transaction {
+                User.find { Users.userId eq request.userId }.singleOrNull()
             }
 
-            if (userExists) {
+            if (user != null) {
                 throw ConflictException(UserErrorCode.DUPLICATE_USER_ID.toErrorCode())
             }
 
