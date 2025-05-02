@@ -20,4 +20,4 @@ def get_docs_info(payload: FileQuery):
 
 @qdrant_router.delete("/")
 def delete_collection(name: str):
-    qdrant_service.delete_collection(name)
+    return qdrant_service.delete_collection(name)

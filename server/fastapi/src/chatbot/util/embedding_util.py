@@ -3,9 +3,9 @@ from typing import List
 from fastapi import UploadFile
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import Qdrant
-from langchain_huggingface import HuggingFaceEmbeddings
 import src.common.config.qdrant_config as qdrant_config
 from langchain_core.documents import Document
+
 
 # todo: documentparser에서 upstage api 제거
 async def load_documents(files: List[UploadFile], file_detail: str):
@@ -46,7 +46,7 @@ def get_docs_split_list(docs):
 
 
 def embed_documents(docs):
-    embeddings = HuggingFaceEmbeddings(model_name='jhgan/ko-sroberta-multitask')
+    embeddings = qdrant_config.embeddings
 
     Qdrant.from_documents(
         url=qdrant_config.QDRANT_URL,
