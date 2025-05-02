@@ -17,7 +17,7 @@ export const useSignIn = () => {
       const message = error.response?.data?.message
 
       if (status == 401 && code === 'B4010') {
-        toast.error(message)
+        toast.error('아이디 또는 비밀번호를 확인해주세요.')
       } else if (status == 500) {
         toast.error(message)
       } else {
