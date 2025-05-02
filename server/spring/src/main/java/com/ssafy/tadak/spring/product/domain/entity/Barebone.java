@@ -54,5 +54,8 @@ public class Barebone {
 	private String minPrice;
 
 	private String url;
+
+	@Field("product_id")
+	private Long productId;
 }
 

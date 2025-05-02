@@ -24,7 +24,7 @@ public class ProductController {
 
 	private final ProductService productService;
 
-	@GetMapping("/BAREBONE")
+	@GetMapping("/{product_type}")
 	public ResponseEntity<ProductDetailResponse> getProductDetail(
 		@PathVariable("product_type") ProductType productType,
 		@RequestParam("product_id") Long productId) {
