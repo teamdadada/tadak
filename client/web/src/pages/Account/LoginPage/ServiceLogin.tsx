@@ -12,7 +12,8 @@ const ServiceLogin = () => {
   const signIn = useSignIn()
   const navigate = useNavigate()
 
-  const handleLogin = async () => {
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
     try {
       await signIn({ userId, password })
       navigate('/main')
@@ -46,13 +47,13 @@ const ServiceLogin = () => {
           autoComplete="current-password"
           onChange={(e) => setPassword(e.target.value)}
         />
+        <Button
+          type="submit"
+          className="w-full py-6 rounded-lg shadow-none bg-tadak-primary hover:bg-tadak-primary"
+        >
+          로그인
+        </Button>
       </form>
-      <Button
-        onClick={handleLogin}
-        className="w-full py-6 rounded-lg shadow-none bg-tadak-primary hover:bg-tadak-primary"
-      >
-        로그인
-      </Button>
     </div>
   )
 }
