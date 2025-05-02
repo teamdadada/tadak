@@ -61,7 +61,7 @@ const SignupPage = () => {
     }
 
     try {
-      signUp(signUpData)
+      await signUp(signUpData)
       navigate('/main')
     } catch {
       // 회원가입 실패
