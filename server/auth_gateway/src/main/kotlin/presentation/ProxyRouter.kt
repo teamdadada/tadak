@@ -2,6 +2,9 @@ package com.tadak.presentation
 
 import com.tadak.config.HttpClientProvider
 import com.tadak.config.ProxyConfig
+import com.tadak.dto.AuthenticatedUserKey
+import com.tadak.exception.error_code.AuthErrorCode
+import com.tadak.exception.status.BadRequestException
 import com.tadak.util.JwtUtil
 import io.ktor.client.call.*
 import io.ktor.client.request.*
@@ -20,8 +23,8 @@ fun Route.proxyRoutes(env: ApplicationEnvironment) {
             val targetUri = proxyConfig.springBaseUrl + call.request.uri
             val method = call.request.httpMethod
 
-            val token = call.request.headers["Authorization"]?.removePrefix("Bearer ")
-            val userMeta = token?.let { JwtUtil.verifyAndDecode(it) }
+            val authUser = call.attributes.getOrNull(AuthenticatedUserKey)
+                ?: throw BadRequestException(AuthErrorCode.UNAUTHORIZED_REQUEST.toErrorCode())
 
             val requestBytes = call.receiveChannel().toByteArray()
 
@@ -29,9 +32,9 @@ fun Route.proxyRoutes(env: ApplicationEnvironment) {
                 this.method = method
                 headers.appendAll(call.request.headers)
                 headers.remove(HttpHeaders.Host)
-                userMeta?.let {
+                authUser?.let {
                     headers.append("X-User-Id", it.userUuid.toString())
-                    headers.append("X-User-Nickname", it.nickname)
+                    headers.append("X-User-Nickname", it.userNickname)
                     headers.append("X-User-Type", it.userType)
                 }
                 setBody(requestBytes)

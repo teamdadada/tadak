@@ -6,4 +6,6 @@ val AuthenticatedUserKey = AttributeKey<AuthenticatedUser>("AuthenticatedUser")
 
 data class AuthenticatedUser(
     val userUuid: Long,
+    val userNickname: String,
+    val userType: String,
 )

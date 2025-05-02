@@ -13,6 +13,8 @@ fun Application.configureAuthInterceptor(jwtUtil: JwtUtil) {
             val decoded = jwtUtil.verifyAndDecode(token) // JWT 디코딩
             val user = AuthenticatedUser(
                 userUuid = decoded.userUuid,
+                userNickname = decoded.nickname,
+                userType = decoded.userType
             )
             call.attributes.put(AuthenticatedUserKey, user)
         }
