@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button'
 import { useSignIn } from '@/hooks/useAuth'
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { toast } from 'sonner'
 
 const ServiceLogin = () => {
   const [userId, setUserId] = useState('')
@@ -14,6 +15,11 @@ const ServiceLogin = () => {
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+
+    if (!userId.trim() || !password.trim()) {
+      toast.error('아이디와 비밀번호를 모두 입력해주세요.')
+      return
+    }
     try {
       await signIn({ userId, password })
       navigate('/main')
@@ -49,7 +55,8 @@ const ServiceLogin = () => {
         />
         <Button
           type="submit"
-          className="w-full py-6 rounded-lg shadow-none bg-tadak-primary hover:bg-tadak-primary"
+          className="w-full py-6 rounded-lg shadow-none bg-tadak-primary hover:bg-tadak-primary disabled:bg-tadak-dark-gray"
+          // disabled={!userId.trim() || !password.trim()}
         >
           로그인
         </Button>
