@@ -1,4 +1,5 @@
-import { signIn } from '@/services/authService'
+import { refreshToken, signIn } from '@/services/authService'
+import { useAuthStore } from '@/store/authStore'
 import { ErrorResponse } from '@/types/user'
 import { useMutation } from '@tanstack/react-query'
 import { AxiosError } from 'axios'
@@ -23,5 +24,32 @@ export const useSignIn = () => {
       }
     },
   })
+  return mutateAsync
+}
+
+export const useRefreshToken = () => {
+  const { mutateAsync } = useMutation({
+    mutationFn: refreshToken,
+    onSuccess: (data) => {
+      if (!data.success) {
+        console.log('토큰 갱신 실패: ', data.error)
+      }
+    },
+    onError: (error: AxiosError<ErrorResponse>) => {
+      const status = error.response?.status
+
+      if (status === 400) {
+        toast.error('로그인 정보가 만료되었습니다. 다시 로그인해 주세요.')
+      } else if (status === 401) {
+        toast.error('인증이 만료되었습니다. 다시 로그인해 주세요.')
+      } else {
+        toast.error('인증 과정에서 오류가 발생했습니다. 다시 로그인해 주세요.')
+      }
+
+      useAuthStore.getState().clearAccessToken()
+      window.location.href = '/account/login'
+    },
+  })
+
   return mutateAsync
 }

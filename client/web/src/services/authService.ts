@@ -21,6 +21,18 @@ export const checkAuthStatus = async () => {
 }
 
 export const refreshToken = async () => {
-  const response = await http.post(AUTH_END_POINT.REISSUE)
-  return response
+  try {
+    const response = await http.post(AUTH_END_POINT.REISSUE)
+    const authHeader = response.headers['authorization']
+
+    if (authHeader) {
+      const accessToken = authHeader.replace('Bearer ', '').trim()
+      useAuthStore.getState().setAccessToken(accessToken)
+      return { success: true, accessToken }
+    }
+
+    return { success: false, error: '토큰이 응답 헤더에 없습니다.' }
+  } catch (error) {
+    return { success: false, error }
+  }
 }
