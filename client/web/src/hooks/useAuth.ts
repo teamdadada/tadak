@@ -1,16 +1,13 @@
-import { signIn } from "@/services/authService"
-import { ErrorResponse } from "@/types/user"
-import { useMutation } from "@tanstack/react-query"
-import { AxiosError } from "axios"
-import { toast } from "sonner"
-
+import { signIn } from '@/services/authService'
+import { ErrorResponse } from '@/types/user'
+import { useMutation } from '@tanstack/react-query'
+import { AxiosError } from 'axios'
+import { toast } from 'sonner'
 
 export const useSignIn = () => {
   const { mutateAsync } = useMutation({
     mutationFn: signIn,
-    onSuccess: () => {
-      // 액세스 토큰 저장 로직 추가
-    },
+    onSuccess: () => {},
     onError: (error: AxiosError<ErrorResponse>) => {
       const status = error.response?.status
       const message = error.response?.data?.message

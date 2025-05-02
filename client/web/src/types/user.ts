@@ -4,6 +4,13 @@ export interface SignUpRequest {
   nickname: string
 }
 
+export interface SignUpFormData {
+  userId: string
+  password: string
+  nickname: string
+  confirm: string
+}
+
 export interface ErrorResponse {
   status: number
   code: string
