@@ -16,7 +16,7 @@ const Header = () => {
                 {/* 로고 */}
                 <Link
                     to="/main"
-                    className="flex items-center justify-center min-[1060px]:justify-start w-full min-[1060px]:w-auto min-[1060px]:pl-2"
+                    className="flex items-center justify-center min-[1200px]:justify-start w-full min-[1200px]:w-auto min-[1060px]:pl-2"
                 >
                     <img src={logo} alt="logo" className="w-12" />
                 </Link>
@@ -29,16 +29,16 @@ const Header = () => {
                 ) : (
                     <>
                         {/* 검색창 */}
-                        <div className="flex-1 mx-8 hidden min-[1060px]:block">
+                        <div className="flex-1 mx-20 hidden min-[1200px]:block">
                             <input
                                 type="text"
                                 placeholder="검색어를 입력하세요"
-                                className="w-full min-w-[12rem] h-9 px-4 border rounded-md focus:outline-none focus:ring-1 focus:ring-orange-400"
+                                className="w-full max-w-[32rem] min-w-[12rem] h-9 px-4 border rounded-md focus:outline-none focus:ring-1 focus:ring-orange-400"
                             />
                         </div>
 
                         {/* 네비게이션 */}
-                        <div className="hidden min-[1060px]:flex items-center space-x-8 text-sm text-[#242424] font-medium">
+                        <div className="hidden min-[1200px]:flex items-center space-x-8 text-sm text-[#242424] font-medium">
                             <Link to="/shop" className="px-3 py-1 rounded-md hover:bg-gray-100 whitespace-nowrap">쇼핑</Link>
                             <Link to="/customkeyboard" className="px-3 py-1 rounded-md hover:bg-gray-100 whitespace-nowrap">타닥 키보드 만들기</Link>
                             <Link to="/soundtest" className="px-3 py-1 rounded-md hover:bg-gray-100 whitespace-nowrap">타닥 타건샵</Link>
@@ -50,7 +50,7 @@ const Header = () => {
                         </div>
 
                         {/* 모바일 햄버거 버튼 */}
-                        <div className="flex min-[1060px]:hidden ml-auto">
+                        <div className="flex min-[1200px]:hidden ml-auto">
                             <button onClick={() => setIsMenuOpen(!isMenuOpen)}>
                                 {isMenuOpen ? <FiX size={28} /> : <FiMenu size={28} />}
                             </button>

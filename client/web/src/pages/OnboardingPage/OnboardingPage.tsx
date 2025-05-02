@@ -20,7 +20,7 @@ import slide5 from '@/assets/images/slide5.png'
 
 const OnboardingPage = () => {
     const navigate = useNavigate()
-    const [activeIndex, setActiveIndex] = useState(0)
+    const [_ /* activeIndex */, setActiveIndex] = useState(0)
 
     const slides = [
         {
