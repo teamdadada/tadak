@@ -17,13 +17,14 @@ export const useSignUp = () => {
       return signUpResponse
     },
     onSuccess: () => {
-      toast.success('회원가입 완료!')
+      toast.success('회원가입이 완료되었습니다 🎉')
     },
     onError: (error: AxiosError<ErrorResponse>) => {
       const status = error.response?.status
+      const code = error.response?.data?.code
       const message = error.response?.data?.message
 
-      if (status === 409) {
+      if (status === 409 && code === 'U4090') {
         toast.error(message)
       } else {
         toast.error('회원가입에 실패했습니다. 다시 시도해주세요.')

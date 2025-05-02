@@ -1,15 +1,32 @@
 import { create } from 'zustand'
+import { createJSONStorage, persist } from 'zustand/middleware'
 
 type AuthState = {
   isAuthenticated: boolean
   accessToken: string | null
   setAccessToken: (token: string) => void
-  logout: () => void
+  clearAccessToken: () => void
 }
 
-export const useAuthStore = create<AuthState>((set) => ({
-  isAuthenticated: false,
-  accessToken: null,
-  setAccessToken: (token) => set({ accessToken: token, isAuthenticated: true }),
-  logout: () => set({ accessToken: null, isAuthenticated: false }),
-}))
+export const useAuthStore = create<AuthState>()(
+  persist(
+    (set) => ({
+      accessToken: localStorage.getItem('accessToken') || null,
+      isAuthenticated: !!localStorage.getItem('accessToken'),
+
+      setAccessToken: (token: string) => {
+        localStorage.setItem('accessToken', token)
+        set({ accessToken: token, isAuthenticated: true })
+      },
+
+      clearAccessToken: () => {
+        localStorage.removeItem('accessToken')
+        set({ accessToken: null, isAuthenticated: false })
+      },
+    }),
+    {
+      name: 'auth-storage',
+      storage: createJSONStorage(() => localStorage),
+    },
+  ),
+)

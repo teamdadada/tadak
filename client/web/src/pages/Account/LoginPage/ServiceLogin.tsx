@@ -1,23 +1,37 @@
 import LogoImage from '@/assets/images/logo.png'
+
 import InputField from '@/components/account/InputField'
 import { Button } from '@/components/ui/button'
 import { useSignIn } from '@/hooks/useAuth'
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { toast } from 'sonner'
 
 const ServiceLogin = () => {
   const [userId, setUserId] = useState('')
   const [password, setPassword] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
 
   const signIn = useSignIn()
   const navigate = useNavigate()
 
-  const handleLogin = async () => {
-    const res = await signIn({ userId, password })
-    if (res.status === 200) {
-      const accessToken = res.headers['authorization']
-      localStorage.setItem('accessToken', accessToken)
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+
+    if (!userId.trim() || !password.trim()) {
+      toast.error('아이디와 비밀번호를 모두 입력해주세요.')
+      return
+    }
+
+    setIsLoading(true)
+
+    try {
+      await signIn({ userId, password })
       navigate('/main')
+    } catch {
+      // 실패
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -46,13 +60,14 @@ const ServiceLogin = () => {
           autoComplete="current-password"
           onChange={(e) => setPassword(e.target.value)}
         />
+        <Button
+          type="submit"
+          className="w-full py-6 rounded-lg shadow-none bg-tadak-primary hover:bg-tadak-primary disabled:bg-tadak-dark-gray"
+          disabled={isLoading}
+        >
+          로그인
+        </Button>
       </form>
-      <Button
-        onClick={handleLogin}
-        className="w-full py-6 rounded-lg shadow-none bg-tadak-primary hover:bg-tadak-primary"
-      >
-        로그인
-      </Button>
     </div>
   )
 }
