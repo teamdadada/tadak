@@ -32,6 +32,8 @@ dependencies {
     implementation("io.ktor:ktor-client-cio") // 또는 apache 등 엔진
     implementation("io.ktor:ktor-client-content-negotiation")
 
+    implementation("io.minio:minio:8.5.4")
+
     implementation("org.jetbrains.exposed:exposed-core:0.61.0")
     implementation("org.jetbrains.exposed:exposed-dao:0.61.0")
     implementation("org.jetbrains.exposed:exposed-jdbc:0.61.0")

@@ -1,6 +1,7 @@
 package com.tadak
 
 import com.tadak.config.DatabaseFactory
+import com.tadak.config.configureAuthInterceptor
 import com.tadak.config.configureRouting
 import com.tadak.exception.configureExceptionHandler
 import com.tadak.util.JwtUtil
@@ -20,6 +21,7 @@ fun Application.module() {
     configureRouting()
     DatabaseFactory.init(environment)
     JwtUtil.init(environment.config)
+    configureAuthInterceptor(JwtUtil)
     configureExceptionHandler()
 
 }
