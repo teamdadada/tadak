@@ -9,7 +9,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 
 import { useSignUp } from '@/hooks/useUser'
-import { useSignIn } from '@/hooks/useAuth'
+import { SignUpFormData, SignUpRequest } from '@/types/user'
 
 const signupSchema = z
   .object({
@@ -34,14 +34,12 @@ const signupSchema = z
     path: ['confirm'],
   })
 
-type SignupFormData = z.infer<typeof signupSchema>
-
 const SignupPage = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<SignupFormData>({
+  } = useForm<SignUpFormData>({
     resolver: zodResolver(signupSchema),
     mode: 'onBlur',
     defaultValues: {
@@ -53,21 +51,18 @@ const SignupPage = () => {
   })
 
   const signUp = useSignUp()
-  const signIn = useSignIn()
   const navigate = useNavigate()
 
-  const onSubmit = async (data: SignupFormData) => {
+  const onSubmit = async (data: SignUpFormData) => {
+    const signUpData: SignUpRequest = {
+      nickname: data.nickname,
+      userId: data.userId,
+      password: data.password,
+    }
+
     try {
-      const signUpResponse = await signUp(data)
-      if (signUpResponse.status === 201) {
-        const signInResponse = await signIn({
-          userId: data.userId,
-          password: data.password,
-        })
-        const accessToken = signInResponse.headers['authorization']
-        localStorage.setItem('accessToken', accessToken)
-        navigate('/main')
-      }
+      signUp(signUpData)
+      navigate('/main')
     } catch {
       // 회원가입 실패
     }

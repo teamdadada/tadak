@@ -5,6 +5,13 @@ import { SignInRequest } from '@/types/auth'
 
 export const signIn = async (data: SignInRequest) => {
   const response = await http.post(AUTH_END_POINT.LOGIN, data)
+
+  const authHeader = response.headers['authorization']
+  if (authHeader) {
+    const accessToken = authHeader.replace('Bearer ', '').trim()
+    localStorage.setItem('accessToken', accessToken)
+  }
+
   return response
 }
 
