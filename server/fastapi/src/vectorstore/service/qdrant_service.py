@@ -45,3 +45,18 @@ def get_uploaded_doc_info(file_name: str):
         })
 
     return response
+
+def count_vectors():
+    info = qdrantClient.get_collection(collection_name=CHATBOT_COLLECTION)
+
+    scroll_result, _ = qdrantClient.scroll(
+        collection_name=CHATBOT_COLLECTION,
+        limit=20
+    )
+
+    for point in scroll_result:
+        print(point.payload)
+
+    return f"""컬렉션 dimension: {info.config.params.vectors.size}
+    컬렉션 벡터 수 (points_count): {getattr(info, 'points_count', '속성 없음')}
+    """

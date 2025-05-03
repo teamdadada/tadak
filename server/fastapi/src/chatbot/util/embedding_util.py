@@ -6,8 +6,6 @@ from langchain_community.vectorstores import Qdrant
 import src.common.config.qdrant_config as qdrant_config
 from langchain_core.documents import Document
 
-
-# todo: documentparser에서 upstage api 제거
 async def load_documents(files: List[UploadFile], file_detail: str):
     # 파일 로드 및 파일 이름 저장
     docs = []
