@@ -20,6 +20,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import static com.ssafy.tadak.spring.product.util.enums.ProductType.*;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -44,7 +46,7 @@ public class ProductService {
 
 		product.increaseHits();
 
-		return getDetailByType(request.productType(), product.getProductId());
+		return getDetailByType(product);
 	}
 
 	/**
@@ -52,18 +54,20 @@ public class ProductService {
 	 * - BAREBONE / SWITCH / KEYCAP 타입별로 분기
 	 * - 상세 정보가 없을 경우 예외 발생
 	 */
-	private ProductDetailResponse getDetailByType(ProductType type, Long productId) {
+	private ProductDetailResponse getDetailByType(Product product) {
+		Long productId = product.getProductId();
+		ProductType type = product.getProductType();
 
 		return switch (type) {
 			case BAREBONE -> bareboneRepo.findByProductId(productId)
-				.map(BareboneDetailResponse::from)
-				.orElseThrow(() -> new ProductDetailNotFoundException(productId, type));
+					.map(barebone -> BareboneDetailResponse.from(product, barebone))
+					.orElseThrow(() -> new ProductDetailNotFoundException(productId, type));
 			case SWITCH -> switchRepo.findByProductId(productId)
-				.map(SwitchDetailResponse::from)
-				.orElseThrow(() -> new ProductDetailNotFoundException(productId, type));
+					.map(switchProduct -> SwitchDetailResponse.from(product, switchProduct))
+					.orElseThrow(() -> new ProductDetailNotFoundException(productId, type));
 			case KEYCAP -> keycapRepo.findByProductId(productId)
-				.map(KeycapDetailResponse::from)
-				.orElseThrow(() -> new ProductDetailNotFoundException(productId, type));
+					.map(keycap -> KeycapDetailResponse.from(product, keycap))
+					.orElseThrow(() -> new ProductDetailNotFoundException(productId, type));
 		};
 	}
 
