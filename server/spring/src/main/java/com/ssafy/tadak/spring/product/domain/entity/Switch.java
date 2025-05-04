@@ -1,13 +1,10 @@
 package com.ssafy.tadak.spring.product.domain.entity;
 
-import java.util.List;
-
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import jakarta.persistence.Id;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,8 +12,6 @@ import lombok.NoArgsConstructor;
 @Document(collection = "keycaps_specs")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
-@Builder
 public class Switch {
 
 	@Id
@@ -49,4 +44,20 @@ public class Switch {
 
 	@Field("product_id")
 	private Long productId;
+
+	@Builder
+	public Switch(String id, String name, String manufacturer, String registeredDate, String quantity, String switchType, String keyForce, String minPrice, String thumbnail, String detailImage, String url, Long productId) {
+		this.id = id;
+		this.name = name;
+		this.manufacturer = manufacturer;
+		this.registeredDate = registeredDate;
+		this.quantity = quantity;
+		this.switchType = switchType;
+		this.keyForce = keyForce;
+		this.minPrice = minPrice;
+		this.thumbnail = thumbnail;
+		this.detailImage = detailImage;
+		this.url = url;
+		this.productId = productId;
+	}
 }

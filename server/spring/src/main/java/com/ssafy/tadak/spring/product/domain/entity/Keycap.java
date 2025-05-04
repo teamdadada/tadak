@@ -5,7 +5,6 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 import jakarta.persistence.Id;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,8 +12,6 @@ import lombok.NoArgsConstructor;
 @Document(collection = "keycaps")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
-@Builder
 public class Keycap {
 
 	@Id
@@ -43,4 +40,18 @@ public class Keycap {
 
 	@Field("product_id")
 	private Long productId;
+
+	@Builder
+	public Keycap(String id, String name, String keycapMaterial, String engravingPosition, String keyCount, String minPrice, String thumbnail, String detailImage, String url, Long productId) {
+		this.id = id;
+		this.name = name;
+		this.keycapMaterial = keycapMaterial;
+		this.engravingPosition = engravingPosition;
+		this.keyCount = keyCount;
+		this.minPrice = minPrice;
+		this.thumbnail = thumbnail;
+		this.detailImage = detailImage;
+		this.url = url;
+		this.productId = productId;
+	}
 }
