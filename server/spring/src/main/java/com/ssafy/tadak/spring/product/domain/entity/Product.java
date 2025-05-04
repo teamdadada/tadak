@@ -22,29 +22,29 @@ import lombok.NoArgsConstructor;
 @Table(name = "products")
 public class Product {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "product_id")
-	private Long productId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "product_id")
+    private Long productId;
 
-	@Column(name = "product_type")
-	@Enumerated(EnumType.STRING)
-	private ProductType productType;
+    @Column(name = "product_type")
+    @Enumerated(EnumType.STRING)
+    private ProductType productType;
 
-	@Column(name = "product_name")
-	private String productName;
+    @Column(name = "product_name")
+    private String productName;
 
-	@Column(name = "hits")
-	private Integer hits;
+    @Column(name = "hits")
+    private Integer hits;
 
-	@Column(name = "created_at")
-	private LocalDateTime createdAt;
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 
-	@Column(name = "updated_at")
-	private LocalDateTime updatedAt;
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
-	public void increaseHits() {
-		this.hits = this.hits + 1;
-	}
+    public void increaseHits() {
+        this.hits = this.hits + 1;
+    }
 }
 

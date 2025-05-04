@@ -5,7 +5,6 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 import jakarta.persistence.Id;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -14,44 +13,39 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Keycap {
 
-	@Id
-	private String id;
+    @Id
+    private String id;
 
-	private String name;
+    @Field("name")
+    private String name;
 
-	@Field("keycap_material")
-	private String keycapMaterial;
+    @Field("release_year")
+    private Integer releaseYear;
 
-	@Field("engraving_position")
-	private String engravingPosition;
+    @Field("release_month")
+    private Integer releaseMonth;
 
-	@Field("key_count")
-	private String keyCount;
+    @Field("keycap_material")
+    private String keycapMaterial;
 
-	@Field("min_price")
-	private String minPrice;
+    @Field("engraving_position")
+    private String engravingPosition;
 
-	private String thumbnail;
+    @Field("key_count")
+    private String keyCount;
 
-	@Field("detail_image")
-	private String detailImage;
+    @Field("min_price")
+    private Integer minPrice;
 
-	private String url;
+    @Field("thumbnail")
+    private String thumbnail;
 
-	@Field("product_id")
-	private Long productId;
+    @Field("detail_image")
+    private String detailImage;
 
-	@Builder
-	public Keycap(String id, String name, String keycapMaterial, String engravingPosition, String keyCount, String minPrice, String thumbnail, String detailImage, String url, Long productId) {
-		this.id = id;
-		this.name = name;
-		this.keycapMaterial = keycapMaterial;
-		this.engravingPosition = engravingPosition;
-		this.keyCount = keyCount;
-		this.minPrice = minPrice;
-		this.thumbnail = thumbnail;
-		this.detailImage = detailImage;
-		this.url = url;
-		this.productId = productId;
-	}
+    @Field("url")
+    private String url;
+
+    @Field("product_id")
+    private Long productId;
 }

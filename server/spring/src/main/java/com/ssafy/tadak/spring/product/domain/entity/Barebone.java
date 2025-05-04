@@ -2,7 +2,6 @@ package com.ssafy.tadak.spring.product.domain.entity;
 
 import java.util.List;
 
-import lombok.Builder;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -16,62 +15,55 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Barebone {
 
-	@Id
-	private String id;
+    @Id
+    private String id;
 
-	private String name;
+    @Field("name")
+    private String name;
 
-	private String manufacturer;
+    @Field("release_year")
+    private Integer releaseYear;
 
-	@Field("release_date")
-	private String releaseDate;
+    @Field("release_month")
+    private Integer releaseMonth;
 
-	private String size;
+    @Field("manufacturer")
+    private String manufacturer;
 
-	@Field("connection_type")
-	private String connectionType;
+    @Field("release_date")
+    private String releaseDate;
 
-	@Field("contact_type")
-	private String contactType;
+    @Field("size")
+    private String size;
 
-	@Field("key_layout")
-	private String keyLayout;
+    @Field("connection_type")
+    private String connectionType;
 
-	@Field("interface")
-	private String interfaceType;
+    @Field("contact_type")
+    private String contactType;
 
-	private List<String> features;
+    @Field("key_layout")
+    private String keyLayout;
 
-	private String thumbnail;
+    @Field("interface")
+    private String interfaceType;
 
-	@Field("detail_image")
-	private String detailImage;
+    @Field("features")
+    private List<String> features;
 
-	@Field("min_price")
-	private String minPrice;
+    @Field("thumbnail")
+    private String thumbnail;
 
-	private String url;
+    @Field("detail_image")
+    private String detailImage;
 
-	@Field("product_id")
-	private Long productId;
+    @Field("min_price")
+    private Integer minPrice;
 
-	@Builder
-	public Barebone(String id, String name, String manufacturer, String releaseDate, String size, String connectionType, String contactType, String keyLayout, String interfaceType, List<String> features, String thumbnail, String detailImage, String minPrice, String url, Long productId) {
-		this.id = id;
-		this.name = name;
-		this.manufacturer = manufacturer;
-		this.releaseDate = releaseDate;
-		this.size = size;
-		this.connectionType = connectionType;
-		this.contactType = contactType;
-		this.keyLayout = keyLayout;
-		this.interfaceType = interfaceType;
-		this.features = features;
-		this.thumbnail = thumbnail;
-		this.detailImage = detailImage;
-		this.minPrice = minPrice;
-		this.url = url;
-		this.productId = productId;
-	}
+    @Field("url")
+    private String url;
+
+    @Field("product_id")
+    private Long productId;
 }
 

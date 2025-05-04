@@ -5,7 +5,6 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 import jakarta.persistence.Id;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -14,50 +13,42 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Switch {
 
-	@Id
-	private String id;
+    @Id
+    private String id;
 
-	private String name;
+    @Field("name")
+    private String name;
 
-	private String manufacturer;
+    @Field("release_year")
+    private Integer releaseYear;
 
-	@Field("registered_date")
-	private String registeredDate;
+    @Field("release_month")
+    private Integer releaseMonth;
 
-	private String quantity;
+    @Field("manufacturer")
+    private String manufacturer;
 
-	@Field("switch_type")
-	private String switchType;
+    @Field("quantity")
+    private String quantity;
 
-	@Field("key_force")
-	private String keyForce;
+    @Field("switch_type")
+    private String switchType;
 
-	@Field("min_price")
-	private String minPrice;
+    @Field("key_force")
+    private String keyForce;
 
-	private String thumbnail;
+    @Field("min_price")
+    private Integer minPrice;
 
-	@Field("detail_image")
-	private String detailImage;
+    @Field("thumbnail")
+    private String thumbnail;
 
-	private String url;
+    @Field("detail_image")
+    private String detailImage;
 
-	@Field("product_id")
-	private Long productId;
+    @Field("url")
+    private String url;
 
-	@Builder
-	public Switch(String id, String name, String manufacturer, String registeredDate, String quantity, String switchType, String keyForce, String minPrice, String thumbnail, String detailImage, String url, Long productId) {
-		this.id = id;
-		this.name = name;
-		this.manufacturer = manufacturer;
-		this.registeredDate = registeredDate;
-		this.quantity = quantity;
-		this.switchType = switchType;
-		this.keyForce = keyForce;
-		this.minPrice = minPrice;
-		this.thumbnail = thumbnail;
-		this.detailImage = detailImage;
-		this.url = url;
-		this.productId = productId;
-	}
+    @Field("product_id")
+    private Long productId;
 }
