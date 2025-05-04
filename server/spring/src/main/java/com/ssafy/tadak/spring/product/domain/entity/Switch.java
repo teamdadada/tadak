@@ -9,7 +9,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Document(collection = "keycaps_specs")
+@Document(collection = "switches_specs")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Switch {
