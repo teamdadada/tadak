@@ -8,5 +8,5 @@ import com.ssafy.tadak.spring.product.domain.entity.Switch;
 
 public interface SwitchRepository extends MongoRepository<Switch, String> {
 
-	Optional<Switch> findByProductId(Long productId);
+    Optional<Switch> findByProductId(Long productId);
 }

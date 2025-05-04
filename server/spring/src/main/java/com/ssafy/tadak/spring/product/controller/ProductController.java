@@ -18,14 +18,14 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/product")
 public class ProductController {
 
-	private final ProductService productService;
+    private final ProductService productService;
 
-	@GetMapping("/{product_type}")
-	public ResponseEntity<ProductDetailResponse> getProductDetail(
-		@PathVariable("product_type") ProductType productType,
-		@RequestParam("product_id") Long productId) {
+    @GetMapping("/{product_type}")
+    public ResponseEntity<ProductDetailResponse> getProductDetail(
+            @PathVariable("product_type") ProductType productType,
+            @RequestParam("product_id") Long productId) {
 
-		ProductDetailResponse response = productService.getProductDetail(productType, productId);
-		return ResponseEntity.ok(response);
-	}
+        ProductDetailResponse response = productService.getProductDetail(productType, productId);
+        return ResponseEntity.ok(response);
+    }
 }

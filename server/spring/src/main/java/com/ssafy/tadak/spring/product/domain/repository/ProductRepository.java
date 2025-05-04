@@ -8,5 +8,6 @@ import com.ssafy.tadak.spring.product.domain.entity.Product;
 import com.ssafy.tadak.spring.product.util.enums.ProductType;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
-	Optional<Product> findByProductIdAndProductType(Long productId, ProductType productType);
+
+    Optional<Product> findByProductIdAndProductType(Long productId, ProductType productType);
 }

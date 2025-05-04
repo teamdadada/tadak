@@ -8,5 +8,5 @@ import com.ssafy.tadak.spring.product.domain.entity.Keycap;
 
 public interface KeycapRepository extends MongoRepository<Keycap, String> {
 
-	Optional<Keycap> findByProductId(Long productId);
+    Optional<Keycap> findByProductId(Long productId);
 }
