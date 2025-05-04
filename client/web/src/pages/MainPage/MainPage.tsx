@@ -1,38 +1,16 @@
 import { useState } from 'react'
 import Tabs from '@/components/ui/Tabs'
 import ItemCard from '@/components/shop/ItemCard'
-
-// 목업 데이터
-const mockItems = [
-    {
-        name: '내 사랑 스위치',
-        price: 480,
-        imageUrl: '/assets/images/sample-switch.png',
-        liked: true,
-    },
-    {
-        name: '내 사랑 스위치',
-        price: 480,
-        imageUrl: '/assets/images/sample-switch.png',
-        liked: false,
-    },
-    {
-        name: '내 사랑 스위치',
-        price: 480,
-        imageUrl: '/assets/images/sample-switch.png',
-        liked: false,
-    },
-    {
-        name: '내 사랑 스위치',
-        price: 480,
-        imageUrl: '/assets/images/sample-switch.png',
-        liked: false,
-    },
-]
+import { getPopularItems } from '@/mocks/mockPopularItems'
+import { getNewItems } from '@/mocks/mockNewItems'
 
 const MainPage = () => {
     const [activePopularTab, setActivePopularTab] = useState(1)
     const [activeNewTab, setActiveNewTab] = useState(1)
+
+    // 목업 데이터
+    const popularItems = getPopularItems()
+    const newItems = getNewItems()
 
     return (
         <div className="flex flex-col items-center w-full">
@@ -59,7 +37,7 @@ const MainPage = () => {
                     indicatorWidth={100}
                 />
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
-                    {mockItems.map((item, i) => (
+                    {popularItems.map((item, i) => (
                         <ItemCard key={i} {...item} />
                     ))}
                 </div>
@@ -83,7 +61,7 @@ const MainPage = () => {
                     indicatorWidth={100}
                 />
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mt-6">
-                    {mockItems.map((item, i) => (
+                    {newItems.map((item, i) => (
                         <ItemCard key={i} {...item} />
                     ))}
                 </div>
