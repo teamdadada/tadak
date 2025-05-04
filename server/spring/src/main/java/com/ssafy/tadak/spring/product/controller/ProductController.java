@@ -3,12 +3,17 @@ package com.ssafy.tadak.spring.product.controller;
 import com.ssafy.tadak.spring.product.dto.response.filter.ProductFilterResponse;
 import com.ssafy.tadak.spring.product.service.ProductService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 
 import com.ssafy.tadak.spring.product.dto.response.detail.ProductDetailResponse;
 import com.ssafy.tadak.spring.product.util.enums.ProductType;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor

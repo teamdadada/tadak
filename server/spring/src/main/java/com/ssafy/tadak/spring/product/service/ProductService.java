@@ -1,20 +1,18 @@
 package com.ssafy.tadak.spring.product.service;
 
-import com.ssafy.tadak.spring.product.dto.response.detail.ProductDetailResponse;
-import com.ssafy.tadak.spring.product.dto.response.filter.ProductFilterResponse;
-import com.ssafy.tadak.spring.product.util.ProductUtil;
-import org.springframework.stereotype.Service;
-
 import com.ssafy.tadak.spring.product.domain.entity.Product;
 import com.ssafy.tadak.spring.product.domain.repository.ProductRepository;
 import com.ssafy.tadak.spring.product.dto.request.ProductDetailRequest;
+import com.ssafy.tadak.spring.product.dto.response.detail.ProductDetailResponse;
+import com.ssafy.tadak.spring.product.dto.response.filter.ProductFilterResponse;
 import com.ssafy.tadak.spring.product.exception.exception.ProductNotFoundException;
+import com.ssafy.tadak.spring.product.util.ProductUtil;
 import com.ssafy.tadak.spring.product.util.enums.ProductType;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
