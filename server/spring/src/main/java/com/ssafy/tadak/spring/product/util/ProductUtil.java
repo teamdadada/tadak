@@ -12,6 +12,7 @@ import com.ssafy.tadak.spring.product.dto.response.detail.KeycapDetailResponse;
 import com.ssafy.tadak.spring.product.dto.response.detail.ProductDetailResponse;
 import com.ssafy.tadak.spring.product.dto.response.detail.SwitchDetailResponse;
 import com.ssafy.tadak.spring.product.dto.response.filter.ProductFilterResponse;
+import com.ssafy.tadak.spring.product.dto.response.list.ProductSimpleDto;
 import com.ssafy.tadak.spring.product.exception.exception.ProductDetailNotFoundException;
 import com.ssafy.tadak.spring.product.util.enums.ProductType;
 import lombok.RequiredArgsConstructor;
@@ -57,6 +58,22 @@ public class ProductUtil {
             case BAREBONE -> getBareboneFilter(products);
             case SWITCH -> getSwitchFilter(products);
             case KEYCAP -> getKeycapFilter(products);
+        };
+    }
+
+    public ProductSimpleDto getSimpleSummary(Product product) {
+        return switch (product.getProductType()) {
+            case BAREBONE -> bareboneRepository.findByProductId(product.getProductId())
+                    .map(b -> ProductSimpleDto.from(product, b.getMinPrice(), b.getThumbnail()))
+                    .orElseThrow(() -> new ProductDetailNotFoundException(product.getProductId(), product.getProductType()));
+
+            case SWITCH -> switchRepository.findByProductId(product.getProductId())
+                    .map(s -> ProductSimpleDto.from(product, s.getMinPrice(), s.getThumbnail()))
+                    .orElseThrow(() -> new ProductDetailNotFoundException(product.getProductId(), product.getProductType()));
+
+            case KEYCAP -> keycapRepository.findByProductId(product.getProductId())
+                    .map(k -> ProductSimpleDto.from(product, k.getMinPrice(), k.getThumbnail()))
+                    .orElseThrow(() -> new ProductDetailNotFoundException(product.getProductId(), product.getProductType()));
         };
     }
 
