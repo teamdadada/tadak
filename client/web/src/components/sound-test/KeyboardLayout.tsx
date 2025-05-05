@@ -3,10 +3,9 @@ import { keyboardLayout } from './keyboardData'
 
 interface KeyboardLayoutProps {
   activeKeys: string[]
-  onKeyClick?: (keyCode: string) => void
 }
 
-const KeyboardLayout = ({ activeKeys, onKeyClick }: KeyboardLayoutProps) => {
+const KeyboardLayout = ({ activeKeys }: KeyboardLayoutProps) => {
   return (
     <div className="keyboard-container space-y-2 p-4">
       {keyboardLayout.map((row, rowIndex) => (
@@ -19,7 +18,6 @@ const KeyboardLayout = ({ activeKeys, onKeyClick }: KeyboardLayoutProps) => {
               width={key.width}
               isFlexible={key.isFlexible}
               isActive={activeKeys.includes(key.code)}
-              onClick={() => onKeyClick?.(key.code)}
             />
           ))}
         </div>

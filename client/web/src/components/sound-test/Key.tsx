@@ -20,7 +20,7 @@ const Key = ({
   return (
     <button
       className={`
-        h-14 flex pt-1 justify-center font-medium rounded
+        h-14 flex pt-1 justify-center text-sm font-medium rounded
         ${
           isActive
             ? 'bg-tadak-primary text-tadak-white'
