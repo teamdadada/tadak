@@ -7,7 +7,7 @@ interface KeyboardLayoutProps {
 
 const KeyboardLayout = ({ activeKeys }: KeyboardLayoutProps) => {
   return (
-    <div className="keyboard-container space-y-2 p-4">
+    <div className="keyboard-container space-y-2">
       {keyboardLayout.map((row, rowIndex) => (
         <div key={`row-${rowIndex}`} className="flex gap-2 justify-center">
           {row.map((key) => (
