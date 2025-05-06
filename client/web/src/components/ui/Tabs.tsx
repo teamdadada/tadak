@@ -11,6 +11,7 @@ interface TabsProps {
   indicatorWidth?: number | string; /** 인디케이터 너비 . 없으면 tabWidth 혹은 컨테이너 폭/items.length */
   indicatorClassName?: string; /** 인디케이터 배경색 Tailwind 클래스 (추가로 덮어쓰기) */
   className?: string; /** 외부 추가 Tailwind 클래스 */
+  tabClassName?: string; 
 }
 
 const Tabs = ({
@@ -23,6 +24,7 @@ const Tabs = ({
   indicatorWidth,
   indicatorClassName,
   className,
+  tabClassName
 }: TabsProps) => {
   const handleClick = (i: number) => () => onChange(i);
 
@@ -55,7 +57,8 @@ const Tabs = ({
           onClick={handleClick(i)}
           className={cn(
             "py-2 text-sm font-medium focus:outline-none",
-            i === selectedIndex ? "text-tadak-primary" : "text-tadak-dark-gray"
+            i === selectedIndex ? "text-tadak-primary" : "text-tadak-dark-gray",
+            tabClassName
           )}
           style={tabStyle}
         >
