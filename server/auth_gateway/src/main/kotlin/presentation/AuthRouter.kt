@@ -113,14 +113,22 @@ fun Route.authRoutes() {
 
         post("/kakao") {
             /* ────── 0. 설정 값 ────── */
+            val code = call.request.headers["X-Author-Code"]
+                ?: throw UnauthorizedException(AuthErrorCode.NO_AUTHOR_CODE.toErrorCode())
+            val env = when (val rawEnv = call.request.headers["X-Environment"]?.lowercase()) {
+                "local", "dev", "deploy" -> rawEnv
+                else                     -> "deploy"
+            }
+
             val cfg          = call.application.environment.config
             val tokenUri     = cfg.property("oauth.kakao.token-uri").getString()
             val userUri      = cfg.property("oauth.kakao.user-uri").getString()
             val clientId     = cfg.property("oauth.kakao.client-id").getString()
-            val redirectUri  = cfg.property("oauth.kakao.redirect-uri").getString()
+            val redirectUri = cfg
+                .property("oauth.kakao.${env}-redirect-uri")
+                .getString()
 
-            val code = call.request.headers["X-Author-Code"]
-                ?: throw UnauthorizedException(AuthErrorCode.NO_AUTHOR_CODE.toErrorCode())
+
 
             /* ────── 1. access_token 요청 ────── */
             val tokenResponse = HttpClientProvider.client.submitForm(
