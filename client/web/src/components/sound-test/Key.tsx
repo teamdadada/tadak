@@ -15,12 +15,14 @@ const Key = ({
   isActive = false,
   onClick,
 }: KeyProps) => {
-  const styleObj = isFlexible ? { flexGrow: 1 } : { width: `${width * 4}rem` }
+  const styleObj = isFlexible
+    ? { flexGrow: 1, minWidth: `${width ? width * 4 : 4}rem` }
+    : { width: `${width * 4}rem` }
 
   return (
     <button
       className={`
-        h-14 flex pt-1 justify-center text-sm font-medium rounded
+        h-14 flex pt-1 justify-center lg:text-sm font-medium rounded text-xs
         ${
           isActive
             ? 'bg-tadak-primary text-tadak-white'
