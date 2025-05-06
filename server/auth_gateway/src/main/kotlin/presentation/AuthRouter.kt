@@ -7,6 +7,7 @@ import com.tadak.domain.table.Users
 import com.tadak.dto.UserMetaDto
 import com.tadak.dto.request.LoginRequest
 import com.tadak.dto.response.KakaoTokenResponse
+import com.tadak.dto.response.KakaoUserResponse
 import com.tadak.exception.error_code.AuthErrorCode
 import com.tadak.exception.error_code.UserErrorCode
 import com.tadak.exception.status.BadRequestException
@@ -129,7 +130,6 @@ fun Route.authRoutes() {
                 .getString()
 
 
-
             /* ────── 1. access_token 요청 ────── */
             val tokenResponse = HttpClientProvider.client.submitForm(
                 url = tokenUri,
@@ -216,19 +216,4 @@ fun Route.authRoutes() {
 
 }
 
-@Serializable
-data class KakaoUserResponse(
-    val id: Long,
-    val kakao_account: KakaoAccount
-) {
-    @Serializable
-    data class KakaoAccount(
-        val profile: Profile
-    ) {
-        @Serializable
-        data class Profile(
-            val nickname: String,
-            val profile_image_url: String
-        )
-    }
-}
+
