@@ -15,6 +15,7 @@ from langchain.chains import (
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 import src.chatbot.util.gemini_util as gemini
+# from redis import Redis
 
 load_dotenv()
 
@@ -92,8 +93,7 @@ async def upload_files(files: List[UploadFile], file_detail: str):
             })
     return responses
 
-# from redis import Redis
-#
+
 # r = Redis(host="localhost", port=6379, db=0)
 #
 # def trim_chat_history(user_id, max_length=50): # 남길 대화 수
