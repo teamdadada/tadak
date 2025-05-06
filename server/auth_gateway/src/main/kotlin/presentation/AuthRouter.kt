@@ -192,7 +192,7 @@ fun Route.authRoutes() {
                     name     = "refresh_token",
                     value    = refreshToken,
                     httpOnly = true,
-                    secure   = !call.request.origin.scheme.equals("http", true),
+                    secure   = true,
                     path     = "/",
                     maxAge   = 60 * 60 * 24 * 31,
                     extensions = mapOf("SameSite" to "None")
