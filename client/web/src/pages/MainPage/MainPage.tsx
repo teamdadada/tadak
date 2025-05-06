@@ -76,17 +76,16 @@ const MainPage = () => {
             <div
               onClick={() => slide.route && navigate(slide.route)}
               style={{ backgroundColor: slide.bgColor }}
-              className="flex justify-between items-center h-full cursor-pointer px-40"
+              className="flex flex-col min-[1060px]:flex-row justify-between items-center h-full cursor-pointer px-2 min-[1060px]:px-20 min-[1200px]:px-40"
             >
               <div className="flex-1">
-                <h2 className="text-2xl font-bold text-tadak-black mb-3">
+                <h2 className="text-lg min-w-90 min-[1060px]:text-xl min-[1200px]:text-2xl font-bold text-tadak-black mb-3 mt-12 min-[1060px]:mt-0">
                   {slide.text}
                 </h2>
-                <p className="text-gray-500 text-base mb-40">{slide.subText}</p>
+                <p className="text-gray-500 text-sm min-[1060px]:sm min-[1200px]:text-base mb-1 min-[1060px]:mb-40">{slide.subText}</p>
               </div>
               <div className="flex-1 flex justify-end items-center">
-                {/* 이미지 넣을 경우 여기에 삽입 */}
-                <div className="w-96 h-52 bg-tadak-light-gray rounded-md flex items-center justify-center text-tadak-gray mb-6">
+                <div className="min-w-96 min-h-52 rounded-md flex items-center justify-center text-tadak-gray mb-6">
                   이미지 자리
                 </div>
               </div>
@@ -98,7 +97,7 @@ const MainPage = () => {
       {/* Swiper 커스텀 스타일 */}
       <style>{`
         .swiper-pagination {
-          margin-bottom: 16px; /* ✅ 아래쪽 여백 */
+          margin-bottom: 16px;
         }
         .swiper-pagination-bullet {
           background-color: #e5e7eb;
@@ -144,7 +143,7 @@ const MainPage = () => {
           tabWidth={100}
           indicatorWidth={100}
         />
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+        <div className="grid grid-cols-1 min-[600px]:grid-cols-2 min-[800px]:grid-cols-3 min-[1200px]:grid-cols-4 gap-4 mt-6">
           {popularItems.map((item, i) => (
             <ItemCard key={i} {...item} />
           ))}
@@ -172,7 +171,7 @@ const MainPage = () => {
           tabWidth={100}
           indicatorWidth={100}
         />
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mt-6">
+        <div className="grid grid-cols-1 min-[600px]:grid-cols-2 min-[800px]:grid-cols-3 min-[1200px]:grid-cols-4 gap-2 mt-6">
           {newItems.map((item, i) => (
             <ItemCard key={i} {...item} />
           ))}
