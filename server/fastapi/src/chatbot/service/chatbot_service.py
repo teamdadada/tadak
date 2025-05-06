@@ -6,6 +6,14 @@ from src.common.config.qdrant_config import qdrantClient, CHATBOT_COLLECTION, em
 import src.chatbot.util.embedding_util as embedding_util
 from dotenv import load_dotenv
 from langchain_community.vectorstores import Qdrant
+from langchain_community.chat_message_histories import RedisChatMessageHistory
+from langchain.memory import ConversationBufferWindowMemory
+from langchain.chains import (
+    create_history_aware_retriever,
+    create_retrieval_chain,
+)
+from langchain.chains.combine_documents import create_stuff_documents_chain
+from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 import src.chatbot.util.gemini_util as gemini
 
 load_dotenv()
@@ -16,21 +24,49 @@ qdrant = Qdrant(
         embeddings=embeddings,
     )
 
-def get_response(query: str):
-    # Step 1: 벡터DB에서 관련 문서 검색
-    relevant_docs = qdrant.similarity_search(query, k=3)
-    context = "\n".join([doc.page_content for doc in relevant_docs])
-    print(context)
+system_prompt = ("")
+prompt = ChatPromptTemplate.from_messages(
+    [
+        ("system", system_prompt),
+        MessagesPlaceholder("chat_history"),
+        ("human", "{input}\n\n{context}"),
+    ]
+)
 
-    # Step 2: LLM에 context와 query 전달
-    prompt = f"""
-            다음 정보를 참고하여 질문에 답변해줘:
-            \n
-            \n{context}
-            \n
-            \n질문: {query}
-            """
-    return gemini.generate_response(prompt)
+def get_response(user_id: int, query: str):
+    memory = get_memory(str(user_id))
+    combine_docs_chain = create_stuff_documents_chain(
+        gemini.model,
+        prompt
+    )
+    retriever= create_history_aware_retriever(
+        llm=gemini.model,
+        prompt=prompt,
+        retriever=qdrant.as_retriever()
+    )
+    chain = create_retrieval_chain(
+        retriever=retriever,
+        combine_docs_chain=combine_docs_chain
+    )
+
+    result = chain.invoke({
+        "chat_history": memory.chat_memory.messages,
+        "input": query
+    })
+    return result["answer"] if "answer" in result else result
+
+
+def get_memory(user_id: str, window_size=30):
+    chat_memory= RedisChatMessageHistory(
+        session_id=user_id,
+        url="redis://localhost:6379"
+    )
+    return ConversationBufferWindowMemory(
+        memory_key="chat_history",
+        chat_memory=chat_memory,
+        k=window_size,
+        return_message=True
+    )
 
 async def upload_files(files: List[UploadFile], file_detail: str):
     responses = []
@@ -56,6 +92,13 @@ async def upload_files(files: List[UploadFile], file_detail: str):
             })
     return responses
 
+# from redis import Redis
+#
+# r = Redis(host="localhost", port=6379, db=0)
+#
+# def trim_chat_history(user_id, max_length=50): # 남길 대화 수
+#     key = f"session:{user_id}"  # RedisChatMessageHistory 내부 키 형식에 맞춰야 함
+#     r.ltrim(key, 0, max_length * 2 - 1)
 async def is_duplicated_file(file_name: str) -> bool:
     result, _ = qdrantClient.scroll(
         collection_name=CHATBOT_COLLECTION,
