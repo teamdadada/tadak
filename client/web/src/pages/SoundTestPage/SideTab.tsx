@@ -1,6 +1,7 @@
 import Tabs from '@/components/ui/Tabs'
 import { useState } from 'react'
 import { Play } from 'lucide-react'
+import { useSoundStore } from '@/store/soundStore'
 
 enum SwitchType {
   Clicky = '일반축',
@@ -36,6 +37,10 @@ const SideTab = () => {
 
   const keyList = switchKeyMap[selectedSwitchType]
 
+  const setSelectedSoundKey = useSoundStore(
+    (state) => state.setSelectedSoundKey,
+  )
+
   return (
     <div className="p-4">
       <Tabs
@@ -55,7 +60,10 @@ const SideTab = () => {
         {keyList.map((key) => (
           <li
             key={key}
-            onClick={() => setSelectedKey(key)}
+            onClick={() => {
+              setSelectedKey(key)
+              setSelectedSoundKey(key)
+            }}
             className="flex items-center justify-between p-4 cursor-pointer hover:bg-tadak-light-gray text-tadak-black text-[15px]"
           >
             <span className={key === selectedKey ? 'font-semibold' : ''}>

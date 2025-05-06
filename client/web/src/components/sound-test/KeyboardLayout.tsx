@@ -1,4 +1,4 @@
-import Key from './key'
+import Key from './Key'
 import { keyboardLayout } from './keyboardData'
 
 interface KeyboardLayoutProps {

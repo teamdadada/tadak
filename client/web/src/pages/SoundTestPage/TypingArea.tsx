@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from 'react'
-import KeyboardLayout from '@/components/sound-test/keyboardLayout'
 import { typingSentencesGroup } from '@/mocks/typingSentecnes'
+import KeyboardLayout from '@/components/sound-test/KeyboardLayout'
+import { useSoundStore } from '@/store/soundStore'
 
 const TypingArea = () => {
   const [activeKeys, setActiveKeys] = useState<string[]>([])
@@ -8,6 +9,41 @@ const TypingArea = () => {
   const [currentSentenceIndex, setCurrentSentenceIndex] = useState(0)
   const [selectedSentences, setSelectedSentences] = useState<string[]>([])
   const inputRef = useRef<HTMLInputElement>(null)
+
+  const selectedSoundKey = useSoundStore((state) => state.selectedSoundKey)
+
+  const switchSoundMap: Record<string, string> = {
+    'G PRO 2.0 적축': '/sounds/test.mp3',
+  }
+
+  // 자동 포커스
+  useEffect(() => {
+    if (inputRef.current) inputRef.current.focus()
+  }, [])
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const isFocused = document.activeElement === inputRef.current
+      if (!isFocused && inputRef.current) {
+        inputRef.current.focus()
+      }
+    }, 500)
+
+    return () => clearInterval(interval)
+  }, [])
+
+  const playSound = () => {
+    if (!selectedSoundKey) {
+      return
+    }
+
+    const src = switchSoundMap[selectedSoundKey]
+    if (!src) {
+      return
+    }
+    const audio = new Audio(src)
+    audio.play()
+  }
 
   // 현재 문장
   const currentSentence = selectedSentences[currentSentenceIndex] ?? ''
@@ -51,6 +87,8 @@ const TypingArea = () => {
   }
 
   const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    playSound()
+
     if (e.key === 'Enter') {
       e.preventDefault()
       if (currentSentenceIndex < selectedSentences.length - 1) {

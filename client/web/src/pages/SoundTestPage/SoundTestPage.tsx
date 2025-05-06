@@ -10,7 +10,7 @@ const SoundTestPage = () => {
         description="실제로 키보드를 눌러보며, 축마다 다른 소리를 직접 타이핑으로 체험해보세요!"
       />
 
-      <div className="flex flex-col xl:flex-row gap-6 mt-8">
+      <div className="flex flex-col 2xl:flex-row gap-6 mt-8">
         <div className="w-full">
           <SideTab />
         </div>
