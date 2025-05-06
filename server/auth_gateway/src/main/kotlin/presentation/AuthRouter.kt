@@ -28,8 +28,8 @@ import org.jetbrains.exposed.sql.*
 import io.netty.handler.codec.http.cookie.CookieHeaderNames
 import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.dao.id.EntityID
-import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.*
 import kotlin.reflect.typeOf
@@ -162,12 +162,13 @@ fun Route.authRoutes() {
 
             /* ────── 3. 회원 조회/생성 ────── */
             val userMetaDto = transaction {
-                val userUuidColumn = OAuthUsers.userUuid
                 val mappingRow = OAuthUsers
-                    .selectAll().singleOrNull {
-                        (it[OAuthUsers.provider] == "KAKAO") and
-                                (it[OAuthUsers.providerUserId] == kakaoId)
+                    .select(OAuthUsers.provider, OAuthUsers.providerUserId, OAuthUsers.userUuid)
+                    .where {
+                        (OAuthUsers.provider eq "KAKAO") and
+                                (OAuthUsers.providerUserId eq kakaoId)
                     }
+                    .singleOrNull()
 
                 val userEntity = if (mappingRow == null) {
                     val userPk = Users.insertAndGetId {
