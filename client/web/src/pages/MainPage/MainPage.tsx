@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Autoplay, Pagination, Navigation } from 'swiper/modules'
@@ -12,7 +12,7 @@ import 'swiper/css/navigation'
 
 import Tabs from '@/components/ui/Tabs'
 import ItemCard from '@/components/shop/ItemCard'
-import { getPopularItems } from '@/mocks/mockPopularItems'
+import { getPopularItems, MockItem } from '@/mocks/mockPopularItems'
 import { getNewItems } from '@/mocks/mockNewItems'
 
 const bannerSlides = [
@@ -47,11 +47,25 @@ const bannerSlides = [
 const MainPage = () => {
   const [activePopularTab, setActivePopularTab] = useState(1)
   const [activeNewTab, setActiveNewTab] = useState(1)
+  const [popularItems, setPopularItems] = useState<MockItem[]>([])
+  const [newItems, setNewItems] = useState<MockItem[]>([])
   const navigate = useNavigate()
 
+  // 탭 인덱스에 따른 카테고리 필터
+  const tabToCategory = ['베어본', '스위치', '키캡']
+
   // 목업 데이터
-  const popularItems = getPopularItems()
-  const newItems = getNewItems()
+  useEffect(() => {
+    const category = tabToCategory[activePopularTab]
+    const data = getPopularItems(category, { page: 1, size: 4 })
+    setPopularItems(data)
+  }, [activePopularTab])
+
+  useEffect(() => {
+    const category = tabToCategory[activeNewTab]
+    const data = getNewItems(category, { page: 1, size: 4 })
+    setNewItems(data)
+  }, [activeNewTab])
 
   return (
     <div className="flex flex-col items-center w-full">
@@ -82,7 +96,9 @@ const MainPage = () => {
                 <h2 className="text-lg min-w-90 min-[1060px]:text-xl min-[1200px]:text-2xl font-bold text-tadak-black mb-3 mt-12 min-[1060px]:mt-0">
                   {slide.text}
                 </h2>
-                <p className="text-gray-500 text-sm min-[1060px]:sm min-[1200px]:text-base mb-1 min-[1060px]:mb-40">{slide.subText}</p>
+                <p className="text-gray-500 text-sm min-[1060px]:sm min-[1200px]:text-base mb-1 min-[1060px]:mb-40">
+                  {slide.subText}
+                </p>
               </div>
               <div className="flex-1 flex justify-end items-center">
                 <div className="min-w-96 min-h-52 rounded-md flex items-center justify-center text-tadak-gray mb-6">
