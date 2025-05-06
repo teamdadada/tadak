@@ -1,26 +1,32 @@
 package com.ssafy.tadak.spring.product.service;
 
-import org.springframework.stereotype.Service;
-
 import com.ssafy.tadak.spring.product.domain.entity.Product;
-import com.ssafy.tadak.spring.product.domain.repository.BareboneRepository;
-import com.ssafy.tadak.spring.product.domain.repository.KeycapRepository;
 import com.ssafy.tadak.spring.product.domain.repository.ProductRepository;
-import com.ssafy.tadak.spring.product.domain.repository.SwitchRepository;
+import com.ssafy.tadak.spring.product.domain.repository.ProductRepositoryCustom;
+import com.ssafy.tadak.spring.product.dto.response.list.ProductSimpleDto;
 import com.ssafy.tadak.spring.product.dto.request.ProductDetailRequest;
-import com.ssafy.tadak.spring.product.dto.response.BareboneDetailResponse;
-import com.ssafy.tadak.spring.product.dto.response.KeycapDetailResponse;
-import com.ssafy.tadak.spring.product.dto.response.ProductDetailResponse;
-import com.ssafy.tadak.spring.product.dto.response.SwitchDetailResponse;
-import com.ssafy.tadak.spring.product.exception.exception.ProductDetailNotFoundException;
+import com.ssafy.tadak.spring.product.dto.request.list.BareboneListRequest;
+import com.ssafy.tadak.spring.product.dto.request.list.KeycapListRequest;
+import com.ssafy.tadak.spring.product.dto.request.list.ProductListRequest;
+import com.ssafy.tadak.spring.product.dto.request.list.SwitchListRequest;
+import com.ssafy.tadak.spring.product.dto.response.detail.ProductDetailResponse;
+import com.ssafy.tadak.spring.product.dto.response.filter.ProductFilterResponse;
+import com.ssafy.tadak.spring.product.dto.response.list.ProductListResponse;
 import com.ssafy.tadak.spring.product.exception.exception.ProductNotFoundException;
+import com.ssafy.tadak.spring.product.util.FieldNameMapper;
+import com.ssafy.tadak.spring.product.util.ProductUtil;
 import com.ssafy.tadak.spring.product.util.enums.ProductType;
-
+import com.ssafy.tadak.spring.product.util.enums.SortType;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestParam;
 
-import static com.ssafy.tadak.spring.product.util.enums.ProductType.*;
+import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -28,17 +34,16 @@ import static com.ssafy.tadak.spring.product.util.enums.ProductType.*;
 public class ProductService {
 
     private final ProductRepository productRepository;
-    private final BareboneRepository bareboneRepo;
-    private final SwitchRepository switchRepo;
-    private final KeycapRepository keycapRepo;
+    private final ProductRepositoryCustom productRepositoryCustom;
+    private final ProductUtil productUtil;
 
     /**
-     * 제품 타입과 ID를 기준으로 제품 상세 정보를 조회합니다.
-     * - MySQL에서 제품 존재 여부를 확인하고 조회수를 증가시킵니다.
-     * - MongoDB에서 제품 타입별로 상세 정보를 조회하여 응답합니다.
+     * 제품 상세정보를 조회합니다.
+     * @param productType 제품 타입
+     * @param productId 제품 번호
+     * @return 제품 상세 정보
      */
     public ProductDetailResponse getProductDetail(ProductType productType, Long productId) {
-
         ProductDetailRequest request = new ProductDetailRequest(productType, productId);
         Product product = productRepository.findByProductIdAndProductType(
                 request.productId(), request.productType()
@@ -46,29 +51,71 @@ public class ProductService {
 
         product.increaseHits();
 
-        return getDetailByType(product);
+        // 제품 타입에 따라 MongoDB에서 해당 상세 정보를 조회
+        return productUtil.getDetailByType(product);
     }
 
     /**
-     * 제품 타입에 따라 MongoDB에서 해당 상세 정보를 조회합니다.
-     * - BAREBONE / SWITCH / KEYCAP 타입별로 분기
-     * - 상세 정보가 없을 경우 예외 발생
+     * 현재 가지고 있는 제품의 타입별 필터 리스트를 가져옵니다.
+     * @param productType : 제품 타입
+     * @return 제품의 타입별 필터 리스트
      */
-    private ProductDetailResponse getDetailByType(Product product) {
-        Long productId = product.getProductId();
-        ProductType type = product.getProductType();
-
-        return switch (type) {
-            case BAREBONE -> bareboneRepo.findByProductId(productId)
-                    .map(barebone -> BareboneDetailResponse.from(product, barebone))
-                    .orElseThrow(() -> new ProductDetailNotFoundException(productId, type));
-            case SWITCH -> switchRepo.findByProductId(productId)
-                    .map(switchProduct -> SwitchDetailResponse.from(product, switchProduct))
-                    .orElseThrow(() -> new ProductDetailNotFoundException(productId, type));
-            case KEYCAP -> keycapRepo.findByProductId(productId)
-                    .map(keycap -> KeycapDetailResponse.from(product, keycap))
-                    .orElseThrow(() -> new ProductDetailNotFoundException(productId, type));
-        };
+    @Transactional(readOnly = true)
+    public ProductFilterResponse getProductFilter(ProductType productType) {
+        List<Product> products = productRepository.findAllByProductType(productType);
+        return productUtil.getFilterByType(productType, products);
     }
 
+    @Transactional(readOnly = true)
+    public ProductListResponse getLatestList(ProductType type, int page, int size,
+                                             BareboneListRequest bareboneFilter,
+                                             SwitchListRequest switchFilter,
+                                             KeycapListRequest keycapFilter) {
+        return getProductList(type, page, size, bareboneFilter, switchFilter, keycapFilter, SortType.LATEST);
+    }
+
+    @Transactional(readOnly = true)
+    public ProductListResponse getPopularList(ProductType type, int page, int size,
+                                              BareboneListRequest bareboneFilter,
+                                              SwitchListRequest switchFilter,
+                                              KeycapListRequest keycapFilter) {
+        return getProductList(type, page, size, bareboneFilter, switchFilter, keycapFilter, SortType.POPULAR);
+    }
+
+    private ProductListResponse getProductList(ProductType type, int page, int size,
+                                              BareboneListRequest bareboneFilter,
+                                              SwitchListRequest switchFilter,
+                                              KeycapListRequest keycapFilter,
+                                              SortType sortType) {
+
+        ProductListRequest filterRequest = switch (type) {
+            case BAREBONE -> bareboneFilter;
+            case SWITCH -> switchFilter;
+            case KEYCAP -> keycapFilter;
+        };
+
+        Map<String, List<String>> filters = FieldNameMapper.convertKeysToSnakeCase(filterRequest.toMap());
+
+        Sort sort = switch (sortType) {
+            case LATEST -> Sort.by(Sort.Direction.DESC, "releaseYear", "releaseMonth");
+            case POPULAR -> Sort.by(Sort.Direction.DESC, "hits");
+        };
+
+        Pageable pageable = PageRequest.of(page - 1, size, sort);
+
+        Page<Product> pageResult = productRepositoryCustom.findFilteredProducts(
+                type,
+                filters,
+                filterRequest.minPriceMin(),
+                filterRequest.minPriceMax(),
+                pageable,
+                sortType
+        );
+
+        List<ProductSimpleDto> dtoList = pageResult.getContent().stream()
+                .map(productUtil::getSimpleSummary)
+                .toList();
+
+        return new ProductListResponse(dtoList);
+    }
 }

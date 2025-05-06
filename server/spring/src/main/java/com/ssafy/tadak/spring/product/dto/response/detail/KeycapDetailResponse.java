@@ -1,4 +1,4 @@
-package com.ssafy.tadak.spring.product.dto.response;
+package com.ssafy.tadak.spring.product.dto.response.detail;
 
 import com.ssafy.tadak.spring.product.domain.entity.Keycap;
 import com.ssafy.tadak.spring.product.domain.entity.Product;

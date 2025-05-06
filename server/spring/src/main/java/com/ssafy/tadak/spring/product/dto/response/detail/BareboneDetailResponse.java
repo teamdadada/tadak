@@ -1,4 +1,4 @@
-package com.ssafy.tadak.spring.product.dto.response;
+package com.ssafy.tadak.spring.product.dto.response.detail;
 
 import java.util.List;
 import java.util.Optional;
