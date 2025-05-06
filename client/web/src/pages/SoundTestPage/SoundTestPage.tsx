@@ -11,7 +11,7 @@ const SoundTestPage = () => {
       />
 
       <div className="flex flex-col xl:flex-row gap-6 mt-8">
-        <div className="w-full bg-tadak-gray">
+        <div className="w-full">
           <SideTab />
         </div>
 
