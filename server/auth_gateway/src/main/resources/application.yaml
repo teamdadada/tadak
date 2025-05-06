@@ -28,3 +28,10 @@ ktor:
     secretKey: "dadada!!"
     bucket: "image"
     baseUrl: "https://minio.tadak.kr"
+
+oauth:
+  kakao:
+    client-id: "1a3c84e2a5568d5e18f196334f194d36"
+    token-uri: "https://kauth.kakao.com/oauth/token"
+    user-uri: "https://kapi.kakao.com/v2/user/me"
+    redirect-uri: "https://dev.tadak.kr/auth/kakao/callback"
