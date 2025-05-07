@@ -1,23 +1,21 @@
 import { FilterByType, Product, ProductType } from '@/types/shop'
 import ItemCard from './ItemCard'
 import { useQuery } from '@tanstack/react-query'
-import { getLatestProducts } from '@/services/shopService'
+import { getLatestProducts, getPopularProducts } from '@/services/shopService'
 
 interface ItemGridProps {
   category: ProductType
   filters?: FilterByType<ProductType>
+  sortOrder: 'latest' | 'popular'
 }
 
-const ItemGrid = ({ category, filters }: ItemGridProps) => {
+const ItemGrid = ({ category, filters, sortOrder }: ItemGridProps) => {
+  const fetchFunction =
+    sortOrder === 'latest' ? getLatestProducts : getPopularProducts
+
   const { data = [], isLoading } = useQuery<Product[]>({
-    queryKey: ['products', category, filters],
-    queryFn: () =>
-      getLatestProducts(
-        category as ProductType,
-        1,
-        10,
-        filters ?? ({} as FilterByType<ProductType>),
-      ),
+    queryKey: ['products', category, sortOrder, filters],
+    queryFn: () => fetchFunction(category, 1, 10, filters ?? {}),
   })
 
   if (isLoading) return <p>로딩 중...</p>

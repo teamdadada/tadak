@@ -1,44 +1,46 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import CategoryTabs from '@/components/shop/CategoryTabs'
-import BearboneFilter from '@/components/shop/BareboneFilter'
-import ItemGrid from '@/components/shop/ItemGrid'
-import SwitchFilter from '@/components/shop/SwitchFilter'
-import KeycapFilter from '@/components/shop/KeycapFilter'
+// import BearboneFilter from '@/components/shop/BareboneFilter'
+// import ItemGrid from '@/components/shop/ItemGrid'
+// import SwitchFilter from '@/components/shop/SwitchFilter'
+// import KeycapFilter from '@/components/shop/KeycapFilter'
 import AsideRecommendation from '@/components/shop/AsideRecommendation'
 import { FilterByType, ProductType } from '@/types/shop'
+import FilterPanel from '@/components/shop/FilterPanel'
 
 const ShopPage = () => {
   const categories = ['베어본', '스위치', '키캡']
   const [tabWidth, setTabWidth] = useState('120px')
+  const [sortOrder, setSortOrder] = useState<'latest' | 'popular'>('latest')
 
   const [selectedBareboneFilters, setSelectedBareboneFilters] = useState<
     FilterByType<'BAREBONE'>
   >({
-    manufacturer: [] as string[],
-    keyLayout: [] as string[],
-    features: [] as string[],
-    minPriceMin: undefined as number | undefined,
-    minPriceMax: undefined as number | undefined,
+    // manufacturer: [] as string[],
+    // keyLayout: [] as string[],
+    // features: [] as string[],
+    // minPriceMin: undefined as number | undefined,
+    // minPriceMax: undefined as number | undefined,
   })
 
   const [selectedSwitchFilters, setSelectedSwitchFilters] = useState<
     FilterByType<'SWITCH'>
   >({
-    switchType: [] as string[],
-    keyForce: [] as string[],
-    quantity: [] as string[],
-    minPriceMin: undefined as number | undefined,
-    minPriceMax: undefined as number | undefined,
+    // switchType: [] as string[],
+    // keyForce: [] as string[],
+    // quantity: [] as string[],
+    // minPriceMin: undefined as number | undefined,
+    // minPriceMax: undefined as number | undefined,
   })
 
   const [selectedKeycapFilters, setSelectedKeycapFilters] = useState<
     FilterByType<'KEYCAP'>
   >({
-    keycapMaterial: [] as string[],
-    engravingPosition: [] as string[],
-    keyCount: [] as string[],
-    minPriceMin: undefined as number | undefined,
-    minPriceMax: undefined as number | undefined,
+    // keycapMaterial: [] as string[],
+    // engravingPosition: [] as string[],
+    // keyCount: [] as string[],
+    // minPriceMin: undefined as number | undefined,
+    // minPriceMax: undefined as number | undefined,
   })
 
   useEffect(() => {
@@ -54,78 +56,69 @@ const ShopPage = () => {
     return () => window.removeEventListener('resize', updateIndicator)
   }, [])
 
-  const handleBareboneFilterChange = useCallback(
-    (next: FilterByType<'BAREBONE'>) => {
-      setSelectedBareboneFilters((prev) => {
-        // 🚀 JSON.stringify로 깊은 비교하여 무한 렌더링 방지
-        if (JSON.stringify(prev) === JSON.stringify(next)) {
-          return prev // ✅ 동일하면 상태 변경 안함
-        }
-        return next
-      })
-    },
-    [],
-  )
+  // const handleBareboneFilterChange = useCallback(
+  //   (next: FilterByType<'BAREBONE'>) => {
+  //     setSelectedBareboneFilters((prev) => {
+  //       // 🚀 JSON.stringify로 깊은 비교하여 무한 렌더링 방지
+  //       if (JSON.stringify(prev) === JSON.stringify(next)) {
+  //         return prev // ✅ 동일하면 상태 변경 안함
+  //       }
+  //       return next
+  //     })
+  //   },
+  //   [],
+  // )
 
-  const handleSwitchFilterChange = useCallback(
-    (next: FilterByType<'SWITCH'>) => {
-      setSelectedSwitchFilters((prev) => {
-        if (JSON.stringify(prev) === JSON.stringify(next)) {
-          return prev
-        }
-        return next
-      })
-    },
-    [],
-  )
+  // const handleSwitchFilterChange = useCallback(
+  //   (next: FilterByType<'SWITCH'>) => {
+  //     setSelectedSwitchFilters((prev) => {
+  //       if (JSON.stringify(prev) === JSON.stringify(next)) {
+  //         return prev
+  //       }
+  //       return next
+  //     })
+  //   },
+  //   [],
+  // )
 
-  const handleKeycapFilterChange = useCallback(
-    (next: FilterByType<'KEYCAP'>) => {
-      setSelectedKeycapFilters((prev) => {
-        if (JSON.stringify(prev) === JSON.stringify(next)) {
-          return prev
-        }
-        return next
-      })
-    },
-    [],
-  )
+  // const handleKeycapFilterChange = useCallback(
+  //   (next: FilterByType<'KEYCAP'>) => {
+  //     setSelectedKeycapFilters((prev) => {
+  //       if (JSON.stringify(prev) === JSON.stringify(next)) {
+  //         return prev
+  //       }
+  //       return next
+  //     })
+  //   },
+  //   [],
+  // )
 
-  const panels = useMemo(
-    () => [
-      <div key="BAREBONE" className="flex flex-col gap-6">
-        <BearboneFilter
-          selected={selectedBareboneFilters}
-          onChange={handleBareboneFilterChange}
-        />
-        <ItemGrid
-          category={ProductType.BAREBONE}
-          filters={selectedBareboneFilters}
-        />
-      </div>,
-      <div key="SWITCH" className="flex flex-col gap-6">
-        <SwitchFilter
-          selected={selectedSwitchFilters}
-          onChange={handleSwitchFilterChange}
-        />
-        <ItemGrid
-          category={ProductType.SWITCH}
-          filters={selectedSwitchFilters}
-        />
-      </div>,
-      <div key="KEYCAP" className="flex flex-col gap-6">
-        <KeycapFilter
-          selected={selectedKeycapFilters}
-          onChange={handleKeycapFilterChange}
-        />
-        <ItemGrid
-          category={ProductType.KEYCAP}
-          filters={selectedKeycapFilters}
-        />
-      </div>,
-    ],
-    [selectedBareboneFilters, selectedSwitchFilters, selectedKeycapFilters],
-  )
+  const panels = [
+    <FilterPanel
+      key="BAREBONE"
+      category={ProductType.BAREBONE}
+      sortOrder={sortOrder}
+      filters={selectedBareboneFilters}
+      onFilterChange={setSelectedBareboneFilters}
+      onSortChange={setSortOrder}
+    />,
+    <FilterPanel
+      key="SWITCH"
+      category={ProductType.SWITCH}
+      sortOrder={sortOrder}
+      filters={selectedSwitchFilters}
+      onFilterChange={setSelectedSwitchFilters}
+      onSortChange={setSortOrder}
+    />,
+    <FilterPanel
+      key="KEYCAP"
+      category={ProductType.KEYCAP}
+      sortOrder={sortOrder}
+      filters={selectedKeycapFilters}
+      onFilterChange={setSelectedKeycapFilters}
+      onSortChange={setSortOrder}
+    />,
+  ]
 
   return (
     <div className="w-full p-4 mx-auto max-w-7xl">

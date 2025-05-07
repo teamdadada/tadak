@@ -22,7 +22,7 @@ const ItemCard = ({
   name,
   price,
   imageUrl,
-  liked = true,
+  liked = false,
   size = 'md', // 기본은 중간 크기
 }: ItemCardProps) => {
   const navigate = useNavigate()
