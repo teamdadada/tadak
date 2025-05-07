@@ -10,16 +10,16 @@ const PriceFilter = ({ min, max, onChange }: PriceFilterProps) => {
   const [minInput, setMinInput] = useState<number | undefined>(min)
   const [maxInput, setMaxInput] = useState<number | undefined>(max)
 
+  const handleSearch = () => {
+    if (onChange) {
+      onChange(minInput, maxInput)
+    }
+  }
+
   useEffect(() => {
     setMinInput(min)
     setMaxInput(max)
   }, [min, max])
-
-  useEffect(() => {
-    if (onChange && (minInput !== min || maxInput !== max)) {
-      onChange(minInput, maxInput)
-    }
-  }, [minInput, maxInput, onChange])
 
   return (
     <div className="flex flex-col md:flex-row md:items-center md:gap-4">
@@ -44,6 +44,12 @@ const PriceFilter = ({ min, max, onChange }: PriceFilterProps) => {
             setMaxInput(e.target.value ? Number(e.target.value) : undefined)
           }
         />
+        <button
+          className="px-3 py-1 text-white rounded bg-tadak-primary hover:bg-tadak-primary/90"
+          onClick={handleSearch}
+        >
+          검색
+        </button>
       </div>
     </div>
   )
