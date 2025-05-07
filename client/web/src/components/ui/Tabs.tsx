@@ -2,17 +2,16 @@ import { cn } from '@/lib/utils'
 import { motion } from 'framer-motion'
 
 interface TabsProps {
-  items: string[] /** 탭 라벨 문자열 배열 */
-  selectedIndex: number /** 선택된 탭 인덱스 */
-  onChange: (index: number) => void /** 탭 클릭 시 호출될 콜백 */
-  width?: number | string /** 전체 탭 컨테이너 폭 */
-  tabWidth?: number | string /** 각 탭 버튼 폭 */
-  indicatorHeight?: number /** 인디케이터(밑줄) 높이 (px) */
-  indicatorWidth?:
-    | number
-    | string /** 인디케이터 너비 . 없으면 tabWidth 혹은 컨테이너 폭/items.length */
-  indicatorClassName?: string /** 인디케이터 Tailwind 클래스 (추가로 덮어쓰기) */
-  className?: string /** 외부 추가 Tailwind 클래스 */
+  items: string[]; /** 탭 라벨 문자열 배열 */
+  selectedIndex: number; /** 선택된 탭 인덱스 */
+  onChange: (index: number) => void; /** 탭 클릭 시 호출될 콜백 */
+  width?: number | string; /** 전체 탭 컨테이너 폭 */
+  tabWidth?: number | string; /** 각 탭 버튼 폭 */
+  indicatorHeight?: number; /** 인디케이터(밑줄) 높이 (px) */
+  indicatorWidth?: number | string; /** 인디케이터 너비 . 없으면 tabWidth 혹은 컨테이너 폭/items.length */
+  indicatorClassName?: string; /** 인디케이터 배경색 Tailwind 클래스 (추가로 덮어쓰기) */
+  className?: string; /** 외부 추가 Tailwind 클래스 */
+  tabClassName?: string; 
 }
 
 const Tabs = ({
@@ -25,6 +24,7 @@ const Tabs = ({
   indicatorWidth,
   indicatorClassName,
   className,
+  tabClassName
 }: TabsProps) => {
   const handleClick = (i: number) => () => onChange(i)
 
@@ -53,8 +53,9 @@ const Tabs = ({
           key={i}
           onClick={handleClick(i)}
           className={cn(
-            'py-2 text-sm font-medium focus:outline-none',
-            i === selectedIndex ? 'text-tadak-primary' : 'text-tadak-dark-gray',
+            "py-2 text-sm font-medium focus:outline-none",
+            i === selectedIndex ? "text-tadak-primary" : "text-tadak-dark-gray",
+            tabClassName
           )}
           style={tabStyle}
         >
