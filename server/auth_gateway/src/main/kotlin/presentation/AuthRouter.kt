@@ -8,6 +8,8 @@ import com.tadak.dto.UserMetaDto
 import com.tadak.dto.request.LoginRequest
 import com.tadak.dto.response.KakaoTokenResponse
 import com.tadak.dto.response.KakaoUserResponse
+import com.tadak.dto.response.NaverTokenResponse
+import com.tadak.dto.response.NaverUserResponse
 import com.tadak.exception.error_code.AuthErrorCode
 import com.tadak.exception.error_code.UserErrorCode
 import com.tadak.exception.status.BadRequestException
@@ -180,6 +182,99 @@ fun Route.authRoutes() {
                     OAuthUsers.insert {
                         it[provider]       = "KAKAO"
                         it[providerUserId] = kakaoId
+                        it[userUuid]       = userPk
+                    }
+
+                    User.findById(userPk)
+                } else {
+                    User.findById(mappingRow[OAuthUsers.userUuid])
+                } ?: throw NotFoundException(UserErrorCode.USER_NOT_FOUND.toErrorCode())
+
+                UserMetaDto.from(userEntity)
+            }
+
+            /* ────── 4. JWT 발급 & 응답 ────── */
+            val accessToken  = JwtUtil.generateToken(userMetaDto, "access")
+            val refreshToken = JwtUtil.generateToken(userMetaDto, "refresh")
+
+            call.response.headers.append("Authorization", "Bearer $accessToken")
+            call.response.cookies.append(
+                Cookie(
+                    name     = "refresh_token",
+                    value    = refreshToken,
+                    httpOnly = true,
+                    secure   = true,
+                    path     = "/",
+                    maxAge   = 60 * 60 * 24 * 31,
+                    extensions = mapOf("SameSite" to "None")
+                )
+            )
+
+            call.respond(
+                HttpStatusCode.OK,
+            )
+        }
+
+        post("/naver") {
+            /* ────── 0. 설정 값 ────── */
+            val code = call.request.headers["X-Author-Code"]
+                ?: throw UnauthorizedException(AuthErrorCode.NO_AUTHOR_CODE.toErrorCode())
+
+            val cfg          = call.application.environment.config
+            val tokenUri     = cfg.property("oauth.naver.token-uri").getString()
+            val userUri      = cfg.property("oauth.naver.user-uri").getString()
+            val clientId     = cfg.property("oauth.naver.client-id").getString()
+            val clientSecret     = cfg.property("oauth.naver.client-secret").getString()
+
+
+            /* ────── 1. access_token 요청 ────── */
+            val tokenResponse = HttpClientProvider.client.submitForm(
+                url = tokenUri,
+                formParameters = Parameters.build {
+                    append("grant_type", "authorization_code")
+                    append("client_id", clientId)
+                    append("client_secret", clientSecret)
+                    append("code", code)
+                }
+            )
+            if (!tokenResponse.status.isSuccess())
+                throw UnauthorizedException(AuthErrorCode.INVALID_OAUTH_TOKEN.toErrorCode())
+
+            val tokenInfo: NaverTokenResponse = tokenResponse.body()
+
+            /* ────── 2. 사용자 정보 요청 ────── */
+            val naverUser: NaverUserResponse = HttpClientProvider.client.get(userUri) {
+                headers {
+                    append(HttpHeaders.Authorization, "Bearer ${tokenInfo.access_token}")
+                    append(HttpHeaders.Accept, "application/json")
+                }
+            }.body()
+
+            val naverId       = naverUser.response.id
+            val nickname      = naverUser.response.name
+
+            println(naverUser)
+
+            /* ────── 3. 회원 조회/생성 ────── */
+            val userMetaDto = transaction {
+                val mappingRow = OAuthUsers
+                    .select(OAuthUsers.provider, OAuthUsers.providerUserId, OAuthUsers.userUuid)
+                    .where {
+                        (OAuthUsers.provider eq "NAVER") and
+                                (OAuthUsers.providerUserId eq naverId)
+                    }
+                    .singleOrNull()
+
+                val userEntity = if (mappingRow == null) {
+                    val userPk = Users.insertAndGetId {
+                        it[userId]       = "naver_${UUID.randomUUID().toString().take(8)}"
+                        it[userPassword] = PasswordUtil.hashPassword(UUID.randomUUID().toString())
+                        it[userName]     = nickname
+                    }.value
+
+                    OAuthUsers.insert {
+                        it[provider]       = "NAVER"
+                        it[providerUserId] = naverId
                         it[userUuid]       = userPk
                     }
 
