@@ -1,15 +1,9 @@
 import { cn } from '@/lib/utils'
 import { FaHeart, FaRegHeart } from 'react-icons/fa'
+import { useNavigate } from 'react-router-dom'
 
 interface ItemCardProps {
-  name: string
-  price: number
-  imageUrl: string
-  liked?: boolean
-  className?: string
-}
-
-interface ItemCardProps {
+  id: number
   name: string
   price: number
   imageUrl: string
@@ -24,14 +18,18 @@ const sizeClasses = {
 }
 
 const ItemCard = ({
+  id,
   name,
   price,
   imageUrl,
   liked = true,
   size = 'md', // 기본은 중간 크기
 }: ItemCardProps) => {
+  const navigate = useNavigate()
+
   return (
     <div
+      onClick={() => navigate(`/product/${id}`)}
       className={cn(
         'border rounded-lg p-4 flex flex-col justify-between items-center relative bg-white',
         sizeClasses[size],

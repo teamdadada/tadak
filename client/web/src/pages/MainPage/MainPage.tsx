@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Autoplay, Pagination, Navigation } from 'swiper/modules'
+import { useQuery } from '@tanstack/react-query'
 
 // @ts-ignore
 import 'swiper/css'
@@ -12,8 +13,17 @@ import 'swiper/css/navigation'
 
 import Tabs from '@/components/ui/Tabs'
 import ItemCard from '@/components/shop/ItemCard'
-import { getPopularItems, MockItem } from '@/mocks/mockPopularItems'
-import { getNewItems } from '@/mocks/mockNewItems'
+import { fetchPopularItems, fetchLatestItems } from '@/services/mainService'
+// import { getPopularItems, MockItem } from '@/mocks/mockPopularItems'
+// import { getNewItems } from '@/mocks/mockNewItems'
+
+interface ApiItem {
+  productId: number
+  name: string
+  minPrice: number
+  thumbnail: string
+  type: string
+}
 
 const bannerSlides = [
   {
@@ -44,28 +54,50 @@ const bannerSlides = [
   },
 ]
 
+const tabToCategory = ['BAREBONE', 'SWITCH', 'KEYCAP']
+
 const MainPage = () => {
   const [activePopularTab, setActivePopularTab] = useState(1)
   const [activeNewTab, setActiveNewTab] = useState(1)
-  const [popularItems, setPopularItems] = useState<MockItem[]>([])
-  const [newItems, setNewItems] = useState<MockItem[]>([])
+  // const [popularItems, setPopularItems] = useState<MockItem[]>([])
+  // const [newItems, setNewItems] = useState<MockItem[]>([])
   const navigate = useNavigate()
 
-  // 탭 인덱스에 따른 카테고리 필터
-  const tabToCategory = ['베어본', '스위치', '키캡']
+  const {
+    data: popularItems = [],
+    isLoading: isPopularLoading,
+    error: popularError,
+  } = useQuery<ApiItem[]>({
+    queryKey: ['popularItems', activePopularTab],
+    queryFn: () =>
+      fetchPopularItems(tabToCategory[activePopularTab], { page: 1, size: 4 }),
+  })
 
-  // 목업 데이터
-  useEffect(() => {
-    const category = tabToCategory[activePopularTab]
-    const data = getPopularItems(category, { page: 1, size: 4 })
-    setPopularItems(data)
-  }, [activePopularTab])
+  const {
+    data: newItems = [],
+    isLoading: isNewLoading,
+    error: newError,
+  } = useQuery<ApiItem[]>({
+    queryKey: ['newItems', activeNewTab],
+    queryFn: () =>
+      fetchLatestItems(tabToCategory[activeNewTab], { page: 1, size: 4 }),
+  })
 
-  useEffect(() => {
-    const category = tabToCategory[activeNewTab]
-    const data = getNewItems(category, { page: 1, size: 4 })
-    setNewItems(data)
-  }, [activeNewTab])
+  // // 탭 인덱스에 따른 카테고리 필터
+  // const tabToCategory = ['베어본', '스위치', '키캡']
+
+  // // 목업 데이터
+  // useEffect(() => {
+  //   const category = tabToCategory[activePopularTab]
+  //   const data = getPopularItems(category, { page: 1, size: 4 })
+  //   setPopularItems(data)
+  // }, [activePopularTab])
+
+  // useEffect(() => {
+  //   const category = tabToCategory[activeNewTab]
+  //   const data = getNewItems(category, { page: 1, size: 4 })
+  //   setNewItems(data)
+  // }, [activeNewTab])
 
   return (
     <div className="flex flex-col items-center w-full">
@@ -159,10 +191,29 @@ const MainPage = () => {
           tabWidth={100}
           indicatorWidth={100}
         />
-        <div className="grid grid-cols-1 min-[600px]:grid-cols-2 min-[800px]:grid-cols-3 min-[1200px]:grid-cols-4 gap-4 mt-6">
-          {popularItems.map((item, i) => (
-            <ItemCard key={i} {...item} />
-          ))}
+        <div className="relative min-h-[330px]">
+          <div className="grid grid-cols-1 min-[600px]:grid-cols-2 min-[800px]:grid-cols-3 min-[1200px]:grid-cols-4 gap-4 mt-6">
+            {isPopularLoading ? (
+              <div className="col-span-full text-center text-gray-500 mt-12">
+                로딩 중...
+              </div>
+            ) : popularError ? (
+              <div className="col-span-full text-center text-red-500 mt-12">
+                지금은 불러올 수 없습니다.(오류 발생)
+              </div>
+            ) : (
+              popularItems.map((item) => (
+                <ItemCard
+                  key={item.productId}
+                  id={item.productId}
+                  name={item.name}
+                  price={item.minPrice}
+                  imageUrl={item.thumbnail}
+                  size="md"
+                />
+              ))
+            )}
+          </div>
         </div>
       </section>
 
@@ -187,10 +238,29 @@ const MainPage = () => {
           tabWidth={100}
           indicatorWidth={100}
         />
-        <div className="grid grid-cols-1 min-[600px]:grid-cols-2 min-[800px]:grid-cols-3 min-[1200px]:grid-cols-4 gap-2 mt-6">
-          {newItems.map((item, i) => (
-            <ItemCard key={i} {...item} />
-          ))}
+        <div className="relative min-h-[330px]">
+          <div className="grid grid-cols-1 min-[600px]:grid-cols-2 min-[800px]:grid-cols-3 min-[1200px]:grid-cols-4 gap-2 mt-6">
+            {isNewLoading ? (
+              <div className="col-span-full text-center text-gray-500 mt-12">
+                로딩 중...
+              </div>
+            ) : newError ? (
+              <div className="col-span-full text-center text-red-500 mt-12">
+                지금은 불러올 수 없습니다.(오류 발생)
+              </div>
+            ) : (
+              newItems.map((item) => (
+                <ItemCard
+                  key={item.productId}
+                  id={item.productId}
+                  name={item.name}
+                  price={item.minPrice}
+                  imageUrl={item.thumbnail}
+                  size="md"
+                />
+              ))
+            )}
+          </div>
         </div>
       </section>
     </div>
