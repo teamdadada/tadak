@@ -18,8 +18,12 @@ export const AUTH_END_POINT = {
 }
 
 // mainService
-// 예시로 작성해 둔 것이라 필요에 따라 수정 가능
-export const MAIN_END_POINT = {}
+export const MAIN_END_POINT = {
+  POPULAR_ITEMS: (productType: string) =>
+    `/api/product/${productType}/popular`,
+  LATEST_ITEMS: (productType: string) =>
+    `/api/product/${productType}/latest`,
+}
 
 // shopService
 // 예시로 작성해 둔 것이라 필요에 따라 수정 가능

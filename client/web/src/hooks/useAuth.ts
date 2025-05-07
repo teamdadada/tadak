@@ -42,7 +42,7 @@ export const useRefreshToken = () => {
 
       if (status === 400 && code === 'B4000') {
         toast.error('로그인 정보가 만료되었습니다. 다시 로그인해 주세요.')
-      } else if (status === 401 && code === 'B4011') {
+      } else if (status === 401 && code === 'B4012') {
         toast.error('인증이 만료되었습니다. 다시 로그인해 주세요.')
       } else {
         toast.error('인증 과정에서 오류가 발생했습니다. 다시 로그인해 주세요.')

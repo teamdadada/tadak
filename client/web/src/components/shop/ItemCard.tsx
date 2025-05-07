@@ -1,8 +1,9 @@
 import { cn } from '@/lib/utils'
 import { FaHeart, FaRegHeart } from 'react-icons/fa'
-import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 interface ItemCardProps {
+  id: number
   name: string
   price: number
   imageUrl: string
@@ -18,16 +19,18 @@ const sizeClasses = {
 }
 
 const ItemCard = ({
+  id,
   name,
   price,
   imageUrl,
   liked = true,
   size = 'md', // 기본은 중간 크기
-  to,
 }: ItemCardProps) => {
+  const navigate = useNavigate()
+
   return (
-    <Link
-      to={to}
+    <div
+      onClick={() => navigate(`/product/${id}`)}
       className={cn(
         'border rounded-lg p-4 flex flex-col justify-between items-center relative bg-white',
         sizeClasses[size],
@@ -48,7 +51,7 @@ const ItemCard = ({
         <div className="font-semibold truncate">{name}</div>
         <div className="mt-1">{price.toLocaleString()}원</div>
       </div>
-    </Link>
+    </div>
   )
 }
 
