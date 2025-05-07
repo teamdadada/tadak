@@ -31,6 +31,7 @@ dependencies {
     implementation("io.ktor:ktor-client-core")
     implementation("io.ktor:ktor-client-cio") // 또는 apache 등 엔진
     implementation("io.ktor:ktor-client-content-negotiation")
+    implementation("io.ktor:ktor-serialization-gson") // 또는 jackson
 
     implementation("io.minio:minio:8.5.4")
 
