@@ -13,12 +13,20 @@ const ItemGrid = ({ category, filters, sortOrder }: ItemGridProps) => {
   const fetchFunction =
     sortOrder === 'latest' ? getLatestProducts : getPopularProducts
 
-  const { data = [], isLoading } = useQuery<Product[]>({
+  const {
+    data = [],
+    isLoading,
+    isError,
+  } = useQuery<Product[]>({
     queryKey: ['products', category, sortOrder, filters],
     queryFn: () => fetchFunction(category, 1, 10, filters ?? {}),
   })
 
   if (isLoading) return <p>로딩 중...</p>
+  if (isError)
+    return <p className="text-tadak-warning">오류가 발생했습니다. 😢</p>
+  if (data.length === 0)
+    return <p className="text-tadak-dark-gray">🔍 필터링된 결과가 없습니다.</p>
 
   return (
     <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-4">
