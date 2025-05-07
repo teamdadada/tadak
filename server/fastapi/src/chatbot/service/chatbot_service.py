@@ -1,3 +1,4 @@
+import os
 from typing import List
 from fastapi import UploadFile
 
@@ -15,9 +16,12 @@ from langchain.chains import (
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 import src.chatbot.util.gemini_util as gemini
-# from redis import Redis
+from redis import Redis
 
 load_dotenv()
+
+REDIS_HOST = os.getenv("REDIS_HOST")
+REDIS_PORT = int(os.getenv("REDIS_PORT"))
 
 qdrant = Qdrant(
         client=qdrantClient,
@@ -34,6 +38,14 @@ prompt = ChatPromptTemplate.from_messages(
     ]
 )
 
+retriever_prompt = ChatPromptTemplate.from_messages(
+    [
+        ("system", system_prompt),
+        MessagesPlaceholder("chat_history"),
+        ("human", "{input}"),
+    ]
+)
+
 def get_response(user_id: int, query: str):
     memory = get_memory(str(user_id))
     combine_docs_chain = create_stuff_documents_chain(
@@ -42,7 +54,7 @@ def get_response(user_id: int, query: str):
     )
     retriever= create_history_aware_retriever(
         llm=gemini.model,
-        prompt=prompt,
+        prompt=retriever_prompt,
         retriever=qdrant.as_retriever()
     )
     chain = create_retrieval_chain(
@@ -54,13 +66,19 @@ def get_response(user_id: int, query: str):
         "chat_history": memory.chat_memory.messages,
         "input": query
     })
-    return result["answer"] if "answer" in result else result
+    answer = result["answer"] if "answer" in result else result
+
+    memory.chat_memory.add_user_message(query)
+    memory.chat_memory.add_ai_message(answer)
+    trim_chat_history(str(user_id), 2)
+
+    return answer
 
 
 def get_memory(user_id: str, window_size=30):
     chat_memory= RedisChatMessageHistory(
         session_id=user_id,
-        url="redis://localhost:6379"
+        url=f"redis://{REDIS_HOST}:{REDIS_PORT}"
     )
     return ConversationBufferWindowMemory(
         memory_key="chat_history",
@@ -93,12 +111,11 @@ async def upload_files(files: List[UploadFile], file_detail: str):
             })
     return responses
 
+def trim_chat_history(user_id: str, max_length=50): # 남길 대화 수
+    r = Redis(host=REDIS_HOST, port=REDIS_PORT, db=0)
+    key = f"message_store:{user_id}"  # RedisChatMessageHistory 내부 키 형식에 맞춰야 함
+    r.ltrim(key, 0, max_length * 2 - 1)
 
-# r = Redis(host="localhost", port=6379, db=0)
-#
-# def trim_chat_history(user_id, max_length=50): # 남길 대화 수
-#     key = f"session:{user_id}"  # RedisChatMessageHistory 내부 키 형식에 맞춰야 함
-#     r.ltrim(key, 0, max_length * 2 - 1)
 async def is_duplicated_file(file_name: str) -> bool:
     result, _ = qdrantClient.scroll(
         collection_name=CHATBOT_COLLECTION,
