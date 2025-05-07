@@ -2,8 +2,14 @@ import { getKeycapFilters } from '@/services/shopService'
 import CheckboxGroup from './CheckboxGroup'
 import PriceFilter from './PriceFilter'
 import { useQuery } from '@tanstack/react-query'
+import { FilterByType } from '@/types/shop'
 
-const KeycapFilter = () => {
+interface KeycapFilterProps {
+  selected: FilterByType<'KEYCAP'>
+  onChange: (next: FilterByType<'KEYCAP'>) => void
+}
+
+const KeycapFilter = ({ selected, onChange }: KeycapFilterProps) => {
   const { data, isLoading, isError } = useQuery({
     queryKey: ['filters', 'keycap'],
     queryFn: getKeycapFilters,
@@ -18,14 +24,37 @@ const KeycapFilter = () => {
 
   return (
     <div className="space-y-4">
-      {data.material && (
-        <CheckboxGroup title="키캡 재질" options={data.material} />
+      {data.keycapMaterial && (
+        <CheckboxGroup
+          title="재질"
+          options={data.keycapMaterial}
+          selected={selected.keycapMaterial ?? []}
+          onChange={(val) => onChange({ ...selected, keycapMaterial: val })}
+        />
       )}
-      {data.legends && (
-        <CheckboxGroup title="각인 위치" options={data.legends} />
+      {data.engravingPosition && (
+        <CheckboxGroup
+          title="각인 위치"
+          options={data.engravingPosition}
+          selected={selected.engravingPosition ?? []}
+          onChange={(val) => onChange({ ...selected, engravingPosition: val })}
+        />
       )}
-      {data.count && <CheckboxGroup title="개수" options={data.count} />}
-      <PriceFilter />
+      {data.keyCount && (
+        <CheckboxGroup
+          title="키 수"
+          options={data.keyCount}
+          selected={selected.keyCount ?? []}
+          onChange={(val) => onChange({ ...selected, keyCount: val })}
+        />
+      )}
+      <PriceFilter
+        min={selected.minPriceMin}
+        max={selected.minPriceMax}
+        onChange={(min, max) =>
+          onChange({ ...selected, minPriceMin: min, minPriceMax: max })
+        }
+      />
     </div>
   )
 }

@@ -21,8 +21,7 @@ const CategoryTabs = ({
   indicatorHeight = 3,
   className,
 }: CategoryTabsProps) => {
-  // 기본으로 ‘스위치’(index:1) 선택
-  const [tabIndex, setTabIndex] = useState(1)
+  const [tabIndex, setTabIndex] = useState(0)
 
   return (
     <div>

@@ -9,7 +9,6 @@ interface ItemCardProps {
   imageUrl: string
   liked?: boolean
   size?: 'sm' | 'md' | 'lg'
-  to: string;
 }
 
 const sizeClasses = {
@@ -48,8 +47,12 @@ const ItemCard = ({
       </div>
 
       <div className="flex flex-col justify-center w-full h-16 mt-4 text-left">
-        <div className="font-semibold truncate">{name}</div>
-        <div className="mt-1">{price.toLocaleString()}원</div>
+        <div className="font-semibold">{name}</div>
+        <div className="mt-1">
+          {price !== undefined
+            ? `${price.toLocaleString()}원`
+            : '가격 정보 없음'}
+        </div>
       </div>
     </div>
   )

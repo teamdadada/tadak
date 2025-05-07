@@ -1,50 +1,131 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import CategoryTabs from '@/components/shop/CategoryTabs'
-import BearboneFilter from '@/components/shop/BearboneFilter'
+import BearboneFilter from '@/components/shop/BareboneFilter'
 import ItemGrid from '@/components/shop/ItemGrid'
 import SwitchFilter from '@/components/shop/SwitchFilter'
 import KeycapFilter from '@/components/shop/KeycapFilter'
 import AsideRecommendation from '@/components/shop/AsideRecommendation'
+import { FilterByType, ProductType } from '@/types/shop'
 
 const ShopPage = () => {
   const categories = ['베어본', '스위치', '키캡']
-  const [tabWidth, setTabWidth] = useState('')
+  const [tabWidth, setTabWidth] = useState('120px')
+
+  const [selectedBareboneFilters, setSelectedBareboneFilters] = useState<
+    FilterByType<'BAREBONE'>
+  >({
+    manufacturer: [] as string[],
+    keyLayout: [] as string[],
+    features: [] as string[],
+    minPriceMin: undefined as number | undefined,
+    minPriceMax: undefined as number | undefined,
+  })
+
+  const [selectedSwitchFilters, setSelectedSwitchFilters] = useState<
+    FilterByType<'SWITCH'>
+  >({
+    switchType: [] as string[],
+    keyForce: [] as string[],
+    quantity: [] as string[],
+    minPriceMin: undefined as number | undefined,
+    minPriceMax: undefined as number | undefined,
+  })
+
+  const [selectedKeycapFilters, setSelectedKeycapFilters] = useState<
+    FilterByType<'KEYCAP'>
+  >({
+    keycapMaterial: [] as string[],
+    engravingPosition: [] as string[],
+    keyCount: [] as string[],
+    minPriceMin: undefined as number | undefined,
+    minPriceMax: undefined as number | undefined,
+  })
 
   useEffect(() => {
     const updateIndicator = () => {
-      if (window.innerWidth >= 768) {
-        // 데스크톱(웹) 뷰 이상일 땐 고정 120px
-        setTabWidth('120px')
-      } else {
-        // 모바일뷰나 좁아지면 탭 개수에 따른 % 너비
-        setTabWidth(`${100 / categories.length}%`)
-      }
+      setTabWidth((prev) => {
+        const newWidth = window.innerWidth >= 768 ? '120px' : '33.33%'
+        return prev === newWidth ? prev : newWidth
+      })
     }
+
     updateIndicator()
     window.addEventListener('resize', updateIndicator)
     return () => window.removeEventListener('resize', updateIndicator)
-  }, [categories.length])
-   
-  const panels = [
-    <div key="bearbone" className="flex flex-col gap-6">
-      <BearboneFilter />
-      <div className="mt-6">
-        <ItemGrid category="bearbone" />
-      </div>
-    </div>,
-    <div key="switch" className="flex flex-col gap-6">
-      <SwitchFilter />
-      <div className="mt-6">
-        <ItemGrid category="switch" />
-      </div>
-    </div>,
-    <div key="keycap" className="flex flex-col gap-6">
-      <KeycapFilter />
-      <div className="mt-6">
-        <ItemGrid category="keycap" />
-      </div>
-    </div>,
-  ]
+  }, [])
+
+  const handleBareboneFilterChange = useCallback(
+    (next: FilterByType<'BAREBONE'>) => {
+      setSelectedBareboneFilters((prev) => {
+        // 🚀 JSON.stringify로 깊은 비교하여 무한 렌더링 방지
+        if (JSON.stringify(prev) === JSON.stringify(next)) {
+          return prev // ✅ 동일하면 상태 변경 안함
+        }
+        return next
+      })
+    },
+    [],
+  )
+
+  const handleSwitchFilterChange = useCallback(
+    (next: FilterByType<'SWITCH'>) => {
+      setSelectedSwitchFilters((prev) => {
+        if (JSON.stringify(prev) === JSON.stringify(next)) {
+          return prev
+        }
+        return next
+      })
+    },
+    [],
+  )
+
+  const handleKeycapFilterChange = useCallback(
+    (next: FilterByType<'KEYCAP'>) => {
+      setSelectedKeycapFilters((prev) => {
+        if (JSON.stringify(prev) === JSON.stringify(next)) {
+          return prev
+        }
+        return next
+      })
+    },
+    [],
+  )
+
+  const panels = useMemo(
+    () => [
+      <div key="BAREBONE" className="flex flex-col gap-6">
+        <BearboneFilter
+          selected={selectedBareboneFilters}
+          onChange={handleBareboneFilterChange}
+        />
+        <ItemGrid
+          category={ProductType.BAREBONE}
+          filters={selectedBareboneFilters}
+        />
+      </div>,
+      <div key="SWITCH" className="flex flex-col gap-6">
+        <SwitchFilter
+          selected={selectedSwitchFilters}
+          onChange={handleSwitchFilterChange}
+        />
+        <ItemGrid
+          category={ProductType.SWITCH}
+          filters={selectedSwitchFilters}
+        />
+      </div>,
+      <div key="KEYCAP" className="flex flex-col gap-6">
+        <KeycapFilter
+          selected={selectedKeycapFilters}
+          onChange={handleKeycapFilterChange}
+        />
+        <ItemGrid
+          category={ProductType.KEYCAP}
+          filters={selectedKeycapFilters}
+        />
+      </div>,
+    ],
+    [selectedBareboneFilters, selectedSwitchFilters, selectedKeycapFilters],
+  )
 
   return (
     <div className="w-full p-4 mx-auto max-w-7xl">
