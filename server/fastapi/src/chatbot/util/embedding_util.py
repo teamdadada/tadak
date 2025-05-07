@@ -36,8 +36,8 @@ async def load_documents(files: List[UploadFile], file_detail: str):
 def get_docs_split_list(docs):
     # 문서 청크 단위 및 오버랩 크기 설정
     text_splitter = RecursiveCharacterTextSplitter(
-        chunk_size=1000,
-        chunk_overlap=100
+        chunk_size=200,
+        chunk_overlap=40
     )
 
     return text_splitter.split_documents(docs)
