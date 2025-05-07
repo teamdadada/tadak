@@ -1,5 +1,5 @@
 {
-  "material": ["PBT", "ABS"],
-  "legends": ["정면", "측면", "무각인"],
-  "count": ["61개", "87개", "104개"]
+  "keycapMaterial": ["PBT", "ABS"],
+  "engravingPosition": ["정면", "측면", "무각인"],
+  "keyCount": ["61개", "87개", "104개"]
 }
