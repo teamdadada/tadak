@@ -166,13 +166,23 @@ const Header = () => {
                   >
                     마이페이지
                   </Link>
-                  <Link
-                    to="/account/login"
-                    onClick={() => setIsMenuOpen(false)}
-                    className="hover:bg-gray-100 rounded-md px-2 py-1"
-                  >
-                    Login
-                  </Link>
+
+                  {isAuthenticated ? (
+                    <button
+                      onClick={handleLogout}
+                      className="block w-full text-left hover:bg-gray-100 rounded-md px-2 py-1"
+                    >
+                      Logout
+                    </button>
+                  ) : (
+                    <Link
+                      to="/account/login"
+                      onClick={() => setIsMenuOpen(false)}
+                      className="hover:bg-gray-100 rounded-md px-2 py-1"
+                    >
+                      Login
+                    </Link>
+                  )}
                 </nav>
               </div>
             )}
