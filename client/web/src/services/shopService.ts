@@ -1,69 +1,74 @@
-// import axios from 'axios'
-// import { SHOP_END_POINT } from './endPoints'
+import http from './http-common'
+import { SHOP_END_POINT } from './endPoints'
 
-import bearboneMock from '@/mocks/shop/bearboneFilters.json'
-import switchMock from '@/mocks/shop/switchFilters.json'
-import keycapMock from '@/mocks/shop/keycapFilters.json'
-import bearboneList from '@/mocks/shop/bearboneProducts.json'
-import switchList from '@/mocks/shop/switchProducts.json'
-import keycapList from '@/mocks/shop/keycapProducts.json'
+// import bearboneMock from '@/mocks/shop/bareboneFilters.json'
+// import switchMock from '@/mocks/shop/switchFilters.json'
+// import keycapMock from '@/mocks/shop/keycapFilters.json'
+// import bearboneList from '@/mocks/shop/bareboneProducts.json'
+// import switchList from '@/mocks/shop/switchProducts.json'
+// import keycapList from '@/mocks/shop/keycapProducts.json'
+// import rawProductDetails from '@/mocks/shop/productDetails.json'
+// import { ProductDetail } from '@/types/product'
+import {
+  BareboneFilter,
+  FilterByType,
+  KeycapFilter,
+  Product,
+  ProductType,
+  SwitchFilter,
+} from '@/types/shop'
 
-interface Product {
-  id: number
-  name: string
-  price: number
-  imageUrl: string
-  liked: boolean
+export const getBearboneFilters = async (): Promise<BareboneFilter> => {
+  const { data } = await http.get(SHOP_END_POINT.FILTER.BEARBONE)
+  return data
+  // return new Promise(
+  //   (resolve) => setTimeout(() => resolve(bearboneMock), 300), // 0.3초 딜레이로 실제처럼
+  // )
 }
 
-interface FilterResponse {
-  [key: string]: string[] // ex. { manufacturers: ["Keychron", "COX"], ... }
+export const getSwitchFilters = async (): Promise<SwitchFilter> => {
+  const { data } = await http.get(SHOP_END_POINT.FILTER.SWITCH)
+  return data
+  // return new Promise((resolve) => setTimeout(() => resolve(switchMock), 300))
 }
 
-interface ProductRequest {
-  [key: string]: any // ex. { priceRange: [10000, 50000], layout: ['60%'] }
+export const getKeycapFilters = async (): Promise<KeycapFilter> => {
+  const { data } = await http.get(SHOP_END_POINT.FILTER.KEYCAP)
+  return data
+  // return new Promise((resolve) => setTimeout(() => resolve(keycapMock), 300))
 }
 
-export const getBearboneFilters = async (): Promise<FilterResponse> => {
-  //   const { data } = await axios.get(SHOP_END_POINT.FILTER.BEARBONE)
-  //   return data
-  return new Promise(
-    (resolve) => setTimeout(() => resolve(bearboneMock), 300), // 0.3초 딜레이로 실제처럼
-  )
-}
-
-export const getSwitchFilters = async (): Promise<FilterResponse> => {
-  //   const { data } = await axios.get(SHOP_END_POINT.FILTER.SWITCH)
-  //   return data
-  return new Promise((resolve) => setTimeout(() => resolve(switchMock), 300))
-}
-
-export const getKeycapFilters = async (): Promise<FilterResponse> => {
-  //   const { data } = await axios.get(SHOP_END_POINT.FILTER.KEYCAP)
-  //   return data
-  return new Promise((resolve) => setTimeout(() => resolve(keycapMock), 300))
-}
-
-export const getBearboneProducts = async (
-  filters: ProductRequest,
+export const getLatestProducts = async (
+  type: ProductType,
+  page: number = 1,
+  size: number = 5,
+  filters: FilterByType<ProductType> = {} as FilterByType<ProductType>,
 ): Promise<Product[]> => {
-  // const { data } = await axios.post(SHOP_END_POINT.PRODUCT.BEARBONE, filters)
-  // return data
-  return new Promise((resolve) => setTimeout(() => resolve(bearboneList), 300))
+  const { data } = await http.get(SHOP_END_POINT.PRODUCT.LATEST(type), {
+    params: { page, size, ...filters },
+  })
+  return data
 }
 
-export const getSwitchProducts = async (
-  filters: ProductRequest,
+export const getPopularProducts = async (
+  type: ProductType,
+  page: number = 1,
+  size: number = 5,
+  filters: FilterByType<ProductType> = {} as FilterByType<ProductType>,
 ): Promise<Product[]> => {
-  // const { data } = await axios.post(SHOP_END_POINT.PRODUCT.SWITCH, filters)
-  // return data
-  return new Promise((resolve) => setTimeout(() => resolve(switchList), 300))
+  const { data } = await http.get(SHOP_END_POINT.PRODUCT.POPULAR(type), {
+    params: { page, size, ...filters },
+  })
+  return data
 }
 
-export const getKeycapProducts = async (
-  filters: ProductRequest,
-): Promise<Product[]> => {
-  // const { data } = await axios.post(SHOP_END_POINT.PRODUCT.KEYCAP, filters)
-  // return data
-  return new Promise((resolve) => setTimeout(() => resolve(keycapList), 300))
+export const getProductDetail = async (type: ProductType, id: string) => {
+  const endPoint =
+    SHOP_END_POINT.PRODUCT[type as keyof typeof SHOP_END_POINT.PRODUCT]
+  if (!endPoint) {
+    throw new Error(`Invalid product type: ${type}`)
+  }
+
+  const { data } = await http.get(`${endPoint}?product_id=${id}`)
+  return data
 }
