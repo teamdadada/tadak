@@ -20,7 +20,7 @@ const CheckboxGroup = ({
   }
 
   return (
-    <div className="flex flex-col md:flex-row md:items-center md:gap-4">
+    <div className="flex flex-col md:flex-row md:items-start md:gap-4">
       <h3 className="mb-1 font-medium min-w-[80px] md:mb-0">{title}</h3>
       <div className="flex flex-wrap gap-2">
         {options.map((option) => (
