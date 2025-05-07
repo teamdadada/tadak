@@ -3,7 +3,12 @@ import { MAIN_END_POINT } from './endPoints'
 
 export const fetchPopularItems = async (
   productType: string,
-  params?: { page?: number; size?: number; minPriceMin?: number; minPriceMax?: number }
+  params?: {
+    page?: number
+    size?: number
+    minPriceMin?: number
+    minPriceMax?: number
+  },
 ) => {
   console.log('📦 [fetchPopularItems] 요청:', {
     url: MAIN_END_POINT.POPULAR_ITEMS(productType),
@@ -24,7 +29,12 @@ export const fetchPopularItems = async (
 
 export const fetchLatestItems = async (
   productType: string,
-  params?: { page?: number; size?: number; minPriceMin?: number; minPriceMax?: number }
+  params?: {
+    page?: number
+    size?: number
+    minPriceMin?: number
+    minPriceMax?: number
+  },
 ) => {
   console.log('📦 [fetchLatestItems] 요청:', {
     url: MAIN_END_POINT.LATEST_ITEMS(productType),
