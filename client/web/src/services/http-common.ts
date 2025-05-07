@@ -27,7 +27,7 @@ http.interceptors.response.use(
 
     if (
       error.response?.status === 401 &&
-      error.response?.data.code == 'B4011' &&
+      error.response?.data.code == 'B4012' &&
       !originalRequest._retry
     ) {
       originalRequest._retry = true

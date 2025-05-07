@@ -20,9 +20,19 @@ export const checkAuthStatus = async () => {
   return response.status
 }
 
+import axios from 'axios'
+
+const refreshHttp = axios.create({
+  baseURL: 'https://dapi.tadak.kr',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  withCredentials: true,
+})
+
 export const refreshToken = async () => {
   try {
-    const response = await http.post(AUTH_END_POINT.REISSUE)
+    const response = await refreshHttp.post(AUTH_END_POINT.REISSUE)
     const authHeader = response.headers['authorization']
 
     if (authHeader) {
