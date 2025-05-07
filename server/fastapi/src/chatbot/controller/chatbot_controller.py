@@ -21,7 +21,7 @@ async def upload_files (files: List[UploadFile] = File(...), file_detail: str = 
 def get_response(user_query: UserQuery):
     return chatbot_service.get_response(user_query.user_id, user_query.query)
 
-@chatbot_router.get("")
+@chatbot_router.get("/{user_id}")
 def get_history(user_id: int):
     memory = chatbot_service.get_memory(str(user_id))
     return memory.chat_memory.messages
