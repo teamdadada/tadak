@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState, useRef, useCallback } from 'react'
 import { typingSentencesGroup } from '@/mocks/typingSentecnes'
 import KeyboardLayout from '@/components/sound-test/KeyboardLayout'
 import { useSoundStore } from '@/store/soundStore'
@@ -11,10 +11,6 @@ const TypingArea = () => {
   const inputRef = useRef<HTMLInputElement>(null)
 
   const selectedSoundKey = useSoundStore((state) => state.selectedSoundKey)
-
-  const switchSoundMap: Record<string, string> = {
-    'G PRO 2.0 적축': '/sounds/test.mp3',
-  }
 
   // 자동 포커스
   useEffect(() => {
@@ -32,18 +28,74 @@ const TypingArea = () => {
     return () => clearInterval(interval)
   }, [])
 
-  const playSound = () => {
-    if (!selectedSoundKey) {
-      return
-    }
+  const playSound = useCallback(
+    (keyCode: string) => {
+      if (!selectedSoundKey) {
+        return
+      }
 
-    const src = switchSoundMap[selectedSoundKey]
-    if (!src) {
-      return
-    }
-    const audio = new Audio(src)
-    audio.play()
-  }
+      // 선택된 키보드 타입과 색상 추출
+      let soundPrefix = ''
+
+      if (selectedSoundKey.includes('저소음')) {
+        // 저소음축인 경우
+        const color = selectedSoundKey.includes('적축')
+          ? 'red'
+          : selectedSoundKey.includes('백축')
+            ? 'white'
+            : selectedSoundKey.includes('황축')
+              ? 'yellow'
+              : selectedSoundKey.includes('갈축')
+                ? 'brown'
+                : 'black' // 기본값
+
+        soundPrefix = `silent_${color}`
+      } else {
+        // 일반축인 경우
+        const color = selectedSoundKey.includes('적축')
+          ? 'red'
+          : selectedSoundKey.includes('청축')
+            ? 'blue'
+            : selectedSoundKey.includes('황축')
+              ? 'yellow'
+              : selectedSoundKey.includes('갈축')
+                ? 'brown'
+                : selectedSoundKey.includes('흑축')
+                  ? 'black'
+                  : selectedSoundKey.includes('백축')
+                    ? 'white'
+                    : 'silver' // 기본값
+
+        soundPrefix = `gpro2_${color}`
+      }
+
+      // 키 종류에 따른 소리 타입 결정
+      let soundType = 'normal'
+
+      if (keyCode === 'Space') {
+        soundType = 'space'
+      } else if (
+        [
+          'Enter',
+          'Backspace',
+          'ShiftLeft',
+          'ShiftRight',
+          'Tab',
+          'CapsLock',
+        ].includes(keyCode)
+      ) {
+        soundType = 'enter'
+      }
+
+      // 최종 소리 파일 경로 생성
+      const soundPath = `/sounds/${soundPrefix}_${soundType}.mp3`
+
+      // 소리 재생
+      const audio = new Audio(soundPath)
+      audio.play()
+    },
+    [selectedSoundKey],
+  )
 
   // 현재 문장
   const currentSentence = selectedSentences[currentSentenceIndex] ?? ''
@@ -55,14 +107,12 @@ const TypingArea = () => {
     setSelectedSentences(typingSentencesGroup[randomKey])
   }, [])
 
-  // 입력창에 자동 포커스
-  useEffect(() => {
-    if (inputRef.current) inputRef.current.focus()
-  }, [])
-
-  // 키보드 키 입력 시 하이라이팅
+  // 키보드 키 입력 시 하이라이팅 및 소리 재생
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      // 키 누를 때 소리 재생
+      playSound(e.code)
+
       if (!activeKeys.includes(e.code)) {
         setActiveKeys((prev) => [...prev, e.code])
       }
@@ -79,7 +129,7 @@ const TypingArea = () => {
       window.removeEventListener('keydown', handleKeyDown)
       window.removeEventListener('keyup', handleKeyUp)
     }
-  }, [activeKeys])
+  }, [activeKeys, playSound])
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newText = e.target.value
@@ -87,8 +137,6 @@ const TypingArea = () => {
   }
 
   const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    playSound()
-
     if (e.key === 'Enter') {
       e.preventDefault()
       if (currentSentenceIndex < selectedSentences.length - 1) {

@@ -1,43 +1,26 @@
+import { cn } from '@/lib/utils'
+
 interface KeyProps {
   keyCode: string
   label: string
-  width?: number
-  isFlexible?: boolean
   isActive?: boolean
+  className?: string
   onClick?: () => void
 }
 
-const Key = ({
-  keyCode,
-  label,
-  width = 1,
-  isFlexible = false,
-  isActive = false,
-  onClick,
-}: KeyProps) => {
-  const styleObj = isFlexible
-    ? { flexGrow: 1, minWidth: `${width ? width * 4 : 4}rem` }
-    : { width: `${width * 4}rem` }
-
+const Key = ({ keyCode, label, isActive, className, onClick }: KeyProps) => {
   return (
     <button
-      className={`
-        h-14 flex pt-1 justify-center lg:text-sm font-medium rounded text-xs
-        ${
-          isActive
-            ? 'bg-tadak-primary text-tadak-white'
-            : 'bg-tadak-white text-tadak-black'
-        }
-        transition-all duration-150
-      `}
-      style={{
-        ...styleObj,
-        boxShadow: '4px 4px 22.3px 0px rgba(0, 0, 0, 0.1)',
-      }}
       onClick={onClick}
       data-key-code={keyCode}
+      className={cn(
+        'h-14 text-sm font-medium rounded-md shadow transition-all duration-150 flex pt-1 justify-center bg-white text-black',
+        isActive && 'bg-tadak-primary text-white',
+        'shadow-[4px_4px_22.3px_0px_rgba(0,0,0,0.1)]',
+        className,
+      )}
     >
-      {label}
+      {label || <span className="w-full h-full" />}{' '}
     </button>
   )
 }
