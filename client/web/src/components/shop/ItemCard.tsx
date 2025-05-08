@@ -22,7 +22,7 @@ const ItemCard = ({
   name,
   price,
   imageUrl,
-  liked = true,
+  liked = false,
   size = 'md', // 기본은 중간 크기
 }: ItemCardProps) => {
   const navigate = useNavigate()
@@ -48,7 +48,11 @@ const ItemCard = ({
 
       <div className="flex flex-col justify-center w-full h-16 mt-4 text-left">
         <div className="font-semibold">{name}</div>
-        <div className="mt-1">{price.toLocaleString()}원</div>
+        <div className="mt-1">
+          {price !== undefined
+            ? `${price.toLocaleString()}원`
+            : '가격 정보 없음'}
+        </div>
       </div>
     </div>
   )

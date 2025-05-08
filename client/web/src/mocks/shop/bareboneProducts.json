@@ -1,0 +1,49 @@
+{
+  "content": [
+    {
+      "productId": "kb-001",
+      "name": "Keychron K6",
+      "manufacturer": "Keychron",
+      "minPrice": 129000,
+      "layout": "65%",
+      "features": ["핫스왑", "무선지원"],
+      "thumbnail": "https://cataas.com/cat/says/Keychron%20K6"
+    },
+    {
+      "productId": "kb-002",
+      "name": "Leopold FC660C",
+      "manufacturer": "Leopold",
+      "minPrice": 189000,
+      "layout": "60%",
+      "features": ["무보강"],
+      "thumbnail": "https://cataas.com/cat/says/Leopold%20FC660C"
+    },
+    {
+      "productId": "kb-003",
+      "name": "Akko 3068B",
+      "manufacturer": "Akko",
+      "minPrice": 89000,
+      "layout": "65%",
+      "features": ["핫스왑", "가스켓마운트"],
+      "thumbnail": "https://cataas.com/cat/says/Akko%203068B"
+    },
+    {
+      "productId": "kb-004",
+      "name": "COX CK87",
+      "manufacturer": "COX",
+      "minPrice": 59000,
+      "layout": "TKL",
+      "features": ["무보강", "핫스왑"],
+      "thumbnail": "https://cataas.com/cat/says/COX%20CK87"
+    },
+    {
+      "productId": "kb-005",
+      "name": "Keychron K10",
+      "manufacturer": "Keychron",
+      "minPrice": 149000,
+      "layout": "Full-size",
+      "features": ["무선지원"],
+      "thumbnail": "https://cataas.com/cat/says/Keychron%20K10"
+    }
+  ]
+}
