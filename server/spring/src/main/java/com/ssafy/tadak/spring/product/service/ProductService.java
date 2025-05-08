@@ -3,6 +3,7 @@ package com.ssafy.tadak.spring.product.service;
 import com.ssafy.tadak.spring.product.domain.entity.Product;
 import com.ssafy.tadak.spring.product.domain.repository.ProductRepository;
 import com.ssafy.tadak.spring.product.domain.repository.ProductRepositoryCustom;
+import com.ssafy.tadak.spring.product.dto.request.ProductsCursorRequest;
 import com.ssafy.tadak.spring.product.dto.response.list.ProductSimpleDto;
 import com.ssafy.tadak.spring.product.dto.request.ProductDetailRequest;
 import com.ssafy.tadak.spring.product.dto.request.list.BareboneListRequest;
@@ -18,10 +19,6 @@ import com.ssafy.tadak.spring.product.util.ProductUtil;
 import com.ssafy.tadak.spring.product.util.enums.ProductType;
 import com.ssafy.tadak.spring.product.util.enums.SortType;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -67,55 +64,38 @@ public class ProductService {
     }
 
     @Transactional(readOnly = true)
-    public ProductListResponse getLatestList(ProductType type, int page, int size,
-                                             BareboneListRequest bareboneFilter,
-                                             SwitchListRequest switchFilter,
-                                             KeycapListRequest keycapFilter) {
-        return getProductList(type, page, size, bareboneFilter, switchFilter, keycapFilter, SortType.LATEST);
-    }
-
-    @Transactional(readOnly = true)
-    public ProductListResponse getPopularList(ProductType type, int page, int size,
-                                              BareboneListRequest bareboneFilter,
-                                              SwitchListRequest switchFilter,
-                                              KeycapListRequest keycapFilter) {
-        return getProductList(type, page, size, bareboneFilter, switchFilter, keycapFilter, SortType.POPULAR);
-    }
-
-    private ProductListResponse getProductList(ProductType type, int page, int size,
-                                              BareboneListRequest bareboneFilter,
-                                              SwitchListRequest switchFilter,
-                                              KeycapListRequest keycapFilter,
-                                              SortType sortType) {
-
+    public ProductListResponse getProductList(
+            ProductType type,
+            String cursor,
+            int size,
+            SortType sort,
+            BareboneListRequest bareboneFilter,
+            SwitchListRequest switchFilter,
+            KeycapListRequest keycapFilter
+    ) {
         ProductListRequest filterRequest = switch (type) {
             case BAREBONE -> bareboneFilter;
             case SWITCH -> switchFilter;
             case KEYCAP -> keycapFilter;
         };
+        ProductsCursorRequest cursorRequest = new ProductsCursorRequest(cursor, size, sort);
 
         Map<String, List<String>> filters = FieldNameMapper.convertKeysToSnakeCase(filterRequest.toMap());
 
-        Sort sort = switch (sortType) {
-            case LATEST -> Sort.by(Sort.Direction.DESC, "releaseYear", "releaseMonth");
-            case POPULAR -> Sort.by(Sort.Direction.DESC, "hits");
-        };
-
-        Pageable pageable = PageRequest.of(page - 1, size, sort);
-
-        Page<Product> pageResult = productRepositoryCustom.findFilteredProducts(
+        List<Map<String, Object>> results = productRepositoryCustom.findFilteredProductsByCursor(
                 type,
                 filters,
                 filterRequest.minPriceMin(),
                 filterRequest.minPriceMax(),
-                pageable,
-                sortType
+                cursorRequest.cursor(),
+                cursorRequest.size(),
+                cursorRequest.sort()
         );
 
-        List<ProductSimpleDto> dtoList = pageResult.getContent().stream()
-                .map(productUtil::getSimpleSummary)
+        List<ProductSimpleDto> dtoList = results.stream()
+                .map(spec -> ProductSimpleDto.from(spec, type, cursorRequest.sort()))
                 .toList();
 
-        return new ProductListResponse(dtoList);
+        return ProductListResponse.of(dtoList, cursorRequest.size());
     }
 }

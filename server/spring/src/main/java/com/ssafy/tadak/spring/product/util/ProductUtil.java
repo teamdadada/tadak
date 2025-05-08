@@ -61,22 +61,6 @@ public class ProductUtil {
         };
     }
 
-    public ProductSimpleDto getSimpleSummary(Product product) {
-        return switch (product.getProductType()) {
-            case BAREBONE -> bareboneRepository.findByProductId(product.getProductId())
-                    .map(b -> ProductSimpleDto.from(product, b.getMinPrice(), b.getThumbnail()))
-                    .orElseThrow(() -> new ProductDetailNotFoundException(product.getProductId(), product.getProductType()));
-
-            case SWITCH -> switchRepository.findByProductId(product.getProductId())
-                    .map(s -> ProductSimpleDto.from(product, s.getMinPrice(), s.getThumbnail()))
-                    .orElseThrow(() -> new ProductDetailNotFoundException(product.getProductId(), product.getProductType()));
-
-            case KEYCAP -> keycapRepository.findByProductId(product.getProductId())
-                    .map(k -> ProductSimpleDto.from(product, k.getMinPrice(), k.getThumbnail()))
-                    .orElseThrow(() -> new ProductDetailNotFoundException(product.getProductId(), product.getProductType()));
-        };
-    }
-
     private ProductDetailResponse getBareboneDetail(Product product) {
         return bareboneRepository.findByProductId(product.getProductId())
                 .map(b -> BareboneDetailResponse.from(product, b))
