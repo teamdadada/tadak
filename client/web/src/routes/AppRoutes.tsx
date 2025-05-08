@@ -15,6 +15,7 @@ import NotFound from '@/pages/NotFound/NotFound'
 // 레이아웃
 import BaseLayout from '@/components/layout/BaseLayout'
 import SimpleLayout from '@/components/layout/SimpleLayout'
+import ProductDetailPage from '@/pages/ProductPage/ProductDatailPage'
 
 const router = createBrowserRouter([
   {
@@ -28,6 +29,7 @@ const router = createBrowserRouter([
       { path: 'customkeyboard', element: <CustomKeyboardPage /> }, // 커스텀 키보드 제작 페이지
       { path: 'soundtest', element: <SoundTestPage /> }, // 타건샵 페이지
       { path: 'kbti', element: <KbtiPage /> }, // KBTI 페이지
+      { path: 'product/:type/:id', element: <ProductDetailPage /> }, // 제품 상세 페이지
     ],
   },
 
