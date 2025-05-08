@@ -36,3 +36,13 @@ export const refreshToken = async () => {
     return { success: false, error }
   }
 }
+
+export const kakaoLogin = async () => {
+  const response = await http.post(AUTH_END_POINT.KAKAOLOGIN)
+
+  const authHeader = response.headers['authorization']
+  if (authHeader) {
+    const accessToken = authHeader.replace('Bearer ', '').trim()
+    useAuthStore.getState().setAccessToken(accessToken)
+  }
+}
