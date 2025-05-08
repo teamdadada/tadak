@@ -55,3 +55,19 @@ export const kakaoLogin = async (code: string) => {
 
   return response
 }
+
+export const naverLogin = async (code: string) => {
+  const response = await http.post(AUTH_END_POINT.NAVERLOGIN, null, {
+    headers: {
+      'X-Author-Code': code,
+    },
+  })
+
+  const authHeader = response.headers['authorization']
+  if (authHeader) {
+    const accessToken = authHeader.replace('Bearer ', '').trim()
+    useAuthStore.getState().setAccessToken(accessToken)
+  }
+
+  return response
+}
