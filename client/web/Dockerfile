@@ -6,7 +6,7 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm install
 
-# 환경변수 파일 복사
+# 환경변수 파일 복사 
 COPY .env.production .env.production
 
 # 소스 복사
