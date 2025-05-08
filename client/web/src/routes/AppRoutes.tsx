@@ -15,7 +15,8 @@ import NotFound from '@/pages/NotFound/NotFound'
 // 레이아웃
 import BaseLayout from '@/components/layout/BaseLayout'
 import SimpleLayout from '@/components/layout/SimpleLayout'
-import KakaoCallback from '@/pages/Account/LoginPage/KakaoCallback'
+import KakaoCallback from '@/pages/Account/LoginPage/KakaoCallbackPage'
+import NaverCallback from '@/pages/Account/LoginPage/NaverCallbackPage'
 
 const router = createBrowserRouter([
   {
@@ -44,7 +45,10 @@ const router = createBrowserRouter([
   {
     path: 'auth',
     element: <SimpleLayout />,
-    children: [{ path: 'kakao/callback', element: <KakaoCallback /> }],
+    children: [
+      { path: 'kakao/callback', element: <KakaoCallback /> },
+      { path: 'naver/callback', element: <NaverCallback /> },
+    ],
   },
 
   // 404 NotFound

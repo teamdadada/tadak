@@ -1,11 +1,11 @@
 import LogoImage from '@/assets/images/logo.png'
+import { naverLogin } from '@/services/authService'
 
 import { useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { kakaoLogin } from '@/services/authService'
 import { toast } from 'sonner'
 
-const KakaoCallback = () => {
+const NaverCallback = () => {
   const navigate = useNavigate()
   const isProcessingRef = useRef(false)
   const errorTimerRef = useRef<number | null>(null)
@@ -41,7 +41,7 @@ const KakaoCallback = () => {
         }
 
         // 로그인 처리
-        await kakaoLogin(code)
+        await naverLogin(code)
 
         // 경과 시간 계산
         const elapsedTime = Date.now() - startTime
@@ -55,10 +55,10 @@ const KakaoCallback = () => {
         }
 
         // 로그인 성공
-        toast.success('카카오 로그인 성공!')
+        toast.success('네이버로 로그인하였습니다!')
         navigate('/main', { replace: true })
       } catch (err) {
-        console.error('카카오 로그인 오류:', err)
+        console.error('네이버 로그인 오류:', err)
         toast.error('로그인 처리 중 오류가 발생했습니다')
 
         errorTimerRef.current = window.setTimeout(() => {
@@ -91,7 +91,7 @@ const KakaoCallback = () => {
       </div>
 
       <h1 className="text-2xl font-bold text-tadak-black mb-1 tracking-tight">
-        카카오 로그인 중
+        로그인 중
       </h1>
       <p className="text-tadak-dark-gray mb-10 text-center">
         잠시만 기다려주세요
@@ -100,4 +100,4 @@ const KakaoCallback = () => {
   )
 }
 
-export default KakaoCallback
+export default NaverCallback
