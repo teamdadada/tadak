@@ -31,14 +31,7 @@ const ItemGrid = ({ category, filters, sortOrder }: ItemGridProps) => {
   return (
     <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-4">
       {data.map((item) => (
-        <ItemCard
-          key={item.productId}
-          id={item.productId} // ✅ productId -> id로 매핑
-          name={item.name}
-          price={item.minPrice} // ✅ minPrice -> price로 매핑
-          imageUrl={item.thumbnail} // ✅ thumbnail -> imageUrl로 매핑
-          liked={item.liked ?? false} // 좋아요 기본값 false
-        />
+        <ItemCard key={item.productId} {...item} />
       ))}
     </div>
   )
