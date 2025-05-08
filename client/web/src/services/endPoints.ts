@@ -34,10 +34,8 @@ export const SHOP_END_POINT = {
     KEYCAP: '/api/product/KEYCAP/filter',
   },
   PRODUCT: {
-    BEARBONE: '/api/product/BAREBONE',
-    SWITCH: '/api/product/SWITCH',
-    KEYCAP: '/api/product/KEYCAP',
     LATEST: (type: string) => `/api/product/${type}/latest`,
     POPULAR: (type: string) => `/api/product/${type}/popular`,
+    DETAIL: (type: string) => `/api/product/${type}`,
   },
 }

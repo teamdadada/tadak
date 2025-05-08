@@ -62,13 +62,15 @@ export const getPopularProducts = async (
   return data
 }
 
-export const getProductDetail = async (type: ProductType, id: string) => {
-  const endPoint =
-    SHOP_END_POINT.PRODUCT[type as keyof typeof SHOP_END_POINT.PRODUCT]
+export const getProductDetail = async (
+  type: ProductType,
+  id: string | number,
+) => {
+  const endPoint = SHOP_END_POINT.PRODUCT.DETAIL(type)
   if (!endPoint) {
     throw new Error(`Invalid product type: ${type}`)
   }
 
-  const { data } = await http.get(`${endPoint}?product_id=${id}`)
+  const { data } = await http.post(`${endPoint}?product_id=${id}`)
   return data
 }
