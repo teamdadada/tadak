@@ -3,12 +3,23 @@ import { refreshToken } from './authService'
 import { useAuthStore } from '@/store/authStore'
 import { toast } from 'sonner'
 
+// 환경에 따른 baseURL 설정
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080'
+
 const http = axios.create({
-  baseURL: 'https://dapi.tadak.kr',
+  baseURL: BASE_URL(),
   headers: {
     'Content-Type': 'application/json',
   },
   withCredentials: true, // refreshToken 쿠키로 보낼 수 있도록 설정
+})
+
+export const refreshHttp = axios.create({
+  baseURL: BASE_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  withCredentials: true,
 })
 
 // 요청 인터셉터: accessToken 자동 첨부

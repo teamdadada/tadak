@@ -1,4 +1,4 @@
-import http from './http-common'
+import http, { refreshHttp } from './http-common'
 
 import { AUTH_END_POINT } from './endPoints'
 import { SignInRequest } from '@/types/auth'
@@ -19,16 +19,6 @@ export const checkAuthStatus = async () => {
   const response = await http.get(AUTH_END_POINT.CHECK)
   return response.status
 }
-
-import axios from 'axios'
-
-const refreshHttp = axios.create({
-  baseURL: 'https://dapi.tadak.kr',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  withCredentials: true,
-})
 
 export const refreshToken = async () => {
   try {
