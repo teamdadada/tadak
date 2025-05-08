@@ -15,6 +15,7 @@ import NotFound from '@/pages/NotFound/NotFound'
 // 레이아웃
 import BaseLayout from '@/components/layout/BaseLayout'
 import SimpleLayout from '@/components/layout/SimpleLayout'
+import KakaoCallback from '@/pages/Account/LoginPage/KakaoCallback'
 
 const router = createBrowserRouter([
   {
@@ -38,6 +39,12 @@ const router = createBrowserRouter([
       { path: 'login', element: <LoginPage /> }, // 로그인 페이지
       { path: 'signup', element: <SignupPage /> }, // 회원가입 페이지
     ],
+  },
+
+  {
+    path: 'auth',
+    element: <SimpleLayout />,
+    children: [{ path: 'kakao/callback', element: <KakaoCallback /> }],
   },
 
   // 404 NotFound

@@ -17,6 +17,7 @@ export const AUTH_END_POINT = {
   LOGIN: '/auth/login',
   CHECK: '/auth/check',
   REISSUE: '/auth/reissue',
+  KAKAOLOGIN: '/auth/kakao'
 }
 
 // mainService

@@ -1,10 +1,17 @@
 import { Button } from '@/components/ui/button'
 
 const KakaoLogin = () => {
+  const handleKakaoLogin = () => {
+    const REST_API_KEY = import.meta.env.VITE_KAKAO_REST_API_KEY
+    const REDIRECT_URI = import.meta.env.VITE_KAKAO_REDIRECT_URI
+
+    window.location.href = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${REST_API_KEY}&redirect_uri=${REDIRECT_URI}`
+  }
+  
   return (
     <Button
       className="w-full h-12 rounded-lg flex items-center justify-center bg-[#FEE500] hover:bg-[#FEE500] text-[#191919] font-medium shadow-none"
-      onClick={() => console.log('카카오 로그인')}
+      onClick={handleKakaoLogin}
     >
       <div className="flex items-center">
         <svg
