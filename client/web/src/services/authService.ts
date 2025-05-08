@@ -37,12 +37,21 @@ export const refreshToken = async () => {
   }
 }
 
-export const kakaoLogin = async () => {
-  const response = await http.post(AUTH_END_POINT.KAKAOLOGIN)
+export const kakaoLogin = async (code: string) => {
+  const environment = import.meta.env.VITE_ENVIRONMENT
+
+  const response = await http.post(AUTH_END_POINT.KAKAOLOGIN, null, {
+    headers: {
+      'X-Author-Code': code,
+      'X-Environment': environment,
+    },
+  })
 
   const authHeader = response.headers['authorization']
   if (authHeader) {
     const accessToken = authHeader.replace('Bearer ', '').trim()
     useAuthStore.getState().setAccessToken(accessToken)
   }
+
+  return response
 }
