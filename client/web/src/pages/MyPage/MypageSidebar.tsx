@@ -23,11 +23,11 @@ const MypageSidebar = ({ selectedMenu, onMenuChange }: SidebarProps) => {
   ]
 
   return (
-    <div className="w-full md:w-64 p-6 mt-10">
+    <div className="w-full md:w-48 lg:w-64 p-6 mt-10">
       {/* 프로필 */}
       <div className="flex flex-col gap-6 mb-4">
         {/* 프로필 사진 */}
-        <div className="bg-tadak-light-gray flex items-center justify-center w-52">
+        <div className="bg-tadak-light-gray flex items-center justify-center w-36 lg:w-52">
           <svg
             className="text-tadak-gray"
             fill="currentColor"
