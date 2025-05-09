@@ -27,7 +27,7 @@ const MypageSidebar = ({ selectedMenu, onMenuChange }: SidebarProps) => {
       {/* 프로필 */}
       <div className="flex flex-col gap-6 mb-4">
         {/* 프로필 사진 */}
-        <div className="bg-tadak-light-gray flex items-center justify-center">
+        <div className="bg-tadak-light-gray flex items-center justify-center w-52">
           <svg
             className="text-tadak-gray"
             fill="currentColor"
@@ -49,14 +49,12 @@ const MypageSidebar = ({ selectedMenu, onMenuChange }: SidebarProps) => {
 
       <div className="flex flex-col mb-6 font-semibold text-[15px]">
         <button
-          onClick={() => onMenuChange('좋아요')}
+          onClick={() => onMenuChange('찜')}
           className={`flex justify-between items-center p-2 rounded ${
-            selectedMenu === '좋아요'
-              ? 'font-bold '
-              : 'bg-white hover:underline'
+            selectedMenu === '찜' ? 'font-bold ' : 'bg-white hover:underline'
           }`}
         >
-          좋아요 3
+          찜 3
         </button>
 
         <button
