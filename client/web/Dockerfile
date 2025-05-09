@@ -15,7 +15,7 @@ COPY .env.${DEPLOY_ENV} .env.${DEPLOY_ENV}
 COPY . .
 
 # 빌드
-RUN npm run build --mode ${DEPLOY_ENV}
+RUN npm run build -- --mode ${DEPLOY_ENV}
 
 # 런타임 단계
 FROM nginx:alpine
