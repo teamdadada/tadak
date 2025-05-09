@@ -18,6 +18,9 @@ import SimpleLayout from '@/components/layout/SimpleLayout'
 import ProductDetailPage from '@/pages/ProductPage/ProductDatailPage'
 import KakaoCallback from '@/pages/Account/LoginPage/KakaoCallbackPage'
 import NaverCallback from '@/pages/Account/LoginPage/NaverCallbackPage'
+import KbtiTestPage from '@/pages/KbtiPage/KbtiTestPage'
+import KbtiResultPage from '@/pages/KbtiPage/KbtiResultpage'
+import KbtiStartPage from '@/pages/KbtiPage/KbtiStartPage'
 
 const router = createBrowserRouter([
   {
@@ -30,7 +33,15 @@ const router = createBrowserRouter([
       { path: 'shop', element: <ShopPage /> }, // 쇼핑 페이지
       { path: 'customkeyboard', element: <CustomKeyboardPage /> }, // 커스텀 키보드 제작 페이지
       { path: 'soundtest', element: <SoundTestPage /> }, // 타건샵 페이지
-      { path: 'kbti', element: <KbtiPage /> }, // KBTI 페이지
+      {
+        path: 'kbti',
+        element: <KbtiPage />,
+        children: [
+          { path: '', element: <KbtiStartPage /> },
+          { path: 'test', element: <KbtiTestPage /> },
+          { path: 'result', element: <KbtiResultPage /> },
+        ],
+      }, // KBTI 페이지
       { path: 'product/:type/:id', element: <ProductDetailPage /> }, // 제품 상세 페이지
     ],
   },
