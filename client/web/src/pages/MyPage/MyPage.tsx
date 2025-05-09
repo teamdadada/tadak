@@ -2,13 +2,14 @@ import { useState } from 'react'
 
 import MypageSideTab from './MypageSidebar.tsx'
 import UserProfile from './UserProfile.tsx'
-import UserFavorites from './UserFavorites.tsx'
+import UserLikes from './UserLikes.tsx'
 import UserReview from './UserReview.tsx'
 import UserShoppingHistory from './UserShoppingHistory.tsx'
 import UserCart from './UserCart.tsx'
+import MypageMobileMenuBar from './MypageMobileMenuBar.tsx'
 
 export type MenuType =
-  | '좋아요'
+  | '찜'
   | '장바구니'
   | '회원 정보'
   | '결제 내역'
@@ -23,8 +24,8 @@ const MyPage = () => {
 
   const renderContent = () => {
     switch (selectedMenu) {
-      case '좋아요':
-        return <UserFavorites />
+      case '찜':
+        return <UserLikes />
       case '장바구니':
         return <UserCart />
       case '회원 정보':
@@ -34,19 +35,36 @@ const MyPage = () => {
       case '작성한 리뷰':
         return <UserReview />
       default:
-        return <UserFavorites />
+        return <UserLikes />
     }
   }
 
   return (
-    <div className="container mx-auto flex flex-col md:flex-row min-h-screen">
-      <MypageSideTab
-        selectedMenu={selectedMenu}
-        onMenuChange={handleMenuChange}
-      />
+    <div className="container mx-auto min-h-screen">
+      {/* 모바일 메뉴 */}
+      <div className="md:hidden">
+        <MypageMobileMenuBar
+          selectedMenu={selectedMenu}
+          onMenuChange={handleMenuChange}
+        />
+      </div>
 
-      <div className="flex-1 mt-14 px-6">
-        <h1 className="text-3xl font-bold mb-10 px-3">{selectedMenu}</h1>
+      {/* 데스크탑 레이아웃 */}
+      <div className="hidden md:flex flex-row">
+        <MypageSideTab
+          selectedMenu={selectedMenu}
+          onMenuChange={handleMenuChange}
+        />
+
+        <div className="flex-1 mt-14 px-6">
+          <h1 className="text-3xl font-bold mb-10 px-3">{selectedMenu}</h1>
+          {renderContent()}
+        </div>
+      </div>
+
+      {/* 모바일 컨텐츠 */}
+      <div className="md:hidden mt-4 px-4">
+        <h1 className="text-2xl font-bold mb-6">{selectedMenu}</h1>
         {renderContent()}
       </div>
     </div>

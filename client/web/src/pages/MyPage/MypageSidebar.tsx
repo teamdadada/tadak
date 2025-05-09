@@ -49,14 +49,12 @@ const MypageSidebar = ({ selectedMenu, onMenuChange }: SidebarProps) => {
 
       <div className="flex flex-col mb-6 font-semibold text-[15px]">
         <button
-          onClick={() => onMenuChange('좋아요')}
+          onClick={() => onMenuChange('찜')}
           className={`flex justify-between items-center p-2 rounded ${
-            selectedMenu === '좋아요'
-              ? 'font-bold '
-              : 'bg-white hover:underline'
+            selectedMenu === '찜' ? 'font-bold ' : 'bg-white hover:underline'
           }`}
         >
-          좋아요 3
+          찜 3
         </button>
 
         <button
