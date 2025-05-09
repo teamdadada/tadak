@@ -33,7 +33,7 @@ const SideTab = () => {
     SwitchType.Clicky,
   )
 
-  const [selectedKey, setSelectedKey] = useState<string>('저소음 갈축')
+  const [selectedKey, setSelectedKey] = useState<string>('G PRO 2.0 적축')
 
   const keyList = switchKeyMap[selectedSwitchType]
 
