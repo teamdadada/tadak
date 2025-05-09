@@ -63,10 +63,7 @@ const MyPage = () => {
       </div>
 
       {/* 모바일 컨텐츠 */}
-      <div className="md:hidden mt-4 px-4">
-        <h1 className="text-2xl font-bold mb-6">{selectedMenu}</h1>
-        {renderContent()}
-      </div>
+      <div className="md:hidden mt-8 px-4">{renderContent()}</div>
     </div>
   )
 }
