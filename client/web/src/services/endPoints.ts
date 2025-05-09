@@ -14,21 +14,20 @@ export const AUTH_END_POINT = {
 
 // mainService
 export const MAIN_END_POINT = {
-  POPULAR_ITEMS: (productType: string) => `/api/product/${productType}/popular`,
-  LATEST_ITEMS: (productType: string) => `/api/product/${productType}/latest`,
+  PRODUCT_LIST: '/product/list',
 }
 
 // shopService
 // 예시로 작성해 둔 것이라 필요에 따라 수정 가능
 export const SHOP_END_POINT = {
   FILTER: {
-    BEARBONE: '/api/product/BAREBONE/filter',
-    SWITCH: '/api/product/SWITCH/filter',
-    KEYCAP: '/api/product/KEYCAP/filter',
+    BEARBONE: '/product/BAREBONE/filter',
+    SWITCH: '/product/SWITCH/filter',
+    KEYCAP: '/product/KEYCAP/filter',
   },
   PRODUCT: {
-    LATEST: (type: string) => `/api/product/${type}/latest`,
-    POPULAR: (type: string) => `/api/product/${type}/popular`,
-    DETAIL: (type: string) => `/api/product/${type}`,
+    LATEST: (type: string) => `/product/${type}/latest`,
+    POPULAR: (type: string) => `/product/${type}/popular`,
+    DETAIL: (type: string) => `/product/${type}`,
   },
 }
