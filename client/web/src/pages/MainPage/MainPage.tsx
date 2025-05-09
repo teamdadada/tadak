@@ -13,7 +13,7 @@ import 'swiper/css/navigation'
 
 import Tabs from '@/components/ui/Tabs'
 import ItemCard from '@/components/shop/ItemCard'
-import { fetchPopularItems, fetchLatestItems } from '@/services/mainService'
+import { fetchItems } from '@/services/mainService'
 import { Product } from '@/types/shop'
 // import { getPopularItems, MockItem } from '@/mocks/mockPopularItems'
 // import { getNewItems } from '@/mocks/mockNewItems'
@@ -47,7 +47,7 @@ const bannerSlides = [
   },
 ]
 
-const tabToCategory = ['BAREBONE', 'SWITCH', 'KEYCAP']
+const tabToCategory = ['BAREBONE', 'SWITCH', 'KEYCAP'] as const
 
 const MainPage = () => {
   const [activePopularTab, setActivePopularTab] = useState(1)
@@ -63,9 +63,13 @@ const MainPage = () => {
   } = useQuery<Product[]>({
     queryKey: ['popularItems', activePopularTab],
     queryFn: () =>
-      fetchPopularItems(tabToCategory[activePopularTab], { page: 1, size: 4 }),
+      fetchItems({
+        type: tabToCategory[activePopularTab],
+        sort: 'POPULAR',
+        size: 4,
+      }),
   })
-
+  
   const {
     data: newItems = [],
     isLoading: isNewLoading,
@@ -73,7 +77,11 @@ const MainPage = () => {
   } = useQuery<Product[]>({
     queryKey: ['newItems', activeNewTab],
     queryFn: () =>
-      fetchLatestItems(tabToCategory[activeNewTab], { page: 1, size: 4 }),
+      fetchItems({
+        type: tabToCategory[activeNewTab],
+        sort: 'LATEST',
+        size: 4,
+      }),
   })
 
   // // 탭 인덱스에 따른 카테고리 필터
