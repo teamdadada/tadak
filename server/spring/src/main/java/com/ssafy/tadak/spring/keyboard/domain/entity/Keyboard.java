@@ -31,7 +31,7 @@ public class Keyboard {
     @Column(name = "keyboard_price")
     private Integer price;
 
-    @Column
+    @Column(name = "keyboard_color")
     private String color;
 
     @Column(name = "created_at")
