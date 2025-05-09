@@ -16,3 +16,12 @@ export interface ErrorResponse {
   code: string
   message: string
 }
+
+export interface MyProfile {
+  userUuid: number
+  userId: string
+  userName: string
+  userType: string
+  profileImg: string
+  loginType: string
+}
