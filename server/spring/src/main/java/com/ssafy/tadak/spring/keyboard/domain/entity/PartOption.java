@@ -18,7 +18,7 @@ public class PartOption {
     @Column(name = "part_option_id")
     private Long id;
 
-    @Column(name = "part_id")
+    @Column(nullable = false, name = "part_id")
     private Long partId;
 
     @Column
