@@ -49,6 +49,9 @@ const MyPage = () => {
         />
       </div>
 
+      {/* 모바일 컨텐츠 */}
+      <div className="md:hidden mt-8 px-4">{renderContent()}</div>
+
       {/* 데스크탑 레이아웃 */}
       <div className="hidden md:flex flex-row">
         <MypageSideTab
@@ -61,9 +64,6 @@ const MyPage = () => {
           {renderContent()}
         </div>
       </div>
-
-      {/* 모바일 컨텐츠 */}
-      <div className="md:hidden mt-8 px-4">{renderContent()}</div>
     </div>
   )
 }

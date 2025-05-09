@@ -1,6 +1,7 @@
 // userService
 export const USER_END_POINT = {
   SIGNUP: '/user/signup',
+  ME: '/user/me',
 }
 
 // authService
