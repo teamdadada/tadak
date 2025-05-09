@@ -2,6 +2,8 @@
 FROM node:22-alpine AS builder
 WORKDIR /app
 
+ARG DEPLOY_ENV
+
 # 종속성 설치
 COPY package.json package-lock.json ./
 RUN npm install
