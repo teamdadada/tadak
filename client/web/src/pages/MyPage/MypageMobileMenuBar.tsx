@@ -15,7 +15,6 @@ const MobileMenuBar = ({ selectedMenu, onMenuChange }: MobileMenuBarProps) => {
     '작성한 리뷰',
   ]
 
-  // Lucide 아이콘 매핑
   const renderIcon = (item: MenuType) => {
     const iconProps = {
       className: `${selectedMenu === item ? 'text-tadak-black' : 'text-tadak-dark-gray'}`,
@@ -66,7 +65,6 @@ const MobileMenuBar = ({ selectedMenu, onMenuChange }: MobileMenuBarProps) => {
         </div>
       </div>
 
-      {/* 메뉴 그리드 */}
       <div className="grid grid-cols-5 border-b">
         {mainMenuItems.map((item) => (
           <button
@@ -81,7 +79,7 @@ const MobileMenuBar = ({ selectedMenu, onMenuChange }: MobileMenuBarProps) => {
             <div className="mb-1">{renderIcon(item)}</div>
             <span className="text-xs whitespace-nowrap">{item}</span>
 
-            {/* 배지 (좋아요, 장바구니에만 표시) */}
+            {/* 배지 */}
             {menuBadges[item] && (
               <span className="absolute top-2 right-1/4 bg-tadak-black text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
                 {menuBadges[item]}
