@@ -1,4 +1,4 @@
-import http from './http-common'
+import http, { refreshHttp } from './http-common'
 
 import { AUTH_END_POINT } from './endPoints'
 import { SignInRequest } from '@/types/auth'
@@ -20,16 +20,6 @@ export const checkAuthStatus = async () => {
   return response.status
 }
 
-import axios from 'axios'
-
-const refreshHttp = axios.create({
-  baseURL: 'https://dapi.tadak.kr',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  withCredentials: true,
-})
-
 export const refreshToken = async () => {
   try {
     const response = await refreshHttp.post(AUTH_END_POINT.REISSUE)
@@ -45,4 +35,39 @@ export const refreshToken = async () => {
   } catch (error) {
     return { success: false, error }
   }
+}
+
+export const kakaoLogin = async (code: string) => {
+  const environment = import.meta.env.VITE_ENVIRONMENT
+
+  const response = await http.post(AUTH_END_POINT.KAKAOLOGIN, null, {
+    headers: {
+      'X-Author-Code': code,
+      'X-Environment': environment,
+    },
+  })
+
+  const authHeader = response.headers['authorization']
+  if (authHeader) {
+    const accessToken = authHeader.replace('Bearer ', '').trim()
+    useAuthStore.getState().setAccessToken(accessToken)
+  }
+
+  return response
+}
+
+export const naverLogin = async (code: string) => {
+  const response = await http.post(AUTH_END_POINT.NAVERLOGIN, null, {
+    headers: {
+      'X-Author-Code': code,
+    },
+  })
+
+  const authHeader = response.headers['authorization']
+  if (authHeader) {
+    const accessToken = authHeader.replace('Bearer ', '').trim()
+    useAuthStore.getState().setAccessToken(accessToken)
+  }
+
+  return response
 }
