@@ -45,8 +45,8 @@ const MyPage = () => {
         onMenuChange={handleMenuChange}
       />
 
-      <div className="flex-1 p-6 md:p-10">
-        <h1 className="text-3xl font-bold mb-6 px-2">{selectedMenu}</h1>
+      <div className="flex-1 mt-14 px-6">
+        <h1 className="text-3xl font-bold mb-10 px-3">{selectedMenu}</h1>
         {renderContent()}
       </div>
     </div>
