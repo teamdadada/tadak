@@ -14,16 +14,9 @@ import 'swiper/css/navigation'
 import Tabs from '@/components/ui/Tabs'
 import ItemCard from '@/components/shop/ItemCard'
 import { fetchPopularItems, fetchLatestItems } from '@/services/mainService'
+import { Product } from '@/types/shop'
 // import { getPopularItems, MockItem } from '@/mocks/mockPopularItems'
 // import { getNewItems } from '@/mocks/mockNewItems'
-
-interface ApiItem {
-  productId: number
-  name: string
-  minPrice: number
-  thumbnail: string
-  type: string
-}
 
 const bannerSlides = [
   {
@@ -67,7 +60,7 @@ const MainPage = () => {
     data: popularItems = [],
     isLoading: isPopularLoading,
     error: popularError,
-  } = useQuery<ApiItem[]>({
+  } = useQuery<Product[]>({
     queryKey: ['popularItems', activePopularTab],
     queryFn: () =>
       fetchPopularItems(tabToCategory[activePopularTab], { page: 1, size: 4 }),
@@ -77,7 +70,7 @@ const MainPage = () => {
     data: newItems = [],
     isLoading: isNewLoading,
     error: newError,
-  } = useQuery<ApiItem[]>({
+  } = useQuery<Product[]>({
     queryKey: ['newItems', activeNewTab],
     queryFn: () =>
       fetchLatestItems(tabToCategory[activeNewTab], { page: 1, size: 4 }),
@@ -132,8 +125,8 @@ const MainPage = () => {
                   {slide.subText}
                 </p>
               </div>
-              <div className="flex-1 flex justify-end items-center">
-                <div className="min-w-96 min-h-52 rounded-md flex items-center justify-center text-tadak-gray mb-6">
+              <div className="flex items-center justify-end flex-1">
+                <div className="flex items-center justify-center mb-6 rounded-md min-w-96 min-h-52 text-tadak-gray">
                   이미지 자리
                 </div>
               </div>
@@ -172,15 +165,15 @@ const MainPage = () => {
 
       {/* 지금 인기 있는 타닥템 */}
       <section className="w-full max-w-[1100px] px-4 mb-20">
-        <div className="flex justify-between items-end mb-3">
+        <div className="flex items-end justify-between mb-3">
           <div className="text-xl font-bold text-tadak-black">
             🔥지금 인기 있는 타닥템
           </div>
-          <button className="text-medium text-orange-400 font-medium hover:underline">
+          <button className="font-medium text-orange-400 text-medium hover:underline">
             + 더보기
           </button>
         </div>
-        <p className="text-medium text-tadak-dark-gray font-semibold mb-4 pl-2">
+        <p className="pl-2 mb-4 font-semibold text-medium text-tadak-dark-gray">
           타닥 유저들이 선택한 인기 상품들을 확인해보세요!
         </p>
         <Tabs
@@ -194,23 +187,16 @@ const MainPage = () => {
         <div className="relative min-h-[330px]">
           <div className="grid grid-cols-1 min-[600px]:grid-cols-2 min-[800px]:grid-cols-3 min-[1200px]:grid-cols-4 gap-4 mt-6">
             {isPopularLoading ? (
-              <div className="col-span-full text-center text-gray-500 mt-12">
+              <div className="mt-12 text-center text-gray-500 col-span-full">
                 로딩 중...
               </div>
             ) : popularError ? (
-              <div className="col-span-full text-center text-red-500 mt-12">
+              <div className="mt-12 text-center text-red-500 col-span-full">
                 지금은 불러올 수 없습니다.(오류 발생)
               </div>
             ) : (
               popularItems.map((item) => (
-                <ItemCard
-                  key={item.productId}
-                  id={item.productId}
-                  name={item.name}
-                  price={item.minPrice}
-                  imageUrl={item.thumbnail}
-                  size="md"
-                />
+                <ItemCard key={item.productId} {...item} size="md" />
               ))
             )}
           </div>
@@ -219,15 +205,15 @@ const MainPage = () => {
 
       {/* 따끈따끈, 새로 들어온 타닥템 */}
       <section className="w-full max-w-[1100px] px-4 mb-24">
-        <div className="flex justify-between items-end mb-3">
+        <div className="flex items-end justify-between mb-3">
           <div className="text-xl font-bold text-tadak-black">
             ✨따끈따끈, 새로 들어온 타닥템
           </div>
-          <button className="text-medium text-orange-400 font-medium hover:underline">
+          <button className="font-medium text-orange-400 text-medium hover:underline">
             + 더보기
           </button>
         </div>
-        <p className="text-medium text-tadak-dark-gray font-semibold mb-4 pl-2">
+        <p className="pl-2 mb-4 font-semibold text-medium text-tadak-dark-gray">
           방금 도착한 신상, 타닥에 갓 등록된 상품들을 지금 구경해보세요!
         </p>
         <Tabs
@@ -241,23 +227,16 @@ const MainPage = () => {
         <div className="relative min-h-[330px]">
           <div className="grid grid-cols-1 min-[600px]:grid-cols-2 min-[800px]:grid-cols-3 min-[1200px]:grid-cols-4 gap-2 mt-6">
             {isNewLoading ? (
-              <div className="col-span-full text-center text-gray-500 mt-12">
+              <div className="mt-12 text-center text-gray-500 col-span-full">
                 로딩 중...
               </div>
             ) : newError ? (
-              <div className="col-span-full text-center text-red-500 mt-12">
+              <div className="mt-12 text-center text-red-500 col-span-full">
                 지금은 불러올 수 없습니다.(오류 발생)
               </div>
             ) : (
               newItems.map((item) => (
-                <ItemCard
-                  key={item.productId}
-                  id={item.productId}
-                  name={item.name}
-                  price={item.minPrice}
-                  imageUrl={item.thumbnail}
-                  size="md"
-                />
+                <ItemCard key={item.productId} {...item} size="md" />
               ))
             )}
           </div>
