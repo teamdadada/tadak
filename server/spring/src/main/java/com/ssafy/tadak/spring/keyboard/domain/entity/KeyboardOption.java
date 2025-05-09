@@ -1,0 +1,33 @@
+package com.ssafy.tadak.spring.keyboard.domain.entity;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.Getter;
+
+import java.time.LocalDateTime;
+
+@Entity
+@Table(name = "keyboard_options")
+@Getter
+public class KeyboardOption {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "keyboard_option_id")
+    private Long id;
+
+    @Column(nullable = false, name = "part_option_id")
+    private String partOptionId;
+
+    @Column(nullable = false, name = "keyboard_id")
+    private String keyboardId;
+
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+}
