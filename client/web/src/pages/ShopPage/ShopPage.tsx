@@ -7,6 +7,7 @@ import CategoryTabs from '@/components/shop/CategoryTabs'
 import AsideRecommendation from '@/components/shop/AsideRecommendation'
 import { FilterByType, ProductType } from '@/types/shop'
 import FilterPanel from '@/components/shop/FilterPanel'
+import PageIntroBanner from '@/components/common/PageIntroBanner'
 
 const ShopPage = () => {
   const categories = ['베어본', '스위치', '키캡']
@@ -121,11 +122,13 @@ const ShopPage = () => {
   ]
 
   return (
-    <div className="w-full p-4 mx-auto max-w-7xl">
-      <h1 className="text-2xl font-bold">🛒 쇼핑 페이지</h1>
-      <p>제품을 둘러보고 구매할 수 있습니다.</p>
-      <div className="flex flex-col gap-6 lg:flex-row">
-        <div className="lg:w-[calc(100%-300px)]">
+    <div className="flex flex-col w-full max-w-6xl p-4 mx-auto">
+      <PageIntroBanner
+        title="🛒 쇼핑"
+        description="다양한 제품을 살펴보고, 타닥 유저들의 리뷰로 어떤지 알아보세요!"
+      />
+      <div className="flex flex-col justify-center gap-6 lg:flex-row">
+        <div className="lg:w-[calc(100%-180px)]">
           <CategoryTabs
             items={categories}
             panels={panels}

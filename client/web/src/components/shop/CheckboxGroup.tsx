@@ -22,9 +22,17 @@ const CheckboxGroup = ({
   return (
     <div className="flex flex-col md:flex-row md:items-start md:gap-4">
       <h3 className="mb-1 font-medium min-w-[80px] md:mb-0">{title}</h3>
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap">
         {options.map((option) => (
-          <label key={option} className="flex items-center gap-1">
+          <label
+            key={option}
+            className="flex items-center gap-1"
+            style={{
+              flexBasis: option.length >= 5 ? '150px' : '75px',
+              minWidth: '75px',
+              maxWidth: '150px',
+            }}
+          >
             <input
               type="checkbox"
               value={option}
