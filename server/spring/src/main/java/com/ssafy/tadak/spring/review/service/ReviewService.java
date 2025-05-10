@@ -1,16 +1,18 @@
 package com.ssafy.tadak.spring.review.service;
 
 import com.ssafy.tadak.spring.auth.dto.UserInfo;
+import com.ssafy.tadak.spring.common.enums.SortType;
 import com.ssafy.tadak.spring.review.dto.request.PostReviewRequest;
 import com.ssafy.tadak.spring.review.dto.response.PostReviewResponse;
 import com.ssafy.tadak.spring.review.dto.response.ReviewDetailResponse;
+import com.ssafy.tadak.spring.review.dto.response.ReviewListResponse;
 import com.ssafy.tadak.spring.review.exception.ReviewErrorCode;
+import static com.ssafy.tadak.spring.review.exception.ReviewException.ReviewBadRequestException;
 import static com.ssafy.tadak.spring.review.exception.ReviewException.ReviewNotFoundException;
 import static com.ssafy.tadak.spring.review.exception.ReviewException.ReviewConflictException;
 import static com.ssafy.tadak.spring.review.exception.ReviewException.ReviewForbiddenException;
 import com.ssafy.tadak.spring.review.domain.ReviewRepository;
 import com.ssafy.tadak.spring.review.domain.entity.Review;
-import com.ssafy.tadak.spring.review.exception.ReviewException;
 import com.ssafy.tadak.spring.user.domain.UserRepository;
 import com.ssafy.tadak.spring.user.domain.entity.User;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -36,11 +37,23 @@ public class ReviewService {
     }
 
     @Transactional(readOnly = true)
-    public List<ReviewDetailResponse> getReviewsByProductId(long productId) {
-        List<Review> reviews = reviewRepository.findAllByProductId(productId);
-        return reviews.stream()
-                .map(review -> ReviewDetailResponse.from(review, userRepository.findById(review.getAuthorId()).orElse(null)))
-                .collect(Collectors.toList());
+    public ReviewListResponse getReviewsByProductId(long productId, SortType sortType) {
+        List<Review> reviews = switch (sortType) {
+            case LATEST -> reviewRepository.findAllByProductIdOrderByReviewIdDesc(productId);
+            case SCORE -> reviewRepository.findAllByProductIdOrderByScoreDesc(productId);
+            default -> throw new ReviewBadRequestException(ReviewErrorCode.REVIEW_BAD_SORTTYPE);
+        };
+
+        List<ReviewDetailResponse> reviewsResponseList = reviews.stream()
+                .map(review -> ReviewDetailResponse.from(
+                        review,
+                        userRepository.findById(review.getAuthorId())
+                                .orElse(null
+                        )))
+                .toList();
+        return ReviewListResponse.from(
+                reviewsResponseList
+        );
     }
 
     @Transactional

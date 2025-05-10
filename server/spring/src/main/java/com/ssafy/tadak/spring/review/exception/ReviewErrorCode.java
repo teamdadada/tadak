@@ -5,6 +5,10 @@ import lombok.Getter;
 
 @Getter
 public enum ReviewErrorCode {
+    // 400
+    REVIEW_BAD_REQUEST("R4000", "요청을 처리하는 데 필요한 인자가 잘못되었습니다."),
+    REVIEW_BAD_SORTTYPE("R4001", "잘못된 정렬 인자가 전달되었습니다."),
+
     // 403
     REVIEW_IS_NOT_MINE("R4030", "본인이 작성한 리뷰가 아닙니다."),
 

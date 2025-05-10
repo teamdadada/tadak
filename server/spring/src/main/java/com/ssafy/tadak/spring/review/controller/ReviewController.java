@@ -2,16 +2,16 @@ package com.ssafy.tadak.spring.review.controller;
 
 import com.ssafy.tadak.spring.auth.dto.UserInfo;
 import com.ssafy.tadak.spring.common.annotation.AuthUser;
+import com.ssafy.tadak.spring.common.enums.SortType;
 import com.ssafy.tadak.spring.review.dto.request.PostReviewRequest;
 import com.ssafy.tadak.spring.review.dto.response.PostReviewResponse;
 import com.ssafy.tadak.spring.review.dto.response.ReviewDetailResponse;
+import com.ssafy.tadak.spring.review.dto.response.ReviewListResponse;
 import com.ssafy.tadak.spring.review.service.ReviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -28,13 +28,13 @@ public class ReviewController {
     }
 
     @GetMapping("/list/{product_id}")
-    public ResponseEntity<List<ReviewDetailResponse>> getReviewsByProductId(
+    public ResponseEntity<ReviewListResponse> getReviewsByProductId(
             @PathVariable("product_id") Long productId,
             @RequestParam(name = "cursor", required = false) String cursor,
             @RequestParam(name = "size",  defaultValue = "10") int size,
-            @RequestParam(name = "sort",  defaultValue = "LATEST") String sort
+            @RequestParam(name = "sort",  defaultValue = "LATEST") SortType sort
     ) {
-        return ResponseEntity.ok(reviewService.getReviewsByProductId(productId));
+        return ResponseEntity.ok(reviewService.getReviewsByProductId(productId, sort));
     }
 
     @DeleteMapping("/{review_id}")

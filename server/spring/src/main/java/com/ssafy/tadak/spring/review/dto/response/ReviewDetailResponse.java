@@ -6,6 +6,7 @@ import com.ssafy.tadak.spring.user.domain.entity.User;
 import java.util.List;
 
 public record ReviewDetailResponse(
+        long reviewId,
         long productId,
         String content,
         int score,
@@ -14,6 +15,7 @@ public record ReviewDetailResponse(
 ) {
     public static ReviewDetailResponse from(Review review, User user) {
         return new ReviewDetailResponse(
+                review.getReviewId(),
                 review.getProductId(),
                 review.getContent(),
                 review.getScore(),
