@@ -1,30 +1,54 @@
 package com.ssafy.tadak.spring.review.service;
 
 import com.ssafy.tadak.spring.auth.dto.UserInfo;
-import com.ssafy.tadak.spring.common.annotation.AuthUser;
 import com.ssafy.tadak.spring.review.dto.request.PostReviewRequest;
 import com.ssafy.tadak.spring.review.dto.response.PostReviewResponse;
 import com.ssafy.tadak.spring.review.dto.response.ReviewDetailResponse;
 import com.ssafy.tadak.spring.review.exception.ReviewErrorCode;
 import static com.ssafy.tadak.spring.review.exception.ReviewException.ReviewNotFoundException;
 import static com.ssafy.tadak.spring.review.exception.ReviewException.ReviewConflictException;
-import com.ssafy.tadak.spring.review.repository.ReviewRepository;
-import com.ssafy.tadak.spring.review.repository.entity.Review;
+import static com.ssafy.tadak.spring.review.exception.ReviewException.ReviewForbiddenException;
+import com.ssafy.tadak.spring.review.domain.ReviewRepository;
+import com.ssafy.tadak.spring.review.domain.entity.Review;
+import com.ssafy.tadak.spring.review.exception.ReviewException;
+import com.ssafy.tadak.spring.user.domain.UserRepository;
+import com.ssafy.tadak.spring.user.domain.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class ReviewService {
 
     private final ReviewRepository reviewRepository;
+    private final UserRepository userRepository;
 
+    @Transactional(readOnly = true)
     public ReviewDetailResponse getReviewById(long reviewId) {
-        return ReviewDetailResponse.from(findById(reviewId));
+        Review r = findById(reviewId);
+        User u = userRepository.findById(r.getAuthorId())
+                .orElse(null);
+        return mapReviewAndUserInfo(r, u);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ReviewDetailResponse> getReviewsByProductId(long productId) {
+        List<Review> reviews = reviewRepository.findAllByProductId(productId);
+        return reviews.stream()
+                .map(review -> ReviewDetailResponse.from(review, userRepository.findById(review.getAuthorId()).orElse(null)))
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void deleteReviewById(long reviewId, UserInfo userInfo) {
+        Review review = findById(reviewId);
+        if (review.getAuthorId() != userInfo.id().longValue())
+            throw new ReviewForbiddenException(ReviewErrorCode.REVIEW_IS_NOT_MINE);
+        reviewRepository.delete(review);
     }
 
     @Transactional
@@ -46,6 +70,10 @@ public class ReviewService {
     private Review findById(Long reviewId) {
         return reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new ReviewNotFoundException(ReviewErrorCode.REVIEW_NOT_FOUND));
+    }
+
+    private ReviewDetailResponse mapReviewAndUserInfo(Review review, User user) {
+        return ReviewDetailResponse.from(review, user);
     }
 
     private Review findByProductIdAndUserId(Long productId, long userId) {

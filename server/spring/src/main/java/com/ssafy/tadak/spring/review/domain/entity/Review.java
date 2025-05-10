@@ -1,4 +1,4 @@
-package com.ssafy.tadak.spring.review.repository.entity;
+package com.ssafy.tadak.spring.review.domain.entity;
 
 import com.ssafy.tadak.spring.auth.dto.UserInfo;
 import com.ssafy.tadak.spring.review.dto.request.PostReviewRequest;
@@ -6,7 +6,6 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;

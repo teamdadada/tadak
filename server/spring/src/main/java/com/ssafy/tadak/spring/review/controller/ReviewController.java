@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/review")
@@ -26,13 +28,22 @@ public class ReviewController {
     }
 
     @GetMapping("/list/{product_id}")
-    public ResponseEntity<Void> getReviewsByProductId(
+    public ResponseEntity<List<ReviewDetailResponse>> getReviewsByProductId(
             @PathVariable("product_id") Long productId,
             @RequestParam(name = "cursor", required = false) String cursor,
             @RequestParam(name = "size",  defaultValue = "10") int size,
             @RequestParam(name = "sort",  defaultValue = "LATEST") String sort
     ) {
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(reviewService.getReviewsByProductId(productId));
+    }
+
+    @DeleteMapping("/{review_id}")
+    public ResponseEntity<Void> deleteReviewById(
+            @PathVariable("review_id") Long reviewId,
+            @AuthUser UserInfo userInfo
+    ) {
+        reviewService.deleteReviewById(reviewId, userInfo);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @PostMapping("/{product_id}")

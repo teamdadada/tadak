@@ -1,15 +1,16 @@
-package com.ssafy.tadak.spring.review.repository;
+package com.ssafy.tadak.spring.review.domain;
 
-import com.ssafy.tadak.spring.review.repository.entity.Review;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import com.ssafy.tadak.spring.review.domain.entity.Review;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, Long> {
 
     Optional<Review> findByProductIdAndAuthorId(Long productId, Long authorId);
+
+    List<Review> findAllByProductId(long productId);
 }
