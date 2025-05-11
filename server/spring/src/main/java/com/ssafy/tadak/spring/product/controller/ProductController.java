@@ -1,15 +1,12 @@
 package com.ssafy.tadak.spring.product.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.ssafy.tadak.spring.product.dto.request.ProductsCursorRequest;
 import com.ssafy.tadak.spring.product.dto.request.list.BareboneListRequest;
 import com.ssafy.tadak.spring.product.dto.request.list.KeycapListRequest;
-import com.ssafy.tadak.spring.product.dto.request.list.ProductListRequest;
 import com.ssafy.tadak.spring.product.dto.request.list.SwitchListRequest;
 import com.ssafy.tadak.spring.product.dto.response.filter.ProductFilterResponse;
 import com.ssafy.tadak.spring.product.dto.response.list.ProductListResponse;
 import com.ssafy.tadak.spring.product.service.ProductService;
-import com.ssafy.tadak.spring.product.util.enums.SortType;
+import com.ssafy.tadak.spring.common.enums.SortType;
 import org.springframework.http.ResponseEntity;
 
 import com.ssafy.tadak.spring.product.dto.response.detail.ProductDetailResponse;

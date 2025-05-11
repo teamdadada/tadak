@@ -2,10 +2,9 @@ package com.ssafy.tadak.spring.product.domain.repository;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ssafy.tadak.spring.product.domain.entity.Product;
-import com.ssafy.tadak.spring.product.domain.entity.Switch;
+import com.ssafy.tadak.spring.product.exception.errorCode.ProductErrorCode;
 import com.ssafy.tadak.spring.product.util.enums.ProductType;
-import com.ssafy.tadak.spring.product.util.enums.SortType;
+import com.ssafy.tadak.spring.common.enums.SortType;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.bson.Document;
@@ -14,9 +13,9 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
+import static com.ssafy.tadak.spring.product.exception.exception.ProductException.ProductBadRequestException;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Repository
 @RequiredArgsConstructor
@@ -40,6 +39,7 @@ public class ProductRepositoryCustom {
         String sortKey = switch (sortType) {
             case LATEST -> "latest_sort_key";
             case POPULAR -> "popular_sort_key";
+            default -> throw new ProductBadRequestException(ProductErrorCode.PRODUCT_BAD_SORTTYPE);
         };
 
         if (cursor != null && !cursor.isBlank()) {
