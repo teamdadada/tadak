@@ -42,6 +42,10 @@ dependencies {
 
     // Jackson
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+
+    // MinIO
+    implementation 'io.minio:minio:8.5.17'
+
 }
 
 tasks.named('test') {
