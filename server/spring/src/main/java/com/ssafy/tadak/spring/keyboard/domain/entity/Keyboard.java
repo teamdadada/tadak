@@ -5,10 +5,13 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "keyboards")
@@ -21,6 +24,9 @@ public class Keyboard {
 
     @Column(nullable = false, name = "user_id")
     private Long userId;
+
+    @Column(name = "cart_id")
+    private Long cartId;
 
     @Column(nullable = false, name = "keyboard_name")
     private String name;
@@ -39,4 +45,7 @@ public class Keyboard {
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    @OneToMany (mappedBy = "part_option_id")
+    private List<PartOption> partOptions;
 }

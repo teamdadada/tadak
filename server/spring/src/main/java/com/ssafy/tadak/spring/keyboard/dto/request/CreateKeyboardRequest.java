@@ -6,7 +6,8 @@ public record CreateKeyboardRequest (
         String keyboardName,
         MultipartFile keyboardImage,
         Integer keyboardPrice,
-        String keyboardColor
-        //todo: 옵션도 받아오기
+        String keyboardColor,
+        Integer partType,
+        Integer partOptionId
 ){
 }
