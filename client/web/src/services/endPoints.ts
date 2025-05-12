@@ -27,8 +27,7 @@ export const SHOP_END_POINT = {
     KEYCAP: '/product/KEYCAP/filter',
   },
   PRODUCT: {
-    LATEST: (type: string) => `/product/${type}/latest`,
-    POPULAR: (type: string) => `/product/${type}/popular`,
+    LIST: '/product/list',
     DETAIL: (type: string) => `/product/${type}`,
   },
 }

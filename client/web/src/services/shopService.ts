@@ -11,9 +11,9 @@ import { SHOP_END_POINT } from './endPoints'
 // import { ProductDetail } from '@/types/product'
 import {
   BareboneFilter,
-  FilterByType,
+  ProductListResponse,
+  // FilterByType,
   KeycapFilter,
-  Product,
   ProductType,
   SwitchFilter,
 } from '@/types/shop'
@@ -38,28 +38,40 @@ export const getKeycapFilters = async (): Promise<KeycapFilter> => {
   // return new Promise((resolve) => setTimeout(() => resolve(keycapMock), 300))
 }
 
-export const getLatestProducts = async (
-  type: ProductType,
-  page: number = 1,
-  size: number = 5,
-  filters: FilterByType<ProductType> = {} as FilterByType<ProductType>,
-): Promise<Product[]> => {
-  const { data } = await http.get(SHOP_END_POINT.PRODUCT.LATEST(type), {
-    params: { page, size, ...filters },
-  })
-  return data
-}
+export const getProducts = async ({
+  type,
+  cursor = null,
+  size = 10,
+  sort = 'LATEST',
+  ...filters
+}: {
+  type: ProductType
+  cursor?: string | null
+  size?: number
+  sort?: 'LATEST' | 'POPULAR'
+}): Promise<ProductListResponse> => {
+  const { data } = await http.get(SHOP_END_POINT.PRODUCT.LIST, {
+    params: { type, cursor, size, sort, ...filters },
+    paramsSerializer: (params) => {
+      const searchParams = new URLSearchParams()
 
-export const getPopularProducts = async (
-  type: ProductType,
-  page: number = 1,
-  size: number = 5,
-  filters: FilterByType<ProductType> = {} as FilterByType<ProductType>,
-): Promise<Product[]> => {
-  const { data } = await http.get(SHOP_END_POINT.PRODUCT.POPULAR(type), {
-    params: { page, size, ...filters },
+      Object.entries(params).forEach(([key, value]) => {
+        if (Array.isArray(value)) {
+          // 배열의 각 요소를 같은 키로 반복하여 직렬화 (리핏 방식)
+          value.forEach((v) => searchParams.append(key, v))
+        } else if (value !== undefined && value !== null) {
+          searchParams.append(key, value as string)
+        }
+      })
+
+      return searchParams.toString()
+    },
   })
-  return data
+  return {
+    list: data.list, // 서버에서 list로 받아온 데이터를 그대로 사용
+    hasNext: data.hasNext, // 서버의 hasNext 값을 그대로 사용
+    lastCursor: data.lastCursor, // 서버의 lastCursor를 그대로 사용
+  }
 }
 
 export const getProductDetail = async (

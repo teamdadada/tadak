@@ -13,6 +13,12 @@ export interface Product {
   liked?: boolean
 }
 
+export interface ProductListResponse {
+  list: Product[]
+  hasNext: boolean
+  lastCursor: string | null
+}
+
 // export interface ProductListResponse {
 //   content: Product[]
 //   totalPages: number
