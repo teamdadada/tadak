@@ -15,9 +15,11 @@ interface UserState {
   clearUser: () => void
 
   // Computed Values
-  isLoggedIn: boolean
-  userName?: string
-  profileImage?: string
+  getIsLoggedIn: () => boolean
+  getUserId: () => string | undefined
+  getUserName: () => string | undefined
+  getProfileImage: () => string | undefined
+  getLoginType: () => string | undefined
 }
 
 const initialState = {
@@ -47,15 +49,11 @@ export const useUserStore = create<UserState>()(
         })
       },
 
-      get isLoggedIn() {
-        return !!get().user
-      },
-      get userName() {
-        return get().user?.userName
-      },
-      get profileImage() {
-        return get().user?.profileImg
-      },
+      getIsLoggedIn: () => !!get().user,
+      getUserId: () => get().user?.userId,
+      getUserName: () => get().user?.userName,
+      getProfileImage: () => get().user?.profileImg,
+      getLoginType: () => get().user?.loginType,
     })),
     {
       name: 'user-storage',

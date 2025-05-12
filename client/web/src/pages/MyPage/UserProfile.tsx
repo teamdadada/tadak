@@ -1,10 +1,27 @@
 import FormField from '@/components/mypage/FormField'
 import { Button } from '@/components/ui/button'
+import { useUserStore } from '@/store/userStore'
 
 import { useState } from 'react'
 
+const getLoginTypeDisplay = (type: string | undefined) => {
+  switch (type) {
+    case 'KAKAO':
+      return '카카오'
+    case 'NAVER':
+      return '네이버'
+    default:
+      return '타닥 서비스'
+  }
+}
+
 const UserProfile = () => {
-  const userId = 'ebeleey'
+  const getUserId = useUserStore((s) => s.getUserId)
+  const getLoginType = useUserStore((s) => s.getLoginType)
+
+  const userId = getUserId()
+  const loginType = getLoginTypeDisplay(getLoginType())
+
   const [currentPassword, setCurrentPassword] = useState('')
   const [newPassword, setNewPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
@@ -12,7 +29,10 @@ const UserProfile = () => {
   return (
     <div className="flex flex-col gap-8 mb-7">
       <div className="flex flex-col gap-1">
-        <h2 className="text-xl font-bold">로그인 정보</h2>
+        <div className="flex gap-3 items-end">
+          <h2 className="text-xl font-bold">로그인 정보</h2>
+          <p className="text-sm pb-[1px]">{loginType}로 가입한 계정이예요.</p>
+        </div>
         <hr className="border-tadak-black " />
         <div className="flex flex-col px-8 py-5">
           <FormField
