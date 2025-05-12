@@ -8,8 +8,18 @@ import { toast } from 'sonner'
 export const useSignIn = () => {
   const { mutateAsync } = useMutation({
     mutationFn: signIn,
-    onSuccess: () => {
-      toast.success('로그인 성공! 🧡')
+    onSuccess: async (accessToken) => {
+      if (!accessToken) {
+        toast.error('로그인에 실패하였습니다.')
+        return
+      }
+
+      try {
+        toast.success('로그인 성공!')
+      } catch (e) {
+        console.error('getUserInfo 에러 발생:', e)
+        toast.error('사용자 정보를 가져오는데 실패했습니다.')
+      }
     },
     onError: (error: AxiosError<ErrorResponse>) => {
       const status = error.response?.status

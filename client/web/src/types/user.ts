@@ -17,7 +17,7 @@ export interface ErrorResponse {
   message: string
 }
 
-export interface MyProfile {
+export interface User {
   userUuid: number
   userId: string
   userName: string
