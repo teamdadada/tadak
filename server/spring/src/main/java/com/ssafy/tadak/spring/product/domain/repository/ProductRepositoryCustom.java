@@ -2,6 +2,9 @@ package com.ssafy.tadak.spring.product.domain.repository;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ssafy.tadak.spring.product.domain.entity.Product;
+import com.ssafy.tadak.spring.product.domain.entity.Switch;
+import com.ssafy.tadak.spring.product.dto.response.list.ProductSimpleDto;
 import com.ssafy.tadak.spring.product.exception.errorCode.ProductErrorCode;
 import com.ssafy.tadak.spring.product.util.enums.ProductType;
 import com.ssafy.tadak.spring.common.enums.SortType;
@@ -48,6 +51,30 @@ public class ProductRepositoryCustom {
 
         query.with(Sort.by(Sort.Direction.DESC, sortKey));
         List<Document> specs = mongoTemplate.find(query, Document.class, collection);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        List<Map<String, Object>> specMaps = specs.stream()
+                .map(doc -> objectMapper.convertValue(doc, new TypeReference<Map<String, Object>>() {}))
+                .toList();
+
+        return specMaps;
+    }
+
+    public List<Map<String, Object>> findByIds(List<Long> ids) {
+        List<Document> barebones = mongoTemplate.find(
+                Query.query(Criteria.where("product_id").in(ids)), Document.class, "barebone_specs");
+        List<Document> switches = mongoTemplate.find(
+                Query.query(Criteria.where("product_id").in(ids)), Document.class, "switches_specs");
+        List<Document> keycaps = mongoTemplate.find(
+                Query.query(Criteria.where("product_id").in(ids)), Document.class, "keycaps_specs");
+        barebones.forEach(doc -> doc.put("type", "BAREBONE"));
+        switches.forEach(doc -> doc.put("type", "SWITCH"));
+        keycaps.forEach(doc -> doc.put("type", "KEYCAP"));
+
+        List<Document> specs = new ArrayList<>();
+        specs.addAll(barebones);
+        specs.addAll(switches);
+        specs.addAll(keycaps);
 
         ObjectMapper objectMapper = new ObjectMapper();
         List<Map<String, Object>> specMaps = specs.stream()
