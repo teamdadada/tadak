@@ -45,6 +45,7 @@ fun Route.userRoutes() {
                     it[userId] = request.userId
                     it[userPassword] = hashedPassword
                     it[userName] = request.nickname
+                    it[loginType] = "TADAK"
                 }
             }
 
