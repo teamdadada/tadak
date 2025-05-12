@@ -57,7 +57,8 @@ export const getProducts = async ({
 
       Object.entries(params).forEach(([key, value]) => {
         if (Array.isArray(value)) {
-          value.forEach((v) => searchParams.append(`${key}[]`, v))
+          // 배열의 각 요소를 같은 키로 반복하여 직렬화 (리핏 방식)
+          value.forEach((v) => searchParams.append(key, v))
         } else if (value !== undefined && value !== null) {
           searchParams.append(key, value as string)
         }
