@@ -14,23 +14,23 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Slf4j
 public class MinioService {
-    private final int URL_EXPIRE = 3600;
+    private final int URL_EXPIRE = 600;
 
     private final MinioUtil minioUtil;
 
-    public String uploadFile(MultipartFile file) throws Exception {
+    public String uploadFile(MultipartFile file, boolean isPublic) throws Exception {
         String fileName = "uploads/" + UUID.randomUUID() + "_" + file.getOriginalFilename();
         try {
-            minioUtil.uploadFile(fileName, file);
+            minioUtil.uploadFile(fileName, file, isPublic);
             return fileName;
         } catch (Exception e) {
             throw new RuntimeException("업로드 실패: "+e.getMessage());
         }
     }
 
-    public String deleteFile(String fileName) throws Exception {
+    public String deleteFile(String fileName, boolean isPublic) throws Exception {
         try {
-            minioUtil.deleteFile(fileName);
+            minioUtil.deleteFile(fileName, isPublic);
             return "삭제 완료: " + fileName;
         } catch (Exception e) {
             throw new RuntimeException("삭제 실패: "+e.getMessage());

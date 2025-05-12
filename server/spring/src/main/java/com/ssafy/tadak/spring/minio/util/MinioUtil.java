@@ -24,11 +24,14 @@ import java.util.concurrent.TimeUnit;
 public class MinioUtil {
     private final MinioClient minioClient;
 
-    @Value("${minio.bucket}")
-    private String bucket;
+    @Value("${minio.public-bucket}")
+    private String publicBucket;
+
+    @Value("${minio.private-bucket}")
+    private String privateBucket;
 
     /** 버킷이 존재하는지 확인 후 없으면 생성 **/
-    public void checkAndCreateBucket() throws Exception {
+    public void checkAndCreateBucket(String bucket) throws Exception {
         boolean isExist = minioClient.bucketExists(
                 BucketExistsArgs.builder().bucket(bucket).build()
         );
@@ -41,7 +44,13 @@ public class MinioUtil {
     }
 
     /** 파일 업로드 **/
-    public void uploadFile(String fileName, MultipartFile file) throws Exception {
+    public void uploadFile(
+            String fileName,
+            MultipartFile file,
+            boolean isPublic
+    ) throws Exception {
+        String bucket = isPublic ? publicBucket : privateBucket;
+
         InputStream input = null;
         try{
             input = file.getInputStream();
@@ -64,7 +73,7 @@ public class MinioUtil {
     public String getPresignedUrl(String objectName, int expiresInSeconds) throws Exception {
         return minioClient.getPresignedObjectUrl(
                 GetPresignedObjectUrlArgs.builder()
-                        .bucket(bucket)
+                        .bucket(privateBucket)
                         .object(objectName)
                         .method(Method.GET)
                         .expiry(expiresInSeconds, TimeUnit.SECONDS)
@@ -73,7 +82,9 @@ public class MinioUtil {
     }
 
     /** 파일 삭제 **/
-    public void deleteFile(String fileName) throws Exception{
+    public void deleteFile(String fileName, boolean isPublic) throws Exception{
+        String bucket = isPublic ? publicBucket : privateBucket;
+
         minioClient.statObject(
                 StatObjectArgs.builder()
                         .bucket(bucket)
@@ -90,7 +101,9 @@ public class MinioUtil {
     }
 
     /** 파일 여러개 삭제 **/
-    public void deleteFiles(List<String> fileNames){
+    public void deleteFiles(List<String> fileNames, boolean isPublic) throws Exception{
+        String bucket = isPublic ? publicBucket : privateBucket;
+
         List<DeleteObject> objects = fileNames.stream()
                 .map(DeleteObject::new)
                 .toList();
