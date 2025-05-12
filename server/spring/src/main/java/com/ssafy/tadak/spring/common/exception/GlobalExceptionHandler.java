@@ -10,6 +10,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.stream.Collectors;
 
@@ -86,6 +87,23 @@ public class GlobalExceptionHandler {
         exception.printStackTrace();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new ErrorResponse("400", errorMessage));
+    }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<ErrorResponse> handleNoResourceFound(
+            NoResourceFoundException exception,
+            HttpServletRequest request
+    ) {
+        log.warn(
+                LOG_FORMAT,
+                request.getMethod(),
+                request.getRequestURI(),
+                exception.getClass().getSimpleName(),
+                HttpStatus.NOT_FOUND,
+                "정적 리소스를 찾을 수 없습니다."
+        );
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse("404", "정적 리소스를 찾을 수 없습니다."));
     }
 
     @ExceptionHandler(Exception.class)
