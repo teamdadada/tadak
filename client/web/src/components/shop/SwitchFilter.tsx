@@ -29,7 +29,7 @@ const SwitchFilter = ({ selected, onChange }: SwitchFilterProps) => {
           title="스위치 방식"
           options={data.switchType}
           selected={selected.switchType ?? []}
-          onChange={(val) => onChange({ ...selected, switchType: val })}
+          onChange={(next) => onChange({ ...selected, switchType: Array.isArray(next) ? next : [next], })}
         />
       )} */}
       {data.keyForce && (
@@ -37,7 +37,12 @@ const SwitchFilter = ({ selected, onChange }: SwitchFilterProps) => {
           title="키압"
           options={data.keyForce}
           selected={selected.keyForce ?? []}
-          onChange={(val) => onChange({ ...selected, keyForce: val })}
+          onChange={(next) =>
+            onChange({
+              ...selected,
+              keyForce: Array.isArray(next) ? next : [next],
+            })
+          }
         />
       )}
       {data.quantity && (
@@ -45,7 +50,12 @@ const SwitchFilter = ({ selected, onChange }: SwitchFilterProps) => {
           title="개수"
           options={data.quantity}
           selected={selected.quantity ?? []}
-          onChange={(val) => onChange({ ...selected, quantity: val })}
+          onChange={(next) =>
+            onChange({
+              ...selected,
+              quantity: Array.isArray(next) ? next : [next],
+            })
+          }
         />
       )}
       <PriceFilter

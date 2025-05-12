@@ -29,7 +29,12 @@ const KeycapFilter = ({ selected, onChange }: KeycapFilterProps) => {
           title="재질"
           options={data.keycapMaterial}
           selected={selected.keycapMaterial ?? []}
-          onChange={(val) => onChange({ ...selected, keycapMaterial: val })}
+          onChange={(next) =>
+            onChange({
+              ...selected,
+              keycapMaterial: Array.isArray(next) ? next : [next],
+            })
+          }
         />
       )}
       {/* {data.engravingPosition && (
@@ -37,7 +42,7 @@ const KeycapFilter = ({ selected, onChange }: KeycapFilterProps) => {
           title="각인 위치"
           options={data.engravingPosition}
           selected={selected.engravingPosition ?? []}
-          onChange={(val) => onChange({ ...selected, engravingPosition: val })}
+          onChange={(next) => onChange({ ...selected, engravingPosition: Array.isArray(next) ? next : [next], })}
         />
       )} */}
       {data.keyCount && (
@@ -45,7 +50,12 @@ const KeycapFilter = ({ selected, onChange }: KeycapFilterProps) => {
           title="키 수"
           options={data.keyCount}
           selected={selected.keyCount ?? []}
-          onChange={(val) => onChange({ ...selected, keyCount: val })}
+          onChange={(next) =>
+            onChange({
+              ...selected,
+              keyCount: Array.isArray(next) ? next : [next],
+            })
+          }
         />
       )}
       <PriceFilter

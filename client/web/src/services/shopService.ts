@@ -52,6 +52,19 @@ export const getProducts = async ({
 }): Promise<{ products: Product[]; nextCursor: string | null }> => {
   const { data } = await http.get(SHOP_END_POINT.PRODUCT.LIST, {
     params: { type, cursor, size, sort, ...filters },
+    paramsSerializer: (params) => {
+      const searchParams = new URLSearchParams()
+
+      Object.entries(params).forEach(([key, value]) => {
+        if (Array.isArray(value)) {
+          value.forEach((v) => searchParams.append(`${key}[]`, v))
+        } else if (value !== undefined && value !== null) {
+          searchParams.append(key, value as string)
+        }
+      })
+
+      return searchParams.toString()
+    },
   })
   return data
 }
