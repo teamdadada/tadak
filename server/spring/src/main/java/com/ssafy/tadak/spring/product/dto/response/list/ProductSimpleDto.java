@@ -1,9 +1,8 @@
 package com.ssafy.tadak.spring.product.dto.response.list;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.ssafy.tadak.spring.product.domain.entity.Product;
 import com.ssafy.tadak.spring.product.util.enums.ProductType;
-import com.ssafy.tadak.spring.product.util.enums.SortType;
+import com.ssafy.tadak.spring.common.enums.SortType;
 
 import java.util.Map;
 
