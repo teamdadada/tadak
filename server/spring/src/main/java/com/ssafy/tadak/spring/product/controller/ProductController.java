@@ -3,6 +3,7 @@ package com.ssafy.tadak.spring.product.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ssafy.tadak.spring.auth.dto.UserInfo;
 import com.ssafy.tadak.spring.common.annotation.AuthUser;
+import com.ssafy.tadak.spring.common.enums.SortType;
 import com.ssafy.tadak.spring.product.dto.request.ProductsCursorRequest;
 import com.ssafy.tadak.spring.product.dto.request.list.BareboneListRequest;
 import com.ssafy.tadak.spring.product.dto.request.list.KeycapListRequest;
