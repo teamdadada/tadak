@@ -2,6 +2,10 @@ package com.ssafy.tadak.spring.common.resolver;
 
 import com.ssafy.tadak.spring.auth.dto.UserInfo;
 import com.ssafy.tadak.spring.common.annotation.AuthUser;
+import com.ssafy.tadak.spring.common.exception.ErrorCode;
+import com.ssafy.tadak.spring.common.exception.status.BadRequestException;
+import com.ssafy.tadak.spring.common.exception.status.UnauthorizedException;
+import com.ssafy.tadak.spring.product.exception.exception.ProductDetailNotFoundException;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -27,7 +31,7 @@ public class UserInfoArgumentResolver implements HandlerMethodArgumentResolver {
         String role =  webRequest.getHeader("X-User-Type");
 
         if(userId == null){
-            return null;
+            throw new UnauthorizedException(new ErrorCode("B4015", "인증되지 않은 요청입니다."));
         }
 
         return new UserInfo(Integer.parseInt(userId), nickname, role);
