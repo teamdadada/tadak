@@ -23,6 +23,6 @@ public class PartType{
     @Column
     private String type;
 
-    @OneToMany(mappedBy = "part_option_id")
+    @OneToMany(mappedBy = "partType")
     List<PartOption> options;
 }

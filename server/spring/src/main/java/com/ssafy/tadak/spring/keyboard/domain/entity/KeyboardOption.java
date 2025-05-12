@@ -9,13 +9,17 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "keyboard_options")
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class KeyboardOption {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,4 +39,13 @@ public class KeyboardOption {
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    @Builder
+    public KeyboardOption(
+            Keyboard keyboard,
+            PartOption partOption
+    ) {
+        this.keyboard = keyboard;
+        this.partOption = partOption;
+    }
 }

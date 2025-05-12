@@ -5,10 +5,12 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,6 +18,7 @@ import java.util.List;
 @Entity
 @Table(name = "keyboards")
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Keyboard {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -46,6 +49,23 @@ public class Keyboard {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @OneToMany (mappedBy = "part_option_id")
-    private List<PartOption> partOptions;
+    @OneToMany (mappedBy = "keyboard")
+    private List<KeyboardOption> keyboardOptions;
+
+    @Builder
+    public Keyboard(
+            Long userId,
+            Long cartId,
+            String name,
+            String imageUrl,
+            Integer price,
+            String color
+    ) {
+        this.userId = userId;
+        this.cartId = cartId;
+        this.name = name;
+        this.imageUrl = imageUrl;
+        this.price = price;
+        this.color = color;
+    }
 }
