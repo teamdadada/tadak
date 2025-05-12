@@ -55,7 +55,7 @@ export const useNaverLogin = () => {
   const navigate = useNavigate()
   const setUser = useUserStore((state) => state.setUser)
 
-  const login = async (code: string) => {
+  const login = async (code: string, redirectPath: string) => {
     if (isProcessingRef.current) return
     isProcessingRef.current = true
 
@@ -73,7 +73,7 @@ export const useNaverLogin = () => {
       }
 
       toast.success('네이버 로그인 성공!')
-      navigate('/main', { replace: true })
+      navigate(redirectPath, { replace: true })
     } catch (err) {
       console.error('네이버 로그인 오류:', err)
       toast.error('로그인 중 문제가 발생했습니다.')
@@ -89,7 +89,7 @@ export const useKakaoLogin = () => {
   const navigate = useNavigate()
   const setUser = useUserStore((state) => state.setUser)
 
-  const login = async (code: string) => {
+  const login = async (code: string, redirectPath: string) => {
     if (isProcessingRef.current) return
     isProcessingRef.current = true
 
@@ -107,7 +107,7 @@ export const useKakaoLogin = () => {
       }
 
       toast.success('카카오 로그인 성공!')
-      navigate('/main', { replace: true })
+      navigate(redirectPath, { replace: true })
     } catch (err) {
       console.error('카카오 로그인 오류:', err)
       toast.error('로그인 중 문제가 발생했습니다.')

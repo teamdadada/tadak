@@ -1,12 +1,19 @@
 import { Button } from '@/components/ui/button'
+import { LoginProps } from './ServiceLogin'
 
-const NaverLogin = () => {
+const NaverLogin = ({ from }: LoginProps) => {
   const handleNaverLogin = () => {
     const REST_API_KEY = import.meta.env.VITE_NAVER_REST_API_KEY
     const REDIRECT_URI = import.meta.env.VITE_NAVER_REDIRECT_URI
+    const state = encodeURIComponent(from)
 
-    window.location.href = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${REST_API_KEY}&redirect_uri=${REDIRECT_URI}`
+    window.location.href =
+      `https://nid.naver.com/oauth2.0/authorize?response_type=code` +
+      `&client_id=${REST_API_KEY}` +
+      `&redirect_uri=${REDIRECT_URI}` +
+      `&state=${state}`
   }
+
   return (
     <Button
       className="w-full h-12 rounded-lg flex items-center justify-center bg-[#03C75A] hover:bg-[#03C75A] text-white font-medium shadow-none"

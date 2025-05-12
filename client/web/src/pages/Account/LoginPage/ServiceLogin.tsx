@@ -7,13 +7,17 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 
-const ServiceLogin = () => {
+export interface LoginProps {
+  navigate: ReturnType<typeof useNavigate>
+  from: string
+}
+
+const ServiceLogin = ({ navigate, from }: LoginProps) => {
   const [userId, setUserId] = useState('')
   const [password, setPassword] = useState('')
   const [isLoading, setIsLoading] = useState(false)
 
   const signIn = useSignIn()
-  const navigate = useNavigate()
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -27,7 +31,7 @@ const ServiceLogin = () => {
 
     try {
       await signIn({ userId, password })
-      navigate('/main')
+      navigate(from, { replace: true })
     } catch {
       // 실패
     } finally {

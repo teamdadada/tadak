@@ -10,7 +10,9 @@ const KakaoCallback = () => {
   const { login } = useKakaoLogin()
 
   useEffect(() => {
-    const code = new URL(window.location.href).searchParams.get('code')
+    const url = new URL(window.location.href)
+    const code = url.searchParams.get('code')
+    const state = url.searchParams.get('state') || '/main'
 
     if (!code) {
       toast.error('인증 코드가 없습니다.')
@@ -18,7 +20,7 @@ const KakaoCallback = () => {
       return
     }
 
-    login(code)
+    login(code, state)
   }, [login, navigate])
 
   return (
