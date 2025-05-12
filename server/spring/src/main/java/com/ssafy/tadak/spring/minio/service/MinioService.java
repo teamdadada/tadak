@@ -4,15 +4,14 @@ import com.ssafy.tadak.spring.minio.domain.entity.Bucket;
 import com.ssafy.tadak.spring.minio.domain.entity.Image;
 import com.ssafy.tadak.spring.minio.domain.repository.BucketJpaRepository;
 import com.ssafy.tadak.spring.minio.domain.repository.ImageJpaRepository;
+import com.ssafy.tadak.spring.minio.dto.response.UploadResponse;
 import com.ssafy.tadak.spring.minio.util.MinioUtil;
-import io.minio.MakeBucketArgs;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.net.URL;
+
 import java.util.UUID;
 
 @Service
@@ -38,7 +37,7 @@ public class MinioService {
         }
     }
 
-    public String uploadFile(
+    public UploadResponse uploadFile(
             MultipartFile file,
             String bucketName
     ) throws Exception {
@@ -46,15 +45,16 @@ public class MinioService {
                 .orElseThrow(() -> new RuntimeException("버킷을 찾을 수 없습니다."));
 
         String fileName = "uploads/" + UUID.randomUUID() + "_" + file.getOriginalFilename();
+
         try {
-            minioUtil.uploadFile(fileName, file, bucket);
-            imageJpaRepository.save(
-                    new Image(bucket, fileName)
-            );
+            String imageUrl = minioUtil.uploadFile(fileName, file, bucket);
+            Image newImage = imageJpaRepository.save(
+                                new Image(bucket, fileName)
+                        );
+            return new UploadResponse(newImage.getId(), imageUrl);
         } catch (Exception e) {
             throw new RuntimeException("업로드 실패: "+e.getMessage());
         }
-        return fileName;
     }
 
     public String deleteFile(Long imageId) throws Exception {
@@ -71,9 +71,9 @@ public class MinioService {
         }
     }
 
-    public String getPresignedUrl(String fileName) throws Exception {
+    public String getPresignedUrl(String bucketName, String fileName) throws Exception {
         try {
-            return  minioUtil.getPresignedUrl(fileName, URL_EXPIRE);
+            return  minioUtil.getPresignedUrl(bucketName, fileName, URL_EXPIRE);
         } catch (Exception e) {
             throw new RuntimeException("URL 생성 실패: " + e.getMessage());
         }
