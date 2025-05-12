@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { refreshToken } from './authService'
 import { useAuthStore } from '@/store/authStore'
+
 import { toast } from 'sonner'
 
 // 환경에 따른 baseURL 설정
@@ -24,7 +25,7 @@ export const refreshHttp = axios.create({
 
 // 요청 인터셉터: accessToken 자동 첨부
 http.interceptors.request.use((config) => {
-  const token = localStorage.getItem('accessToken')
+  const token = useAuthStore.getState().accessToken
   if (token) {
     config.headers.Authorization = `Bearer ${token}`
   }
@@ -47,18 +48,18 @@ http.interceptors.response.use(
         const result = await refreshToken()
 
         if (result.success) {
+          // 새 토큰을 스토어에 저장
+          useAuthStore.getState().setAccessToken(result.accessToken)
+
+          // 원래 요청에 새 토큰으로 헤더 설정
           originalRequest.headers.Authorization = `Bearer ${result.accessToken}`
           return http(originalRequest)
         } else {
-          toast.error('로그인이 필요합니다. 다시 로그인해 주세요.')
-          useAuthStore.getState().clearAccessToken()
-          window.location.href = '/account/login'
+          handleLogout()
           return Promise.reject(error)
         }
       } catch (refreshError) {
-        toast.error('인증 과정에서 오류가 발생했습니다. 다시 로그인해 주세요.')
-        useAuthStore.getState().clearAccessToken()
-        window.location.href = '/account/login'
+        handleLogout()
         return Promise.reject(refreshError)
       }
     }
@@ -66,5 +67,12 @@ http.interceptors.response.use(
     return Promise.reject(error)
   },
 )
+const handleLogout = (
+  message = '로그인이 필요합니다. 다시 로그인해 주세요.',
+) => {
+  toast.error(message)
+  useAuthStore.getState().clearAccessToken()
+  window.location.href = '/account/login'
+}
 
 export default http

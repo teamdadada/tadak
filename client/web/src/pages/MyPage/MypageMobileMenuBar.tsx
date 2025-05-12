@@ -1,3 +1,4 @@
+import { useUserStore } from '@/store/userStore'
 import { MenuType } from './MyPage'
 import { Heart, ShoppingCart, User, CreditCard, FileEdit } from 'lucide-react'
 
@@ -42,26 +43,23 @@ const MobileMenuBar = ({ selectedMenu, onMenuChange }: MobileMenuBarProps) => {
     장바구니: 4,
   }
 
+  const getUserProfileImage = useUserStore((s) => s.getProfileImage)
+  const getUserName = useUserStore((s) => s.getUserName)
+
+  const userProfileImage = getUserProfileImage()
+  const userName = getUserName()
+
   return (
     <div className="bg-white">
       {/* 프로필 정보 */}
       <div className="py-4 px-4 flex items-center justify-between border-b">
         <div className="flex items-center gap-3">
-          <div className="bg-tadak-light-gray flex items-center justify-center w-12 h-12 rounded-full">
-            <svg
-              className="text-tadak-gray w-6 h-6"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                fillRule="evenodd"
-                d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-                clipRule="evenodd"
-              ></path>
-            </svg>
-          </div>
-          <p className="text-xl font-bold">다이다이</p>
+          <img
+            src={userProfileImage}
+            alt="profileImage"
+            className=" w-12 h-12 rounded-full"
+          />
+          <p className="text-xl font-bold">{userName}</p>
         </div>
       </div>
 

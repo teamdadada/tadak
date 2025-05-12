@@ -1,3 +1,4 @@
+import { useUserStore } from '@/store/userStore'
 import { MenuType } from './MyPage'
 
 interface SidebarProps {
@@ -22,28 +23,21 @@ const MypageSidebar = ({ selectedMenu, onMenuChange }: SidebarProps) => {
     },
   ]
 
+  const getUserProfileImage = useUserStore((s) => s.getProfileImage)
+  const getUserName = useUserStore((s) => s.getUserName)
+
+  const userProfileImage = getUserProfileImage()
+  const userName = getUserName()
+
   return (
     <div className="w-full md:w-48 lg:w-64 p-6 mt-10">
       {/* 프로필 */}
       <div className="flex flex-col gap-6 mb-4">
         {/* 프로필 사진 */}
-        <div className="bg-tadak-light-gray flex items-center justify-center w-36 lg:w-52">
-          <svg
-            className="text-tadak-gray"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              fillRule="evenodd"
-              d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-              clipRule="evenodd"
-            ></path>
-          </svg>
-        </div>
+        <img src={userProfileImage} alt="profileImage" className="p-2" />
         {/* 닉네임 */}
         <div className="px-1">
-          <p className="text-3xl font-extrabold">다이다이</p>
+          <p className="text-3xl font-extrabold">{userName}</p>
         </div>
       </div>
 

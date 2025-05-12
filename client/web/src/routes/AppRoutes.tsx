@@ -21,6 +21,7 @@ import NaverCallback from '@/pages/Account/LoginPage/NaverCallbackPage'
 import KbtiTestPage from '@/pages/KbtiPage/KbtiTestPage'
 import KbtiResultPage from '@/pages/KbtiPage/KbtiResultpage'
 import KbtiStartPage from '@/pages/KbtiPage/KbtiStartPage'
+import ProtectedRoute from '@/components/common/ProtectedRoute'
 
 const router = createBrowserRouter([
   {
@@ -29,7 +30,14 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <OnboardingPage /> }, // 온보딩 페이지
       { path: 'main', element: <MainPage /> }, // 메인 페이지
-      { path: 'mypage', element: <MyPage /> }, // 마이페이지
+      {
+        path: 'mypage',
+        element: (
+          <ProtectedRoute>
+            <MyPage />
+          </ProtectedRoute>
+        ),
+      }, // 마이페이지
       { path: 'shop', element: <ShopPage /> }, // 쇼핑 페이지
       { path: 'customkeyboard', element: <CustomKeyboardPage /> }, // 커스텀 키보드 제작 페이지
       { path: 'soundtest', element: <SoundTestPage /> }, // 타건샵 페이지
