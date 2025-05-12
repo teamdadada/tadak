@@ -11,4 +11,5 @@ object Users : LongIdTable("users", "user_uuid") {
     val createdAt = datetime("created_at")
     val updatedAt = datetime("updated_at")
     val userType = varchar("user_type", 10)
+    val loginType = varchar("login_type", 20)
 }

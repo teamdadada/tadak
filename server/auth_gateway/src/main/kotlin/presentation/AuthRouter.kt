@@ -177,6 +177,7 @@ fun Route.authRoutes() {
                         it[userId]       = "kakao_${UUID.randomUUID().toString().take(8)}"
                         it[userPassword] = PasswordUtil.hashPassword(UUID.randomUUID().toString())
                         it[userName]     = nickname
+                        it[loginType]    = "KAKAO"
                     }.value
 
                     OAuthUsers.insert {
@@ -270,6 +271,7 @@ fun Route.authRoutes() {
                         it[userId]       = "naver_${UUID.randomUUID().toString().take(8)}"
                         it[userPassword] = PasswordUtil.hashPassword(UUID.randomUUID().toString())
                         it[userName]     = nickname
+                        it[loginType]    = "NAVER"
                     }.value
 
                     OAuthUsers.insert {
