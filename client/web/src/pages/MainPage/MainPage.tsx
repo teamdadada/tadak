@@ -15,6 +15,7 @@ import Tabs from '@/components/ui/Tabs'
 import ItemCard from '@/components/shop/ItemCard'
 import { fetchItems } from '@/services/mainService'
 import { Product } from '@/types/shop'
+import Chatbot from '@/components/chatbot/Chatbot'
 // import { getPopularItems, MockItem } from '@/mocks/mockPopularItems'
 // import { getNewItems } from '@/mocks/mockNewItems'
 
@@ -69,7 +70,7 @@ const MainPage = () => {
         size: 4,
       }),
   })
-  
+
   const {
     data: newItems = [],
     isLoading: isNewLoading,
@@ -250,6 +251,7 @@ const MainPage = () => {
           </div>
         </div>
       </section>
+      <Chatbot />
     </div>
   )
 }
