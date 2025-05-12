@@ -1,6 +1,6 @@
 import { signIn } from '@/services/authService'
-import { getMyProfile, signUp } from '@/services/userService'
-import { ErrorResponse, MyProfile, SignUpRequest } from '@/types/user'
+import { getUserInfo, signUp } from '@/services/userService'
+import { ErrorResponse, SignUpRequest, User } from '@/types/user'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { AxiosError } from 'axios'
 import { toast } from 'sonner'
@@ -35,9 +35,9 @@ export const useSignUp = () => {
   return mutateAsync
 }
 
-export const useGetMyProfile = () => {
-  return useQuery<MyProfile>({
+export const useGetUserInfo = () => {
+  return useQuery<User>({
     queryKey: ['user', 'me'],
-    queryFn: getMyProfile,
+    queryFn: getUserInfo,
   })
 }

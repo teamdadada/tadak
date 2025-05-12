@@ -1,74 +1,25 @@
 import LogoImage from '@/assets/images/logo.png'
-import { naverLogin } from '@/services/authService'
+import { useNaverLogin } from '@/hooks/useAuth'
 
-import { useEffect, useRef } from 'react'
+import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 
 const NaverCallback = () => {
   const navigate = useNavigate()
-  const isProcessingRef = useRef(false)
-  const errorTimerRef = useRef<number | null>(null)
+  const { login } = useNaverLogin()
 
   useEffect(() => {
-    // 컴포넌트 언마운트 시 타이머 정리
-    return () => {
-      if (errorTimerRef.current) {
-        clearTimeout(errorTimerRef.current)
-      }
-    }
-  }, [])
+    const code = new URL(window.location.href).searchParams.get('code')
 
-  useEffect(() => {
-    const handleKakaoCallback = async () => {
-      const startTime = Date.now()
-
-      // 이미 처리 중이면 중복 실행 방지
-      if (isProcessingRef.current) return
-      isProcessingRef.current = true
-
-      try {
-        // URL에서 인증 코드 추출
-        const url = new URL(window.location.href)
-        const code = url.searchParams.get('code')
-
-        if (!code) {
-          toast.error('인증 코드를 받지 못했습니다')
-          errorTimerRef.current = window.setTimeout(() => {
-            navigate('/account/login', { replace: true })
-          }, 2000)
-          return
-        }
-
-        // 로그인 처리
-        await naverLogin(code)
-
-        // 경과 시간 계산
-        const elapsedTime = Date.now() - startTime
-        const minDisplayTime = 500 // 최소 표시 시간 (ms)
-
-        // 최소 표시 시간을 보장
-        if (elapsedTime < minDisplayTime) {
-          await new Promise((resolve) =>
-            setTimeout(resolve, minDisplayTime - elapsedTime),
-          )
-        }
-
-        // 로그인 성공
-        toast.success('네이버로 로그인하였습니다!')
-        navigate('/main', { replace: true })
-      } catch (err) {
-        console.error('네이버 로그인 오류:', err)
-        toast.error('로그인 처리 중 오류가 발생했습니다')
-
-        errorTimerRef.current = window.setTimeout(() => {
-          navigate('/account/login', { replace: true })
-        }, 2000)
-      }
+    if (!code) {
+      toast.error('인증 코드가 없습니다.')
+      navigate('/account/login', { replace: true })
+      return
     }
 
-    handleKakaoCallback()
-  }, [navigate])
+    login(code)
+  }, [login, navigate])
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-white">

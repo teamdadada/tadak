@@ -1,11 +1,21 @@
-import { refreshToken, signIn } from '@/services/authService'
+import {
+  kakaoLogin,
+  naverLogin,
+  refreshToken,
+  signIn,
+} from '@/services/authService'
+import { getUserInfo } from '@/services/userService'
 import { useAuthStore } from '@/store/authStore'
-import { ErrorResponse } from '@/types/user'
+import { useUserStore } from '@/store/userStore'
+import { ErrorResponse, User } from '@/types/user'
 import { useMutation } from '@tanstack/react-query'
 import { AxiosError } from 'axios'
+import { useRef } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 
 export const useSignIn = () => {
+  const { setUser } = useUserStore()
   const { mutateAsync } = useMutation({
     mutationFn: signIn,
     onSuccess: async (accessToken) => {
@@ -15,6 +25,8 @@ export const useSignIn = () => {
       }
 
       try {
+        const userInfo: User = await getUserInfo()
+        setUser(userInfo)
         toast.success('로그인 성공!')
       } catch (e) {
         console.error('getUserInfo 에러 발생:', e)
@@ -36,6 +48,74 @@ export const useSignIn = () => {
     },
   })
   return mutateAsync
+}
+
+export const useNaverLogin = () => {
+  const isProcessingRef = useRef(false)
+  const navigate = useNavigate()
+  const setUser = useUserStore((state) => state.setUser)
+
+  const login = async (code: string) => {
+    if (isProcessingRef.current) return
+    isProcessingRef.current = true
+
+    try {
+      const start = Date.now()
+
+      await naverLogin(code)
+      const userInfo = await getUserInfo()
+      setUser(userInfo)
+      console.log(userInfo)
+
+      const elapsed = Date.now() - start
+      if (elapsed < 500) {
+        await new Promise((r) => setTimeout(r, 500 - elapsed))
+      }
+
+      toast.success('네이버 로그인 성공!')
+      navigate('/main', { replace: true })
+    } catch (err) {
+      console.error('네이버 로그인 오류:', err)
+      toast.error('로그인 중 문제가 발생했습니다.')
+      navigate('/account/login', { replace: true })
+    }
+  }
+
+  return { login }
+}
+
+export const useKakaoLogin = () => {
+  const isProcessingRef = useRef(false)
+  const navigate = useNavigate()
+  const setUser = useUserStore((state) => state.setUser)
+
+  const login = async (code: string) => {
+    if (isProcessingRef.current) return
+    isProcessingRef.current = true
+
+    try {
+      const start = Date.now()
+
+      await kakaoLogin(code)
+      const userInfo = await getUserInfo()
+      setUser(userInfo)
+      console.log(userInfo)
+
+      const elapsed = Date.now() - start
+      if (elapsed < 500) {
+        await new Promise((r) => setTimeout(r, 500 - elapsed))
+      }
+
+      toast.success('카카오 로그인 성공!')
+      navigate('/main', { replace: true })
+    } catch (err) {
+      console.error('카카오 로그인 오류:', err)
+      toast.error('로그인 중 문제가 발생했습니다.')
+      navigate('/account/login', { replace: true })
+    }
+  }
+
+  return { login }
 }
 
 export const useRefreshToken = () => {
