@@ -1,13 +1,19 @@
 import { Button } from '@/components/ui/button'
+import { LoginProps } from './ServiceLogin'
 
-const KakaoLogin = () => {
+const KakaoLogin = ({ from }: LoginProps) => {
   const handleKakaoLogin = () => {
     const REST_API_KEY = import.meta.env.VITE_KAKAO_REST_API_KEY
     const REDIRECT_URI = import.meta.env.VITE_KAKAO_REDIRECT_URI
+    const state = encodeURIComponent(from)
 
-    window.location.href = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${REST_API_KEY}&redirect_uri=${REDIRECT_URI}`
+    window.location.href =
+      `https://kauth.kakao.com/oauth/authorize?response_type=code` +
+      `&client_id=${REST_API_KEY}` +
+      `&redirect_uri=${REDIRECT_URI}` +
+      `&state=${state}`
   }
-  
+
   return (
     <Button
       className="w-full h-12 rounded-lg flex items-center justify-center bg-[#FEE500] hover:bg-[#FEE500] text-[#191919] font-medium shadow-none"

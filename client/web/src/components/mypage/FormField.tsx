@@ -55,7 +55,7 @@ const FormField: React.FC<FormFieldProps> = ({
           value={value}
           onChange={onChange}
           disabled={disabled}
-          className={`px-4 py-2 border border-tadak-gray rounded-md focus:outline-none ${
+          className={`text-sm px-6 py-3 border border-tadak-gray rounded-md focus:outline-none ${
             error ? 'border-red-500' : 'border-tadak-gray '
           } ${
             disabled
