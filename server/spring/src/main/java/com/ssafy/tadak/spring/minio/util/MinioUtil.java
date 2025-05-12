@@ -1,5 +1,7 @@
 package com.ssafy.tadak.spring.minio.util;
 
+import com.ssafy.tadak.spring.minio.domain.entity.Bucket;
+import com.ssafy.tadak.spring.minio.domain.repository.BucketJpaRepository;
 import io.minio.BucketExistsArgs;
 import io.minio.GetPresignedObjectUrlArgs;
 import io.minio.MakeBucketArgs;
@@ -24,39 +26,42 @@ import java.util.concurrent.TimeUnit;
 public class MinioUtil {
     private final MinioClient minioClient;
 
+    @Value("${minio.endpoint}")
+    private String endpoint;
+
     @Value("${minio.public-bucket}")
     private String publicBucket;
 
     @Value("${minio.private-bucket}")
     private String privateBucket;
 
-    /** 버킷이 존재하는지 확인 후 없으면 생성 **/
-    public void checkAndCreateBucket(String bucket) throws Exception {
-        boolean isExist = minioClient.bucketExists(
+    /** 버킷이 존재하는지 확인 **/
+    public boolean checkBucket(String bucket) throws Exception {
+        return minioClient.bucketExists(
                 BucketExistsArgs.builder().bucket(bucket).build()
         );
+    }
 
-        if(!isExist) {
-            minioClient.makeBucket(
-                    MakeBucketArgs.builder().bucket(bucket).build()
-            );
-        }
+    /** 버킷 생성 **/
+    public void createBucket(String bucket) throws Exception {
+        minioClient.makeBucket(
+                MakeBucketArgs.builder().bucket(bucket).build()
+        );
     }
 
     /** 파일 업로드 **/
-    public void uploadFile(
+    public String uploadFile(
             String fileName,
             MultipartFile file,
-            boolean isPublic
+            Bucket bucket
     ) throws Exception {
-        String bucket = isPublic ? publicBucket : privateBucket;
 
         InputStream input = null;
         try{
             input = file.getInputStream();
             minioClient.putObject(
                     PutObjectArgs.builder()
-                            .bucket(bucket)
+                            .bucket(bucket.getName())
                             .object(fileName)
                             .stream(input, file.getSize(), -1)
                             .contentType(file.getContentType())
@@ -66,6 +71,15 @@ public class MinioUtil {
             if (input != null) {
                 input.close();
             }
+        }
+        return getImageUrl(bucket, fileName);
+    }
+
+    public String getImageUrl(Bucket bucket, String fileName) throws Exception {
+        if(bucket.getIsPublic()) {
+            return String.format("%s/%s/%s", endpoint, bucket.getName(), fileName);
+        }else{
+            return getPresignedUrl(fileName, 600);
         }
     }
 
@@ -82,16 +96,19 @@ public class MinioUtil {
     }
 
     /** 파일 삭제 **/
-    public void deleteFile(String fileName, boolean isPublic) throws Exception{
-        String bucket = isPublic ? publicBucket : privateBucket;
+    public void deleteFile(
+            String fileName,
+            String bucket
+    ) throws Exception{
 
+        //파일이 존재하는지 확인
         minioClient.statObject(
                 StatObjectArgs.builder()
                         .bucket(bucket)
                         .object(fileName)
                         .build()
         );
-
+        //파일 삭제
         minioClient.removeObject(
                 RemoveObjectArgs.builder()
                         .bucket(bucket)
@@ -101,8 +118,10 @@ public class MinioUtil {
     }
 
     /** 파일 여러개 삭제 **/
-    public void deleteFiles(List<String> fileNames, boolean isPublic) throws Exception{
-        String bucket = isPublic ? publicBucket : privateBucket;
+    public void deleteFiles(
+            List<String> fileNames,
+            String bucket
+    ) throws Exception{
 
         List<DeleteObject> objects = fileNames.stream()
                 .map(DeleteObject::new)
