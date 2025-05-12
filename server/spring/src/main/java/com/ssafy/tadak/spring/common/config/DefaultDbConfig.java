@@ -23,6 +23,7 @@ import javax.sql.DataSource;
                 "com.ssafy.tadak.spring.product",
                 "com.ssafy.tadak.spring.review",
                 "com.ssafy.tadak.spring.zzim",
+                "com.ssafy.tadak.spring.minio",
         },
         entityManagerFactoryRef = "defaultEntityManagerFactory",
         transactionManagerRef = "defaultTransactionManager"
