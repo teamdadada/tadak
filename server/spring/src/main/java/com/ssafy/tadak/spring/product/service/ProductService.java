@@ -40,6 +40,7 @@ public class ProductService {
      * @param productId 제품 번호
      * @return 제품 상세 정보
      */
+    @Transactional(readOnly = true)
     public ProductDetailResponse getProductDetail(ProductType productType, Long productId) {
         ProductDetailRequest request = new ProductDetailRequest(productType, productId);
         Product product = productRepository.findByProductIdAndProductType(
