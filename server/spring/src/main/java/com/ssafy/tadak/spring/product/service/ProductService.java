@@ -17,7 +17,7 @@ import com.ssafy.tadak.spring.product.exception.exception.ProductNotFoundExcepti
 import com.ssafy.tadak.spring.product.util.FieldNameMapper;
 import com.ssafy.tadak.spring.product.util.ProductUtil;
 import com.ssafy.tadak.spring.product.util.enums.ProductType;
-import com.ssafy.tadak.spring.product.util.enums.SortType;
+import com.ssafy.tadak.spring.common.enums.SortType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,6 +40,7 @@ public class ProductService {
      * @param productId 제품 번호
      * @return 제품 상세 정보
      */
+    @Transactional(readOnly = true)
     public ProductDetailResponse getProductDetail(ProductType productType, Long productId) {
         ProductDetailRequest request = new ProductDetailRequest(productType, productId);
         Product product = productRepository.findByProductIdAndProductType(

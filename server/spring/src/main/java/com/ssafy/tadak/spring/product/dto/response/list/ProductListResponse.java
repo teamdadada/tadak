@@ -11,7 +11,8 @@ public record ProductListResponse(
         List<ProductSimpleDto> list
 ) {
         public static ProductListResponse of(List<ProductSimpleDto> data, int sizeLimit) {
-                String last = data.get(data.size() - 1).cursor();
+                String last = null;
+                if (!data.isEmpty()) last = data.get(data.size() - 1).cursor();
                 boolean hasNext = data.size() == sizeLimit;
                 return new ProductListResponse(last, hasNext, data.size(), data);
         }
