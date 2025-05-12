@@ -89,7 +89,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Void> handleServerException(
+    public ResponseEntity<ErrorResponse> handleServerException(
             Exception exception,
             HttpServletRequest request
     ){
@@ -102,6 +102,7 @@ public class GlobalExceptionHandler {
                 exception.getMessage()
         );
         exception.printStackTrace();
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new ErrorResponse("S5000", exception.getMessage()));
     }
 }
