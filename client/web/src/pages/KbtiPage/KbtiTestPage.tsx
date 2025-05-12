@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 const questions = [
   {
@@ -79,6 +80,7 @@ const questions = [
 ]
 
 const KbtiTestPage = () => {
+  const navigate = useNavigate()
   const [scores, setScores] = useState<Record<string, number>>({
     Q: 0,
     E: 0,
@@ -100,7 +102,8 @@ const KbtiTestPage = () => {
     if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1)
     } else {
-      alert(`Your KBTI Result: ${calculateKBTI(newScores)}`)
+      const result = calculateKBTI(newScores)
+      navigate('/kbti/result', { state: { result } })
     }
   }
 
@@ -123,16 +126,16 @@ const KbtiTestPage = () => {
         <h1 className="w-full mb-2 text-2xl font-bold">
           {questions[currentQuestion].text}
         </h1>
-      </div>
 
-      <div className="flex h-[20vh]"></div>
+        <div className="flex h-[20vh]"></div>
+      </div>
 
       <div className="flex flex-col items-center justify-center w-full gap-2 mt-4 space-y-2">
         {questions[currentQuestion].options.map((option, index) => (
           <button
             key={index}
             onClick={() => handleAnswer(questions[currentQuestion].axis, index)}
-            className="block w-full px-4 py-2 text-left text-black border rounded-md hover:bg-tadak-primary hover:text-white bg-tadak-white"
+            className="block w-full px-4 py-2 text-lg font-medium text-left text-black border rounded-md hover:bg-tadak-primary hover:text-white bg-tadak-white"
           >
             {option}
           </button>
