@@ -12,7 +12,7 @@ import PageIntroBanner from '@/components/common/PageIntroBanner'
 const ShopPage = () => {
   const categories = ['베어본', '스위치', '키캡']
   const [tabWidth, setTabWidth] = useState('120px')
-  const [sortOrder, setSortOrder] = useState<'latest' | 'popular'>('latest')
+  const [sortOrder, setSortOrder] = useState<'LATEST' | 'POPULAR'>('LATEST')
 
   const [selectedBareboneFilters, setSelectedBareboneFilters] = useState<
     FilterByType<'BAREBONE'>

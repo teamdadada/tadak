@@ -7,15 +7,15 @@ import ItemGrid from './ItemGrid'
 
 interface FilterPanelProps {
   category: ProductType
-  sortOrder: 'latest' | 'popular'
+  sortOrder: 'LATEST' | 'POPULAR'
   filters: FilterByType<ProductType>
   onFilterChange: (filters: FilterByType<ProductType>) => void
-  onSortChange: (order: 'latest' | 'popular') => void
+  onSortChange: (order: 'LATEST' | 'POPULAR') => void
 }
 
 const FilterPanel = ({
   category,
-  sortOrder,
+  sortOrder = 'LATEST',
   filters,
   onFilterChange,
   onSortChange,

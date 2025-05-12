@@ -29,7 +29,12 @@ const BearboneFilter = ({ selected, onChange }: BearboneFilterProps) => {
           title="제조사별"
           options={data.manufacturer}
           selected={selected.manufacturer ?? []}
-          onChange={(next) => onChange({ ...selected, manufacturer: next })}
+          onChange={(next) =>
+            onChange({
+              ...selected,
+              manufacturer: Array.isArray(next) ? next : [next],
+            })
+          }
         />
       )}
       {data?.keyLayout && (
@@ -37,7 +42,12 @@ const BearboneFilter = ({ selected, onChange }: BearboneFilterProps) => {
           title="키 배열"
           options={data.keyLayout}
           selected={selected.keyLayout ?? []}
-          onChange={(next) => onChange({ ...selected, keyLayout: next })}
+          onChange={(next) =>
+            onChange({
+              ...selected,
+              keyLayout: Array.isArray(next) ? next : [next],
+            })
+          }
         />
       )}
       {data?.features && (
@@ -45,7 +55,12 @@ const BearboneFilter = ({ selected, onChange }: BearboneFilterProps) => {
           title="추가사항"
           options={data.features}
           selected={selected.features ?? []}
-          onChange={(next) => onChange({ ...selected, features: next })}
+          onChange={(next) =>
+            onChange({
+              ...selected,
+              features: Array.isArray(next) ? next : [next],
+            })
+          }
         />
       )}
       <PriceFilter
