@@ -3,7 +3,7 @@ FROM python:3.11-slim
 # 작업 디렉토리 설정
 WORKDIR /app
 # 의존성 설치
-COPY dependancy.txt .
+COPY requirements.txt .
 RUN pip install --no-cache-dir -r dependancy.txt
 # 전체 프로젝트 복사
 COPY . .
