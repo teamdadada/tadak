@@ -32,14 +32,14 @@ const KeycapFilter = ({ selected, onChange }: KeycapFilterProps) => {
           onChange={(val) => onChange({ ...selected, keycapMaterial: val })}
         />
       )}
-      {data.engravingPosition && (
+      {/* {data.engravingPosition && (
         <CheckboxGroup
           title="각인 위치"
           options={data.engravingPosition}
           selected={selected.engravingPosition ?? []}
           onChange={(val) => onChange({ ...selected, engravingPosition: val })}
         />
-      )}
+      )} */}
       {data.keyCount && (
         <CheckboxGroup
           title="키 수"

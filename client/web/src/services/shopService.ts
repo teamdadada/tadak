@@ -11,7 +11,7 @@ import { SHOP_END_POINT } from './endPoints'
 // import { ProductDetail } from '@/types/product'
 import {
   BareboneFilter,
-  FilterByType,
+  // FilterByType,
   KeycapFilter,
   Product,
   ProductType,
@@ -38,26 +38,20 @@ export const getKeycapFilters = async (): Promise<KeycapFilter> => {
   // return new Promise((resolve) => setTimeout(() => resolve(keycapMock), 300))
 }
 
-export const getLatestProducts = async (
-  type: ProductType,
-  page: number = 1,
-  size: number = 5,
-  filters: FilterByType<ProductType> = {} as FilterByType<ProductType>,
-): Promise<Product[]> => {
-  const { data } = await http.get(SHOP_END_POINT.PRODUCT.LATEST(type), {
-    params: { page, size, ...filters },
-  })
-  return data
-}
-
-export const getPopularProducts = async (
-  type: ProductType,
-  page: number = 1,
-  size: number = 5,
-  filters: FilterByType<ProductType> = {} as FilterByType<ProductType>,
-): Promise<Product[]> => {
-  const { data } = await http.get(SHOP_END_POINT.PRODUCT.POPULAR(type), {
-    params: { page, size, ...filters },
+export const getProducts = async ({
+  type,
+  cursor = null,
+  size = 10,
+  sort = 'LATEST',
+  ...filters
+}: {
+  type: ProductType
+  cursor?: string | null
+  size?: number
+  sort?: 'LATEST' | 'POPULAR'
+}): Promise<{ products: Product[]; nextCursor: string | null }> => {
+  const { data } = await http.get(SHOP_END_POINT.PRODUCT.LIST, {
+    params: { type, cursor, size, sort, ...filters },
   })
   return data
 }
