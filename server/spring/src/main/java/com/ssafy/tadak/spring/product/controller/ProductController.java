@@ -6,12 +6,10 @@ import com.ssafy.tadak.spring.common.annotation.AuthUser;
 import com.ssafy.tadak.spring.product.dto.request.ProductsCursorRequest;
 import com.ssafy.tadak.spring.product.dto.request.list.BareboneListRequest;
 import com.ssafy.tadak.spring.product.dto.request.list.KeycapListRequest;
-import com.ssafy.tadak.spring.product.dto.request.list.ProductListRequest;
 import com.ssafy.tadak.spring.product.dto.request.list.SwitchListRequest;
 import com.ssafy.tadak.spring.product.dto.response.filter.ProductFilterResponse;
 import com.ssafy.tadak.spring.product.dto.response.list.ProductListResponse;
 import com.ssafy.tadak.spring.product.service.ProductService;
-import com.ssafy.tadak.spring.product.util.enums.SortType;
 import lombok.Getter;
 import org.springframework.http.ResponseEntity;
 
