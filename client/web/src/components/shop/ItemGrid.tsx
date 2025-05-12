@@ -1,4 +1,4 @@
-import { FilterByType, Product, ProductType } from '@/types/shop'
+import { FilterByType, ProductListResponse, ProductType } from '@/types/shop'
 import ItemCard from './ItemCard'
 import { QueryFunctionContext, useInfiniteQuery } from '@tanstack/react-query'
 import { getProducts } from '@/services/shopService'
@@ -10,12 +10,6 @@ interface ItemGridProps {
   sortOrder: 'LATEST' | 'POPULAR'
 }
 
-interface FetchResponse {
-  list: Product[]
-  hasNext: boolean
-  lastCursor?: string | null
-}
-
 const ItemGrid = ({ category, filters, sortOrder }: ItemGridProps) => {
   const {
     data,
@@ -24,21 +18,24 @@ const ItemGrid = ({ category, filters, sortOrder }: ItemGridProps) => {
     isFetchingNextPage,
     isLoading,
     isError,
-  } = useInfiniteQuery<FetchResponse>({
+  } = useInfiniteQuery<ProductListResponse, Error>({
     queryKey: ['products', category, sortOrder, filters],
-    queryFn: async ({ pageParam = { cursor: null } }: QueryFunctionContext) =>
-      getProducts({
+    queryFn: async ({ pageParam = null }: QueryFunctionContext) => {
+      const cursor = typeof pageParam === 'string' ? pageParam : null
+      return getProducts({
         type: category,
-        cursor: pageParam.cursor ?? null,
+        cursor,
         size: 10,
         sort: sortOrder,
         ...filters,
-      }),
-    getNextPageParam: (lastPage) =>
-      lastPage.hasNext ? { cursor: lastPage.lastCursor } : undefined,
-  })
+      })
+    },
 
-  console.log(data)
+    initialPageParam: null,
+
+    getNextPageParam: (lastPage) =>
+      lastPage.hasNext ? lastPage.lastCursor : undefined,
+  })
 
   const observerRef = useRef<HTMLDivElement | null>(null)
 
@@ -62,28 +59,20 @@ const ItemGrid = ({ category, filters, sortOrder }: ItemGridProps) => {
     return () => {
       if (observerRef.current) observer.unobserve(observerRef.current)
     }
-  }, [handleObserver, observerRef])
+  }, [handleObserver])
 
   if (isLoading) return <p>🔄 로딩 중...</p>
   if (isError)
     return (
       <div className="flex flex-col items-center text-tadak-warning">
         <p>오류가 발생했습니다. 😢</p>
-        <button
-          className="mt-2 text-blue-500 underline"
-          onClick={() => fetchNextPage()}
-        >
-          다시 시도
-        </button>
       </div>
     )
 
   return (
     <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-4">
-      {data?.pages?.flatMap((page) =>
-        (page as FetchResponse).list?.map((item: Product) => (
-          <ItemCard key={item.productId} {...item} />
-        )),
+      {data?.pages.flatMap((page) =>
+        page.list.map((item) => <ItemCard key={item.productId} {...item} />),
       )}
 
       <div

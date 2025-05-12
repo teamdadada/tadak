@@ -11,9 +11,9 @@ import { SHOP_END_POINT } from './endPoints'
 // import { ProductDetail } from '@/types/product'
 import {
   BareboneFilter,
+  ProductListResponse,
   // FilterByType,
   KeycapFilter,
-  Product,
   ProductType,
   SwitchFilter,
 } from '@/types/shop'
@@ -49,7 +49,7 @@ export const getProducts = async ({
   cursor?: string | null
   size?: number
   sort?: 'LATEST' | 'POPULAR'
-}): Promise<{ products: Product[]; nextCursor: string | null }> => {
+}): Promise<ProductListResponse> => {
   const { data } = await http.get(SHOP_END_POINT.PRODUCT.LIST, {
     params: { type, cursor, size, sort, ...filters },
     paramsSerializer: (params) => {
@@ -66,7 +66,11 @@ export const getProducts = async ({
       return searchParams.toString()
     },
   })
-  return data
+  return {
+    list: data.list, // 서버에서 list로 받아온 데이터를 그대로 사용
+    hasNext: data.hasNext, // 서버의 hasNext 값을 그대로 사용
+    lastCursor: data.lastCursor, // 서버의 lastCursor를 그대로 사용
+  }
 }
 
 export const getProductDetail = async (
