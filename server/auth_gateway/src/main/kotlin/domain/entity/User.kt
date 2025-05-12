@@ -15,4 +15,5 @@ class User(id: EntityID<Long>) : LongEntity(id) {
     var createdAt by Users.createdAt
     var updatedAt by Users.updatedAt
     var userType by Users.userType
+    var loginType by Users.loginType
 }
