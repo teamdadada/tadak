@@ -1,29 +1,50 @@
 import ReviewItem from './ReviewItem'
 
 const ReviewSection = () => {
-  const exampleReviews = [
-    {
-      userId: 1,
-      userImage: `https://cataas.com/cat?1`,
-      userName: '타덕',
-      rating: 5,
-      text: '내 최애 스위치! 조용해서 사무실에서 사용하기 좋아요 :)',
-    },
-    {
-      userId: 2,
-      userImage: `https://cataas.com/cat?2`,
-      userName: '고양이사랑',
-      rating: 4,
-      text: '부드럽게 눌리고 반응이 빠릅니다. 추천해요!',
-    },
-    {
-      userId: 3,
-      userImage: `https://cataas.com/cat?3`,
-      userName: '타닥타닥러버',
-      rating: 3,
-      text: '생각보다 소리가 크네요. 그래도 만족합니다!',
-    },
-  ]
+  const exampleReviews = {
+    count: 3,
+    reviews: [
+      {
+        reviewId: 101,
+        productId: 1001,
+        content: '내 최애 스위치! 조용해서 사무실에서 사용하기 좋아요 :)',
+        score: 5,
+        images: [
+          'https://cataas.com/cat/says/Good?1',
+          'https://cataas.com/cat/says/Nice?2',
+        ],
+        author: {
+          id: 1,
+          name: '타덕',
+          profileImg: 'https://cataas.com/cat?1',
+        },
+      },
+      {
+        reviewId: 102,
+        productId: 1001,
+        content: '부드럽게 눌리고 반응이 빠릅니다. 추천해요!',
+        score: 4,
+        images: [],
+        author: {
+          id: 2,
+          name: '고양이사랑',
+          profileImg: 'https://cataas.com/cat?2',
+        },
+      },
+      {
+        reviewId: 103,
+        productId: 1001,
+        content: '생각보다 소리가 크네요. 그래도 만족합니다!',
+        score: 3,
+        images: [],
+        author: {
+          id: 3,
+          name: '타닥타닥러버',
+          profileImg: 'https://cataas.com/cat?3',
+        },
+      },
+    ],
+  }
 
   return (
     <section className="mt-2">
@@ -39,8 +60,8 @@ const ReviewSection = () => {
       </div>
 
       <div className="mt-4 space-y-4">
-        {exampleReviews.map((review, index) => (
-          <ReviewItem key={index} review={review} />
+        {exampleReviews.reviews.map((review) => (
+          <ReviewItem key={review.reviewId} review={review} />
         ))}
       </div>
     </section>
