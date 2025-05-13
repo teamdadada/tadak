@@ -10,7 +10,7 @@ const KbtiStartPage = () => {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[calc(100vh-68px)] gap-4 px-4">
+    <div className="flex flex-col items-center justify-center h-full gap-2 px-4">
       <div className="flex flex-col justify-center w-full p-2">
         {/* <h1 className="w-full p-4 text-2xl font-bold">🔍 KBTI</h1> */}
         <img
@@ -19,7 +19,7 @@ const KbtiStartPage = () => {
           className="min-h-[470px] h-[70vh]"
         />
       </div>
-      <div className="flex justify-center w-full p-4 mt-4">
+      <div className="flex justify-center w-full p-4">
         <Button
           size="lg"
           className="bg-tadak-primary"
