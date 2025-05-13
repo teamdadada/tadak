@@ -103,7 +103,7 @@ const KbtiTestPage = () => {
       setCurrentQuestion(currentQuestion + 1)
     } else {
       const result = calculateKBTI(newScores)
-      navigate('/kbti/result', { state: { result } })
+      navigate(`/kbti/result?type=${result}`)
     }
   }
 

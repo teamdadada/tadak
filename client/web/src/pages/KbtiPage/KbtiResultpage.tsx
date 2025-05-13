@@ -1,10 +1,11 @@
-import { useLocation, useNavigate } from 'react-router-dom'
+import KakaoShareButton from '@/components/kbti/KakaoShareButton'
+import { Button } from '@/components/ui/button'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 
 const KbtiResultPage = () => {
-  const location = useLocation()
+  const [searchParams] = useSearchParams()
   const navigate = useNavigate()
-
-  const { result } = location.state || {}
+  const result = searchParams.get('type')
 
   const kbtiDescriptions = {
     QTMC: {
@@ -151,12 +152,9 @@ const KbtiResultPage = () => {
     return (
       <div className="flex flex-col items-center justify-center h-screen">
         <h1 className="text-2xl font-bold">잘못된 접근입니다.</h1>
-        <button
-          className="px-4 py-2 mt-4 text-white rounded-md bg-tadak-primary"
-          onClick={() => navigate('/kbti')}
-        >
+        <Button variant="default" size="lg" onClick={() => navigate('/kbti')}>
           KBTI 다시 시작하기
-        </button>
+        </Button>
       </div>
     )
   }
@@ -173,12 +171,12 @@ const KbtiResultPage = () => {
         ))}
       </ul>
 
-      <button
-        className="px-4 py-2 mt-4 text-white rounded-md bg-tadak-primary"
-        onClick={() => navigate('/kbti')}
-      >
-        다시 검사하기
-      </button>
+      <div className="flex flex-row items-center justify-center gap-4 mt-4">
+        <KakaoShareButton kbtiType={result} />
+        <Button size="lg" onClick={() => navigate('/kbti')}>
+          다시 검사하기
+        </Button>
+      </div>
     </div>
   )
 }
