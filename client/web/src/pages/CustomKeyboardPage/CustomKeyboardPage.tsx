@@ -1,4 +1,6 @@
+// src/pages/CustomKeyboardPage.tsx
 import PageIntroBanner from '@/components/common/PageIntroBanner'
+import CustomKeyboardLayout from '@/components/customKeyboard/CustomKeyboardLayout'
 
 const CustomKeyboardPage = () => {
   return (
@@ -9,8 +11,8 @@ const CustomKeyboardPage = () => {
         backgroundColor="bg-white"
         underline
       />
-      <div className="container mx-auto px-4 py-6">
-        {/* 실제 페이지 내용 */}
+      <div className="container mx-auto">
+        <CustomKeyboardLayout />
       </div>
     </div>
   )
