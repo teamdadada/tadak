@@ -7,6 +7,7 @@ import com.ssafy.tadak.spring.review.dto.request.PostReviewRequest;
 import com.ssafy.tadak.spring.review.dto.response.PostReviewResponse;
 import com.ssafy.tadak.spring.review.dto.response.ReviewDetailResponse;
 import com.ssafy.tadak.spring.review.dto.response.ReviewListResponse;
+import com.ssafy.tadak.spring.review.dto.response.ReviewScoreReponse;
 import com.ssafy.tadak.spring.review.service.ReviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -26,6 +27,14 @@ public class ReviewController {
     ) {
         return ResponseEntity.ok(reviewService.getReviewById(reviewId));
     }
+
+    @GetMapping("/score/{product_id}")
+    public ResponseEntity<ReviewScoreReponse> getReviewScoreById(
+            @PathVariable("product_id") Long productId
+    ) {
+        return ResponseEntity.ok(reviewService.getReviewScoreSummary(productId));
+    }
+
 
     @GetMapping("/list/{product_id}")
     public ResponseEntity<ReviewListResponse> getReviewsByProductId(

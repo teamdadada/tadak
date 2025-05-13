@@ -2,10 +2,12 @@ package com.ssafy.tadak.spring.review.service;
 
 import com.ssafy.tadak.spring.auth.dto.UserInfo;
 import com.ssafy.tadak.spring.common.enums.SortType;
+import com.ssafy.tadak.spring.review.dto.ReviewSummary;
 import com.ssafy.tadak.spring.review.dto.request.PostReviewRequest;
 import com.ssafy.tadak.spring.review.dto.response.PostReviewResponse;
 import com.ssafy.tadak.spring.review.dto.response.ReviewDetailResponse;
 import com.ssafy.tadak.spring.review.dto.response.ReviewListResponse;
+import com.ssafy.tadak.spring.review.dto.response.ReviewScoreReponse;
 import com.ssafy.tadak.spring.review.exception.ReviewErrorCode;
 import static com.ssafy.tadak.spring.review.exception.ReviewException.ReviewBadRequestException;
 import static com.ssafy.tadak.spring.review.exception.ReviewException.ReviewNotFoundException;
@@ -34,6 +36,25 @@ public class ReviewService {
         User u = userRepository.findById(r.getAuthorId())
                 .orElse(null);
         return mapReviewAndUserInfo(r, u);
+    }
+
+    @Transactional(readOnly = true)
+    public ReviewScoreReponse getReviewScoreSummary(long productId) {
+        if(!reviewRepository.existsByProductId(productId))
+            return new ReviewScoreReponse(
+                    false,
+                    productId,
+                    0.0,
+                    new ReviewScoreReponse.ReviewScoreCount(
+                            0,
+                            0,
+                            0,
+                            0,
+                            0
+                    )
+            );
+        ReviewSummary rs = reviewRepository.getReviewSummary(productId);
+        return ReviewScoreReponse.of(rs, productId);
     }
 
     @Transactional(readOnly = true)
