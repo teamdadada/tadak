@@ -3,16 +3,15 @@ import { useState, useEffect } from 'react'
 
 interface ChatbotToggleButtonProps {
   onClick: () => void
-  isOpen: boolean // 챗봇이 열려있는지 상태를 props로 받음
+  isOpen: boolean 
 }
 
 const ChatbotToggleButton = ({ onClick, isOpen }: ChatbotToggleButtonProps) => {
   const [isTooltipVisible, setIsTooltipVisible] = useState(false)
   const [isBouncing, setIsBouncing] = useState(false)
 
-  // 처음 페이지 로드 시 툴팁 표시하기 (챗봇이 닫혀있을 때만)
+  // 처음 페이지 로드 시 툴팁 표시하기
   useEffect(() => {
-    // 챗봇이 열려있으면 툴팁을 표시하지 않음
     if (isOpen) {
       setIsTooltipVisible(false)
       return
@@ -26,7 +25,7 @@ const ChatbotToggleButton = ({ onClick, isOpen }: ChatbotToggleButtonProps) => {
     // 툴팁 8초 후 숨기기
     const hideTooltipTimer = setTimeout(() => {
       setIsTooltipVisible(false)
-    }, 11000) // 3초 + 8초 = 11초
+    }, 11000) 
 
     return () => {
       clearTimeout(showTooltipTimer)
@@ -37,7 +36,6 @@ const ChatbotToggleButton = ({ onClick, isOpen }: ChatbotToggleButtonProps) => {
   // 가끔씩 튀어오르는 효과 (시간이 지나도 사용자에게 상기시키기 위한 효과)
   // 챗봇이 닫혀있을 때만 적용
   useEffect(() => {
-    // 챗봇이 열려있으면 바운스 효과 중지
     if (isOpen) {
       setIsBouncing(false)
       return
@@ -45,7 +43,7 @@ const ChatbotToggleButton = ({ onClick, isOpen }: ChatbotToggleButtonProps) => {
 
     // 페이지 로드 20초 후부터 시작
     const initialDelay = setTimeout(() => {
-      // 최초 바운스 효과
+
       setIsBouncing(true)
       setTimeout(() => setIsBouncing(false), 1000)
 
@@ -62,7 +60,7 @@ const ChatbotToggleButton = ({ onClick, isOpen }: ChatbotToggleButtonProps) => {
     }, 20000)
 
     return () => clearTimeout(initialDelay)
-  }, [isOpen]) // isOpen 상태가 변경될 때마다 이펙트 재실행
+  }, [isOpen]) 
 
   // 마우스 호버 시 챗봇이 닫혀있을 때만 툴팁 표시
   const handleMouseEnter = () => {
