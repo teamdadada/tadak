@@ -24,4 +24,5 @@ def get_response(user_query: UserQuery):
 @chatbot_router.get("/{user_id}")
 def get_history(user_id: int):
     memory = chatbot_service.get_memory(str(user_id))
-    return memory.chat_memory.messages
+    response = chatbot_service.format_history(memory.chat_memory.messages)
+    return response
