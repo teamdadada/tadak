@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { Button } from '../ui/button'
 
 const { Kakao } = window
 
@@ -45,12 +46,12 @@ const KakaoShareButton = ({ kbtiType }: { kbtiType: string }) => {
   }
 
   return (
-    <button
+    <Button
       onClick={handleShare}
       className="px-4 py-2 text-white bg-yellow-400 rounded-lg hover:bg-yellow-500"
     >
       카카오톡 공유하기
-    </button>
+    </Button>
   )
 }
 
