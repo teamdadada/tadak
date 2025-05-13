@@ -91,7 +91,7 @@ def get_response(user_id: int, query: str):
     memory.chat_memory.add_ai_message(answer)
     trim_chat_history(str(user_id), 40)
 
-    return answer
+    return {"response" :answer}
 
 
 def get_memory(user_id: str, window_size=30):
@@ -146,3 +146,9 @@ async def is_duplicated_file(file_name: str) -> bool:
         limit=1
     )
     return len(result) > 0
+
+def format_history(messages):
+    return [
+        {"type": message.type, "content": message.content}
+        for message in messages
+    ]
