@@ -12,12 +12,11 @@ import com.ssafy.tadak.spring.keyboard.domain.repository.KeyboardOptionJpaReposi
 import com.ssafy.tadak.spring.keyboard.domain.repository.KeycapOptionJpaRepository;
 import com.ssafy.tadak.spring.keyboard.domain.repository.OptionJpaRepository;
 import com.ssafy.tadak.spring.keyboard.domain.repository.SwitchOptionJpaRepository;
+import com.ssafy.tadak.spring.keyboard.dto.request.Colors;
 import com.ssafy.tadak.spring.keyboard.dto.response.KeyboardDetailResponse;
 import com.ssafy.tadak.spring.keyboard.exception.KeyboardException;
 import com.ssafy.tadak.spring.minio.domain.entity.Image;
-import com.ssafy.tadak.spring.minio.domain.entity.Model;
 import com.ssafy.tadak.spring.minio.domain.repository.ImageJpaRepository;
-import com.ssafy.tadak.spring.minio.domain.repository.ModelJpaRepository;
 import com.ssafy.tadak.spring.minio.exception.MinioException;
 import com.ssafy.tadak.spring.minio.util.MinioUtil;
 import lombok.RequiredArgsConstructor;
@@ -39,7 +38,6 @@ public class KeyboardService {
     private final KeyboardJpaRepository keyboardJpaRepository;
     private final KeyboardOptionJpaRepository keyboardOptionJpaRepository;
     private final ImageJpaRepository imageJpaRepository;
-    private final ModelJpaRepository modelJpaRepository;
     private final MinioUtil minioUtil;
     private final BareboneJpaRepository bareboneJpaRepository;
     private final SwitchOptionJpaRepository switchOptionJpaRepository;
@@ -55,13 +53,12 @@ public class KeyboardService {
             Long thumbnailId,
             Long modelId,
             Integer keyboardPrice,
-            String keyboardColor,
+            Colors keyboardColor,
             List<Long> optionIdList,
             Long bareboneId,
             Long switchId,
             Long keycapId
     ) {
-
         BareboneOption bareboneOption = null;
         SwitchOption switchOption = null;
         KeycapOption keycapOption = null;
@@ -72,20 +69,19 @@ public class KeyboardService {
                 .orElseThrow(()->new KeyboardException.KeyboardNotFoundException(PART_OPTION_NOTFOUND));
         keycapOption = keycapOptionJpaRepository.findById(keycapId)
                 .orElseThrow(()->new KeyboardException.KeyboardNotFoundException(PART_OPTION_NOTFOUND));
+        //수량 확인
+        isValidQuantity(bareboneOption, switchOption, keycapOption);
 
         //파일 엔티티 조회
         Image image=null;
-        Model model=null;
+        Image model=null;
 
-        if(thumbnailId != null) {
-            image = imageJpaRepository.findById(thumbnailId)
-                    .orElseThrow(()->new MinioException.MinioNotFoundException(FILE_NOTFOUND));
-        }
+        image = imageJpaRepository.findById(thumbnailId)
+                .orElseThrow(()->new MinioException.MinioNotFoundException(FILE_NOTFOUND));
 
-        if(modelId != null) {
-            model = modelJpaRepository.findById(modelId)
-                    .orElseThrow(()->new MinioException.MinioNotFoundException(FILE_NOTFOUND));
-        }
+
+        model = imageJpaRepository.findById(modelId)
+                .orElseThrow(()->new MinioException.MinioNotFoundException(FILE_NOTFOUND));
 
         //키보드 생성
         Keyboard newKeyboard = keyboardJpaRepository.save(
@@ -96,6 +92,9 @@ public class KeyboardService {
                                             .model(model)
                                             .price(keyboardPrice)
                                             .color(keyboardColor)
+                                            .bareboneOption(bareboneOption)
+                                            .keycapOption(keycapOption)
+                                            .switchOption(switchOption)
                                             .cartId(null)
                                             .build()
                                     );
@@ -118,62 +117,50 @@ public class KeyboardService {
         }
 
         //썸네일 불러오기
-        Image thumbnail = null;
-        thumbnail = keyboard.getThumbnail();
-        String thumbnailUrl=null;
-        if(thumbnail != null) {
-            thumbnailUrl = minioUtil.getImageUrl(thumbnail.getBucket(), thumbnail.getFilePath());
-        }
+        Image thumbnail = keyboard.getThumbnail();
+        String thumbnailUrl = minioUtil.getImageUrl(thumbnail.getBucket(), thumbnail.getFilePath());
+
         //모델 불러오기
-        Model model = null;
-        model = keyboard.getModel();
-        String model3dUrl=null;
-        if(model != null) {
-            model3dUrl = minioUtil.getImageUrl(model.getBucket(), model.getFilePath());
-        }
+        Image model = keyboard.getModel();
+        String model3dUrl= minioUtil.getImageUrl(model.getBucket(), model.getFilePath());
 
-
-        //키보드 옵션 저장
+        //키보드 <옵션, id>를 저장하는 리스트
         List<Map<String, Long>> options = new ArrayList<>();
-        Map<String, Long> op = new HashMap<>();
-
-        //키보드에 선택된 옵션들 확인
-        List<KeyboardOption> keyboardOptions = keyboardOptionJpaRepository.findAllByKeyboard(keyboard);
-
-        //키보드에 선택된 제품 옵션들 정보 <카테고리, 제품 상세>
-        Map<String, KeyboardDetailResponse.SelectedProduct> selectedProducts = new HashMap<>();
-        for(KeyboardOption option : keyboardOptions){
-            KeycapOption product = option.getPartOption();
-            Option type = product.getPartType();
-            //카테고리별 선택 옵션
-            op.put(type.getCategory(), type.getId());
-            
-            if(product == null) continue;
-            
-            Option partType = product.getPartType();
-
-            Image image = product.getImage();
-            String imageUrl = minioUtil.getImageUrl(image.getBucket(), image.getFilePath());
-
-            selectedProducts.put(partType.getCategory(), new KeyboardDetailResponse.SelectedProduct(
-                    product.getId(),
-                    product.getName(),
-                    product.getPrice(),
-                    product.getQuantity(),
-                    imageUrl
-            ));
-        }
+        Map<String, Long> op = getOptionMap(keyboard);
         options.add(op);
+
+        //부품 조회
+        BareboneOption bareboneOption = keyboard.getBareboneOption();
+        SwitchOption switchOption = keyboard.getSwitchOption();
+        KeycapOption keycapOption = keyboard.getKeycapOption();
+
+        //키보드에 선택된 부품들 정보 <부품타입, 부품상세>
+        Map<String, KeyboardDetailResponse.SelectedProduct> selectedProducts = getProductMap(bareboneOption, switchOption, keycapOption);
 
         return new KeyboardDetailResponse(
                 keyboardId,
                 keyboard.getName(),
                 options,
-                keyboard.getColor(),
+                keyboard.getColors(),
                 selectedProducts,
                 thumbnailUrl,
                 model3dUrl
         );
+    }
+
+
+    private Map<String, Long> getOptionMap(Keyboard keyboard) {
+        Map<String, Long> op = new HashMap<>();
+
+        //키보드에 선택된 옵션들 확인
+        List<KeyboardOption> keyboardOptions = keyboardOptionJpaRepository.findAllByKeyboard(keyboard);
+
+        for(KeyboardOption keyOpt : keyboardOptions){
+            Option selected = keyOpt.getOption();
+            //카테고리별 선택 옵션
+            op.put(selected.getCategory().getName(), selected.getId());
+        }
+        return op;
     }
 
     private boolean isValidQuantity(
@@ -181,9 +168,13 @@ public class KeyboardService {
             SwitchOption switchOption,
             KeycapOption keycapOption
     ) {
-        if(bareboneOption.getQuantity() < 1){
+        if(bareboneOption.getQuantity() < 1
+                || switchOption.getQuantity() < 1
+                || keycapOption.getQuantity() < 1
+        ){
             throw new KeyboardException.KeyboardConflictException(PART_OPTION_CONFLICT);
         }
+        return true;
     }
 
     private void createKeyboardOption(Keyboard newKeyboard, List<Long> optionIdList) {
@@ -193,9 +184,76 @@ public class KeyboardService {
             keyboardOptionJpaRepository.save(
                     KeyboardOption.builder()
                             .keyboard(newKeyboard)
-                            .option(option))
+                            .option(option)
                             .build()
             );
         }
+    }
+
+    // fixme: 옵션 확장성 없음. 리팩토링 필요
+    private Map<String, KeyboardDetailResponse.SelectedProduct> getProductMap(
+            BareboneOption bareboneOption,
+            SwitchOption switchOption,
+            KeycapOption keycapOption
+    ) throws Exception {
+        Map<String, KeyboardDetailResponse.SelectedProduct> result = new HashMap<>();
+
+        if(bareboneOption != null) {
+            //배어본 옵션 상세
+            Image bareboneImage = bareboneOption.getImage();
+            String bareboneImageUrl = null;
+            if(bareboneImage != null) {
+                bareboneImageUrl = minioUtil.getImageUrl(bareboneImage.getBucket(), bareboneImage.getFilePath());
+            }
+
+            KeyboardDetailResponse.SelectedProduct selectedBarebone = new KeyboardDetailResponse.SelectedProduct(
+                    bareboneOption.getId(),
+                    bareboneOption.getName(),
+                    bareboneOption.getPrice(),
+                    bareboneOption.getQuantity(),
+                    bareboneImageUrl
+            );
+            result.put("barebone", selectedBarebone);
+        }
+
+
+        if(switchOption != null) {
+            //스위치 옵션 상세
+            Image switchImage = switchOption.getImage();
+            String switchImageUrl = null;
+            if(switchImage != null) {
+                switchImageUrl = minioUtil.getImageUrl(switchImage.getBucket(), switchImage.getFilePath());
+            }
+
+            KeyboardDetailResponse.SelectedProduct selectedSwitch = new KeyboardDetailResponse.SelectedProduct(
+                    switchOption.getId(),
+                    switchOption.getName(),
+                    switchOption.getPrice(),
+                    switchOption.getQuantity(),
+                    switchImageUrl
+            );
+            result.put("switch", selectedSwitch);
+        }
+
+
+        if(keycapOption != null) {
+            //키캡 옵션 상세
+            Image keycapImage = keycapOption.getImage();
+            String keycapImageUrl = null;
+            if(keycapImage != null) {
+                keycapImageUrl =  minioUtil.getImageUrl(keycapImage.getBucket(), keycapImage.getFilePath());
+            }
+
+            KeyboardDetailResponse.SelectedProduct selectedKeycap = new KeyboardDetailResponse.SelectedProduct(
+                    keycapOption.getId(),
+                    keycapOption.getName(),
+                    keycapOption.getPrice(),
+                    keycapOption.getQuantity(),
+                    keycapImageUrl
+            );
+            result.put("keycap", selectedKeycap);
+        }
+
+        return result;
     }
 }

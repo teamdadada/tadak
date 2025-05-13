@@ -5,6 +5,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
@@ -21,8 +23,9 @@ public class Option {
     @Column(name = "option_id")
     private Long id;
 
-    @Column
-    private String category;
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
 
     @Column(name = "option_name")
     private String partName;

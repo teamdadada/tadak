@@ -1,9 +1,10 @@
 package com.ssafy.tadak.spring.keyboard.domain.entity;
 
+import com.ssafy.tadak.spring.keyboard.converter.ColorJsonConverter;
+import com.ssafy.tadak.spring.keyboard.dto.request.Colors;
 import com.ssafy.tadak.spring.minio.domain.entity.Image;
-import com.ssafy.tadak.spring.minio.domain.entity.Model;
-import com.ssafy.tadak.spring.product.domain.entity.Keycap;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -29,7 +30,7 @@ import java.util.List;
 public class Keyboard {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "kayboard_id")
+    @Column(name = "keyboard_id")
     private Long id;
 
     //todo: User로 매핑
@@ -43,19 +44,21 @@ public class Keyboard {
     @Column(nullable = false, name = "keyboard_name")
     private String name;
 
+    // fixme: ManyToOne?
     @OneToOne
     @JoinColumn(name = "thumbnail_id")
     private Image thumbnail;
 
     @OneToOne
     @JoinColumn(name = "model_id")
-    private Model model;
+    private Image model;
 
     @Column(name = "keyboard_price")
     private Integer price;
 
-    @Column(name = "keyboard_color")
-    private String color;
+    @Column(name = "keyboard_color", columnDefinition = "json")
+    @Convert(converter = ColorJsonConverter.class)
+    private Colors colors;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "barebone_option_id")
@@ -84,9 +87,9 @@ public class Keyboard {
             Long cartId,
             String name,
             Image thumbnail,
-            Model model,
+            Image model,
             Integer price,
-            String color,
+            Colors color,
             BareboneOption bareboneOption,
             KeycapOption keycapOption,
             SwitchOption switchOption
@@ -97,7 +100,7 @@ public class Keyboard {
         this.thumbnail = thumbnail;
         this.model = model;
         this.price = price;
-        this.color = color;
+        this.colors = color;
         this.bareboneOption = bareboneOption;
         this.keycapOption = keycapOption;
         this.switchOption = switchOption;

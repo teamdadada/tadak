@@ -6,6 +6,7 @@ import com.ssafy.tadak.spring.keyboard.dto.request.CreateKeyboardRequest;
 import com.ssafy.tadak.spring.keyboard.dto.response.KeyboardDetailResponse;
 import com.ssafy.tadak.spring.keyboard.service.KeyboardService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,7 +26,7 @@ public class KeyboardController {
             @AuthUser UserInfo userInfo,
             @RequestBody CreateKeyboardRequest request
     ) {
-        return ResponseEntity.ok(
+        return ResponseEntity.status(HttpStatus.CREATED).body(
                 "\""+
                 keyboardService.createKeyboard(
                         userInfo.id(),
@@ -34,7 +35,7 @@ public class KeyboardController {
                         request.modelId(),
                         request.totalPrice(),
                         request.colors(),
-                        request.selectedOptions(),
+                        request.options(),
                         request.bareboneId(),
                         request.switchId(),
                         request.keycapId()
