@@ -64,6 +64,22 @@ public class ProductService {
     }
 
     @Transactional(readOnly = true)
+    public ProductListResponse getProductListByQuery(
+            String keyword,
+            String cursor,
+            int size
+    ) {
+        int[] cursorInfo = separateCursor(cursor);
+        int hitC = cursorInfo[0];
+        int idC = cursorInfo[1];
+        List<Product> products = productRepository.searchByNameWithCursor(keyword, hitC, idC, size);
+        List<ProductSimpleDto> productsDto = products.stream()
+                .map(ProductSimpleDto::from).toList();
+
+        return ProductListResponse.of(productsDto, size);
+    }
+
+    @Transactional(readOnly = true)
     public ProductListResponse getProductList(
             ProductType type,
             String cursor,
@@ -97,5 +113,10 @@ public class ProductService {
                 .toList();
 
         return ProductListResponse.of(dtoList, cursorRequest.size());
+    }
+
+    private int[] separateCursor(String cursor) {
+        String[] split = cursor.split("_");
+        return new int[]{Integer.parseInt(split[0]), Integer.parseInt(split[1])};
     }
 }

@@ -59,8 +59,9 @@ public class ProductController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/list")
+    @GetMapping(value = "/list", params = "!query")
     public ResponseEntity<ProductListResponse> getProductList(
+            @RequestParam(name = "query", required = false) String keyword,
             @RequestParam(name = "type") ProductType type,
             @RequestParam(name = "cursor", required = false) String cursor,
             @RequestParam(name = "size",  defaultValue = "10") int size,
@@ -77,6 +78,19 @@ public class ProductController {
                 bareboneFilter,
                 switchFilter,
                 keycapFilter
+        ));
+    }
+
+    @GetMapping(value = "/list", params = "query")
+    public ResponseEntity<ProductListResponse> getProductList(
+            @RequestParam(name = "query", required = false) String keyword,
+            @RequestParam(name = "cursor", defaultValue = "2147483647_2147483647") String cursor,
+            @RequestParam(name = "size", defaultValue = "10") int size
+    ) {
+        return ResponseEntity.ok(productService.getProductListByQuery(
+                keyword,
+                cursor,
+                size
         ));
     }
 }
