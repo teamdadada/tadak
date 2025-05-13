@@ -37,3 +37,35 @@ export const CHATBOT_END_POINT = {
   SEND_MESSAGE: '/chat',
   GET_HISTORY: (userId: string) => `/chat/${userId}`,
 }
+
+// keyboardService
+export const KEYBOARD_END_POINT = {
+  LIST: '/keyboard',
+  CREATE: '/keyboard',
+  DETAIL: (keyboardId: number) => `/keyboard/${keyboardId}`,
+  UPDATE: (keyboardId: number) => `/keyboard/${keyboardId}`,
+  DELETE: (keyboardId: number) => `/keyboard/${keyboardId}`,
+  OPTION: '/keyboard/option',
+  PRODUCT_BY_CATEGORY: (categoryName: string) => `/keyboard/product?category=${categoryName}`,
+  SELECTED_PRODUCTS: (keyboardId: number) => `/keyboard/${keyboardId}/products`,
+  UPDATE_PRODUCTS: (keyboardId: number) => `/keyboards/${keyboardId}/products`,
+  MODEL_3D: (keyboardId: number) => `/keyboard/${keyboardId}/model`,
+  SAVE_ARRANGEMENT: '/keyboard/arrangements',
+}
+
+// backgroundService
+export const BACKGROUND_END_POINT = {
+  LIST: '/background',
+  CREATE: '/background',
+  DELETE: (backgroundId: number) => `/background/${backgroundId}`,
+}
+
+// cartService
+export const CART_END_POINT = {
+  ADD: '/cart',
+}
+
+// minioService
+export const MINIO_END_POINT = {
+  UPLOAD: (bucketName: string) => `/minio/${bucketName}`,
+}
