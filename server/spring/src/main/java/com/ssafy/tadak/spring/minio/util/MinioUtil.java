@@ -29,12 +29,6 @@ public class MinioUtil {
     @Value("${minio.endpoint}")
     private String endpoint;
 
-    @Value("${minio.public-bucket}")
-    private String publicBucket;
-
-    @Value("${minio.private-bucket}")
-    private String privateBucket;
-
     /** 버킷이 존재하는지 확인 **/
     public boolean checkBucket(String bucket) throws Exception {
         return minioClient.bucketExists(
@@ -79,15 +73,15 @@ public class MinioUtil {
         if(bucket.getIsPublic()) {
             return String.format("%s/%s/%s", endpoint, bucket.getName(), fileName);
         }else{
-            return getPresignedUrl(fileName, 600);
+            return getPresignedUrl(bucket.getName(), fileName, 600);
         }
     }
 
     /** presigned URL 발급 (GET) **/
-    public String getPresignedUrl(String objectName, int expiresInSeconds) throws Exception {
+    public String getPresignedUrl(String bucketName, String objectName, int expiresInSeconds) throws Exception {
         return minioClient.getPresignedObjectUrl(
                 GetPresignedObjectUrlArgs.builder()
-                        .bucket(privateBucket)
+                        .bucket(bucketName)
                         .object(objectName)
                         .method(Method.GET)
                         .expiry(expiresInSeconds, TimeUnit.SECONDS)

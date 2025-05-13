@@ -1,5 +1,7 @@
 package com.ssafy.tadak.spring.minio.controller;
 
+import com.ssafy.tadak.spring.minio.domain.entity.Image;
+import com.ssafy.tadak.spring.minio.dto.response.UploadResponse;
 import com.ssafy.tadak.spring.minio.service.MinioService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,13 +20,13 @@ public class MinioController {
     private final MinioService minioService;
 
     @PostMapping("/{bucket-name}")
-    public ResponseEntity<String> uploadImage(
+    public ResponseEntity<?> uploadImage(
             @RequestParam(required = true, name = "file") MultipartFile file,
             @PathVariable(name = "bucket-name") String bucketName
     ) {
         try{
-            return ResponseEntity.ok("업로드 완료: "+
-                    minioService.uploadFile(file, bucketName)
+            return ResponseEntity.ok(
+                    minioService.uploadFile(file, bucketName) //UploadResponse
             );
         } catch (Exception e) {
             return ResponseEntity.status(500).body(e.getMessage());
