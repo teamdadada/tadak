@@ -1,14 +1,16 @@
 package com.ssafy.tadak.spring.keyboard.dto.request;
 
-import org.springframework.web.multipart.MultipartFile;
-
 import java.util.List;
 
 public record CreateKeyboardRequest (
-        String keyboardName,
-        MultipartFile keyboardImage,
-        Integer keyboardPrice,
-        String keyboardColor,
-        List<Long> partOptionIdList //partOptionId
+        String name,
+        Long thumbnailId,
+        Long modelId,
+        Integer totalPrice,
+        String colors,
+        List<Long> selectedOptions,
+        Long bareboneId,
+        Long switchId,
+        Long keycapId
 ){
 }

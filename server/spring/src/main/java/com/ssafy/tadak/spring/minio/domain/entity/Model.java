@@ -1,8 +1,8 @@
-package com.ssafy.tadak.spring.keyboard.domain.entity;
+package com.ssafy.tadak.spring.minio.domain.entity;
+
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -17,22 +17,21 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "keyboard_options")
 @Getter
+@Table(name = "models")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class KeyboardOption {
+public class Model {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "keyboard_option_id")
+    @Column(name = "model_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false, name = "keyboard_id")
-    private Keyboard keyboard;
+    @ManyToOne
+    @JoinColumn(nullable = false, name = "bucket_id")
+    Bucket bucket;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false, name = "option_id")
-    private Option option;
+    @Column(nullable = false, name = "file_path")
+    String filePath;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -41,11 +40,11 @@ public class KeyboardOption {
     private LocalDateTime updatedAt;
 
     @Builder
-    public KeyboardOption(
-            Keyboard keyboard,
-            Option option
+    public Model(
+            Bucket bucket,
+            String filePath
     ) {
-        this.keyboard = keyboard;
-        this.option = option;
+        this.bucket = bucket;
+        this.filePath = filePath;
     }
 }

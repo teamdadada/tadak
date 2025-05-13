@@ -1,5 +1,6 @@
 package com.ssafy.tadak.spring.keyboard.domain.entity;
 
+import com.ssafy.tadak.spring.minio.domain.entity.Image;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -8,44 +9,45 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "keyboard_options")
+@Table(name = "barebone_optioins")
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class KeyboardOption {
+public class BareboneOption {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "keyboard_option_id")
+    @Column(name = "barebone_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false, name = "keyboard_id")
-    private Keyboard keyboard;
+    @Column
+    private String name;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false, name = "option_id")
-    private Option option;
+    @Column
+    private Integer price;
+
+    @Column
+    private Integer quantity;
+
+    @OneToOne
+    @JoinColumn(name = "image_id")
+    private Image image;
+
+    //옵션들
+    private Long layout;
+
+    private Long material;
+
+    @Column(name = "is_valid")
+    private Boolean isValid;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
-
-    @Builder
-    public KeyboardOption(
-            Keyboard keyboard,
-            Option option
-    ) {
-        this.keyboard = keyboard;
-        this.option = option;
-    }
 }

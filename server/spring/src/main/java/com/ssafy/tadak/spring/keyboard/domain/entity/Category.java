@@ -9,20 +9,18 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Table(name = "pary_types")
+@Table(name = "categories")
 @Getter
-public class PartType{
+public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "part_id")
+    @Column(name = "category_id")
     private Long id;
 
-    @Column
-    private String type;
-
-    @OneToMany(mappedBy = "partType")
-    List<PartOption> options;
+    @Column(name = "category_name")
+    private String name;
 }
