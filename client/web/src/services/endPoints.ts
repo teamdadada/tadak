@@ -34,6 +34,6 @@ export const SHOP_END_POINT = {
 
 //chatbotService
 export const CHATBOT_END_POINT = {
-  SEND_MESSAGE: '/api/chat',
-  GET_HISTORY: (userId: string) => `/api/chat/${userId}`,
+  SEND_MESSAGE: '/chat',
+  GET_HISTORY: (userId: string) => `/chat/${userId}`,
 }
