@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
-import ReviewSection from '@/components/product/ReviewSection'
+import ReviewSection from '@/components/review/ReviewSection'
 import ProductDetailTabs from '@/components/product/ProductDetailTabs'
 import { getProductDetail } from '@/services/shopService'
 import { ProductType } from '@/types/shop'
