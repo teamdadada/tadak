@@ -5,6 +5,8 @@ import com.tadak.domain.entity.User
 import com.tadak.domain.table.Users
 import com.tadak.dto.AuthenticatedUserKey
 import com.tadak.dto.SignUpRequest
+import com.tadak.dto.request.NicknamePatchRequest
+import com.tadak.dto.request.PasswordPatchRequest
 import com.tadak.dto.response.SignUpResponse
 import com.tadak.dto.response.UserSelectResponse
 import com.tadak.exception.error_code.AuthErrorCode
@@ -70,7 +72,7 @@ fun Route.userRoutes() {
             } ?: throw NotFoundException(UserErrorCode.USER_NOT_FOUND.toErrorCode())
         }
 
-        post("/img") {
+        patch("/img") {
             val authUser = call.attributes.getOrNull(AuthenticatedUserKey)
                 ?: throw BadRequestException(AuthErrorCode.UNAUTHORIZED_REQUEST.toErrorCode())
 
@@ -89,6 +91,44 @@ fun Route.userRoutes() {
 
             call.response.headers.append(HttpHeaders.Location, imageUrl)
             call.respond(HttpStatusCode.Created)
+        }
+
+        patch("/nickname") {
+            val authUser = call.attributes.getOrNull(AuthenticatedUserKey)
+                ?: throw BadRequestException(AuthErrorCode.UNAUTHORIZED_REQUEST.toErrorCode())
+
+            val newNickname = call.receive<NicknamePatchRequest>().nickname
+
+            transaction {
+                val user = User.find { Users.id eq authUser.userUuid }.singleOrNull()
+                    ?: throw NotFoundException(UserErrorCode.USER_NOT_FOUND.toErrorCode())
+
+                user.userName = newNickname
+                user.updatedAt = LocalDateTime.now()
+            }
+
+            call.respond(HttpStatusCode.NoContent)
+        }
+
+        patch("/password") {
+            val authUser = call.attributes.getOrNull(AuthenticatedUserKey)
+                ?: throw BadRequestException(AuthErrorCode.UNAUTHORIZED_REQUEST.toErrorCode())
+
+            val password = call.receive<PasswordPatchRequest>()
+
+            transaction {
+                val user = User.find { Users.id eq authUser.userUuid }.singleOrNull()
+                    ?: throw NotFoundException(UserErrorCode.USER_NOT_FOUND.toErrorCode())
+
+                if(!PasswordUtil.verify(password.old, user.userPassword))
+                    throw UnauthorizedException(UserErrorCode.INVALID_PASSWORD_EXCEPTION.toErrorCode())
+                val newPassword = PasswordUtil.hashPassword(password.new)
+
+                user.userPassword = newPassword
+                user.updatedAt = LocalDateTime.now()
+            }
+
+            call.respond(HttpStatusCode.NoContent)
         }
     }
 

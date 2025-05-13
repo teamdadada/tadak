@@ -14,7 +14,7 @@ import java.util.*
 
 object ImageUploadService {
 
-    private const val BUCKET_NAME = "image"
+    private const val BUCKET_NAME = "profile"
     private const val BASE_URL = "https://minio.tadak.kr"
 
     private val minioClient: MinioClient = MinioClient.builder()
