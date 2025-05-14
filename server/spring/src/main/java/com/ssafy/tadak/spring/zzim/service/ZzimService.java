@@ -8,6 +8,7 @@ import com.ssafy.tadak.spring.product.domain.repository.ProductRepositoryCustom;
 import com.ssafy.tadak.spring.zzim.domain.ZzimRepository;
 import com.ssafy.tadak.spring.zzim.domain.entity.Zzim;
 import com.ssafy.tadak.spring.zzim.dto.ZzimDto;
+import com.ssafy.tadak.spring.zzim.dto.response.ZzimCntResponse;
 import com.ssafy.tadak.spring.zzim.dto.response.ZzimListResponse;
 import com.ssafy.tadak.spring.zzim.exception.ZzimErrorCode;
 import com.ssafy.tadak.spring.zzim.exception.ZzimException;
@@ -33,6 +34,12 @@ public class ZzimService {
     private final ZzimRepository zzimRepository;
     private final ProductRepositoryCustom productRepositoryCustom;
     private final ProductRepository productRepository;
+
+    @Transactional(readOnly = true)
+    public ZzimCntResponse getZzimMeta(UserInfo userInfo) {
+        int zzimCnt = zzimRepository.countByOwnerId(userInfo.id().longValue());
+        return new ZzimCntResponse(zzimCnt);
+    }
 
     @Transactional(readOnly = true)
     public ZzimListResponse getZzimsByUserId(UserInfo userInfo) {
