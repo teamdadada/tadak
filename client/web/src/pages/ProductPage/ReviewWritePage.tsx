@@ -2,6 +2,8 @@ import ProductPreviewCard from '@/components/product/ProductPreviewCard'
 import ReviewImagePreview from '@/components/review/ReviewImagePreview'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
+import { uploadImageToMinio } from '@/services/minioService'
+import { postReview } from '@/services/reviewService'
 import { ProductDetailBase } from '@/types/product'
 import { useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
@@ -47,15 +49,26 @@ const ReviewWritePage = () => {
       return
     }
 
-    setIsLoading(true)
+    try {
+      // 이미지 업로드
+      const uploadedUrls = await Promise.all(
+        images.map((file) => uploadImageToMinio('review', file)),
+      )
 
-    setTimeout(() => {
-      console.log('리뷰내용: ', content)
-      console.log('이미지 개수: ', images.length)
+      // 리뷰 등록
+      await postReview(product.productId, {
+        reviewContent: content,
+        imageList: uploadedUrls,
+      })
+
       toast.success('리뷰가 성공적으로 등록되었습니다!')
-      setIsLoading(false)
       navigate(-1)
-    }, 500)
+    } catch (err) {
+      console.error(err)
+      toast.error('리뷰 등록 중 오류가 발생했습니다.')
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
