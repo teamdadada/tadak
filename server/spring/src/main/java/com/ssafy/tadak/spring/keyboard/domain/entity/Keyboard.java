@@ -34,7 +34,6 @@ public class Keyboard {
     @Column(name = "keyboard_id")
     private Long id;
 
-    //todo: User로 매핑
     @Column(nullable = false, name = "user_id")
     private Long userId;
 

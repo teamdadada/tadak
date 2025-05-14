@@ -63,15 +63,11 @@ public class KeyboardService {
             Long switchId,
             Long keycapId
     ) {
-        BareboneOption bareboneOption = null;
-        SwitchOption switchOption = null;
-        KeycapOption keycapOption = null;
-
-        bareboneOption = bareboneJpaRepository.findById(bareboneId)
+        BareboneOption bareboneOption = bareboneJpaRepository.findById(bareboneId)
                 .orElseThrow(()->new KeyboardException.KeyboardNotFoundException(PART_OPTION_NOTFOUND));
-        switchOption = switchOptionJpaRepository.findById(switchId)
+        SwitchOption switchOption = switchOptionJpaRepository.findById(switchId)
                 .orElseThrow(()->new KeyboardException.KeyboardNotFoundException(PART_OPTION_NOTFOUND));
-        keycapOption = keycapOptionJpaRepository.findById(keycapId)
+        KeycapOption keycapOption = keycapOptionJpaRepository.findById(keycapId)
                 .orElseThrow(()->new KeyboardException.KeyboardNotFoundException(PART_OPTION_NOTFOUND));
         //수량 확인
         isValidQuantity(bareboneOption, switchOption, keycapOption);

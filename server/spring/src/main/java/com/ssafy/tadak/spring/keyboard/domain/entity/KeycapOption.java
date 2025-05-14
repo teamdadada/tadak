@@ -24,13 +24,13 @@ public class KeycapOption {
     @Column(name = "keycap_option_id")
     private Long id;
 
-    @Column
+    @Column(name = "name")
     private String name;
 
-    @Column
+    @Column(name = "price")
     private Integer price;
 
-    @Column(nullable = false)
+    @Column(name = "quantity", nullable = false)
     private Integer quantity;
 
     @OneToOne

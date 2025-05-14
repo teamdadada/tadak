@@ -24,13 +24,13 @@ public class BareboneOption {
     @Column(name = "barebone_id")
     private Long id;
 
-    @Column
+    @Column(name = "name")
     private String name;
 
-    @Column
+    @Column(name = "price")
     private Integer price;
 
-    @Column(nullable = false)
+    @Column(name = "quantity", nullable = false)
     private Integer quantity;
 
     @OneToOne
@@ -38,10 +38,10 @@ public class BareboneOption {
     private Image image;
 
     //옵션들
-    @Column
+    @Column(name = "layout")
     private Long layout;
 
-    @Column
+    @Column(name = "material")
     private Long material;
 
     @Column(name = "is_valid")
