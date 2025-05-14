@@ -59,15 +59,13 @@ export const useUpdateNickname = () => {
   // const queryClient = useQueryClient()
   const navigate = useNavigate()
 
-  const user = useUserStore((state) => state.user) 
-  const setUser = useUserStore((state) => state.setUser) 
+  const user = useUserStore((state) => state.user)
+  const setUser = useUserStore((state) => state.setUser)
 
   const { mutateAsync } = useMutation({
     mutationFn: (data: UpdateNicknameRequest) => updateNickname(data),
 
     onSuccess: (_, variables) => {
-      // queryClient.invalidateQueries({ queryKey: ['user', 'me'] })
-
       if (user) {
         setUser({
           ...user,
@@ -75,7 +73,7 @@ export const useUpdateNickname = () => {
         })
       }
 
-      toast.success('닉네임이 수정되었습니다!')
+      toast.success('닉네임이 변경되었습니다!')
     },
 
     onError: (error: AxiosError<ErrorResponse>) => {
@@ -96,14 +94,12 @@ export const useUpdateNickname = () => {
 }
 
 export const useUpdateProfileImg = () => {
-  // const queryClient = useQueryClient()
   const navigate = useNavigate()
 
   const user = useUserStore((state) => state.user)
   const setUser = useUserStore((state) => state.setUser)
 
   const { mutateAsync } = useMutation({
-
     mutationFn: async (data: UpdateProfileImgRequest) => {
       const response = await updateProfileImg(data)
       const profileImgURL = response.headers.location
@@ -111,14 +107,13 @@ export const useUpdateProfileImg = () => {
     },
 
     onSuccess: (result) => {
-      // queryClient.invalidateQueries({ queryKey: ['user', 'me'] })
-
       if (user && result.profileImgURL) {
         setUser({
           ...user,
           profileImg: result.profileImgURL,
         })
       }
+
       toast.success('프로필 이미지가 변경되었습니다!')
     },
 
