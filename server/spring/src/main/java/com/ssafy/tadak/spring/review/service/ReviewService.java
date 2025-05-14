@@ -38,6 +38,22 @@ public class ReviewService {
         return mapReviewAndUserInfo(r, u);
     }
 
+    @Transactional
+    public ReviewListResponse getMyReviews(UserInfo userInfo) {
+        List<Review> reviews = reviewRepository.findByAuthorIdOrderByReviewIdDesc(userInfo.id().longValue());
+
+        List<ReviewDetailResponse> reviewsResponseList = reviews.stream()
+                .map(review -> ReviewDetailResponse.from(
+                        review,
+                        userRepository.findById(review.getAuthorId())
+                                .orElse(null
+                                )))
+                .toList();
+        return ReviewListResponse.from(
+                reviewsResponseList
+        );
+    }
+
     @Transactional(readOnly = true)
     public ReviewScoreReponse getReviewScoreSummary(long productId) {
         if(!reviewRepository.existsByProductId(productId))
