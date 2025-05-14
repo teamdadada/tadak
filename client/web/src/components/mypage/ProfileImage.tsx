@@ -44,13 +44,13 @@ const ProfileImage = ({ imageUrl }: ProfileImageProps) => {
       onMouseLeave={() => setIsHovered(false)}
     >
       <img
-        src={imageUrl || '/default-profile.jpg'}
+        src={imageUrl}
         alt="프로필 이미지"
         className={`p-2  md:w-48 md:h-48 lg:w-64 lg:h-48 object-cover  ${isUpdating ? 'opacity-50' : ''}`}
       />
       {isUpdating && (
         <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-50 ">
-          <Loader2 className="h-8 w-8 text-tadak-blue animate-spin" />
+          <Loader2 className="h-8 w-8 text-tadak-black animate-spin" />
         </div>
       )}
       <div
