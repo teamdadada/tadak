@@ -1,8 +1,7 @@
 import axios from 'axios'
 import { refreshToken } from './authService'
 import { useAuthStore } from '@/store/authStore'
-
-import { toast } from 'sonner'
+import { logoutUtil } from '@/utils/auth'
 
 // 환경에 따른 baseURL 설정
 // const BASE_URL = import.meta.env.VITE_API_BASE_URL
@@ -67,12 +66,11 @@ http.interceptors.response.use(
     return Promise.reject(error)
   },
 )
+
 const handleLogout = (
   message = '로그인이 필요합니다. 다시 로그인해 주세요.',
 ) => {
-  toast.error(message)
-  useAuthStore.getState().clearAccessToken()
-  window.location.href = '/account/login'
+  logoutUtil(message)
 }
 
 export default http

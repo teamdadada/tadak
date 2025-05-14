@@ -15,12 +15,15 @@ import {
   UpdateProfileImgRequest,
   User,
 } from '@/types/user'
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { logoutUtil } from '@/utils/auth'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { AxiosError } from 'axios'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 
 export const useSignUp = () => {
+  const { setUser } = useUserStore()
+
   const { mutateAsync } = useMutation({
     mutationFn: async (data: SignUpRequest) => {
       // 회원가입
@@ -28,6 +31,8 @@ export const useSignUp = () => {
 
       // 자동 로그인
       await signIn({ userId: data.userId, password: data.password })
+      const userInfo: User = await getUserInfo()
+      setUser(userInfo)
 
       return signUpResponse
     },
@@ -48,6 +53,18 @@ export const useSignUp = () => {
   })
 
   return mutateAsync
+}
+
+export const useLogout = () => {
+  const queryClient = useQueryClient()
+
+  const logout = () => {
+    queryClient.clear()
+
+    logoutUtil(undefined, '/main')
+  }
+
+  return logout
 }
 
 export const useGetUserInfo = () => {

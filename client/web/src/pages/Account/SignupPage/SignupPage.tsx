@@ -26,7 +26,7 @@ const signupSchema = z
     password: z
       .string()
       .min(1, ' ')
-      .max(50, '비밀번호는 50자 이하여아 합니다.'),
+      .max(50, '비밀번호는 50자 이하여야 합니다.'),
     confirm: z.string().min(1, ' '),
   })
   .refine((data) => data.password === data.confirm, {

@@ -1,25 +1,25 @@
 import { useState } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { FiMenu, FiX } from 'react-icons/fi'
 import logo from '@/assets/images/logo.png'
 import { useAuthStore } from '@/store/authStore'
-import { toast } from 'sonner'
+import { useLogout } from '@/hooks/useUser'
 
 const Header = () => {
   const location = useLocation()
-  const navigate = useNavigate()
 
   const isOnboarding = location.pathname === '/'
 
-  const { isAuthenticated, clearAccessToken } = useAuthStore()
+  const { isAuthenticated } = useAuthStore()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
+  const logout = useLogout()
+
   const handleLogout = () => {
-    clearAccessToken()
-    toast.success('로그아웃 되었습니다.')
-    navigate('/main') // 메인 페이지로 이동
+    logout()
     setIsMenuOpen(false) // 모바일 메뉴 닫기
   }
+
   return (
     <header className="sticky top-0 z-10 w-full bg-white border-b border-gray-200">
       <div className="flex items-center justify-between h-16 max-w-screen-2xl mx-auto px-6 relative">
