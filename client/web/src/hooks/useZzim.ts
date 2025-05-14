@@ -1,6 +1,7 @@
-import { addZzim } from '@/services/zzimService'
+import { addZzim, listZzim } from '@/services/zzimService'
 import { ErrorResponse } from '@/types/user'
-import { useMutation } from '@tanstack/react-query'
+import { ZzimListResponse } from '@/types/zzim'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { AxiosError } from 'axios'
 import { toast } from 'sonner'
 
@@ -14,4 +15,11 @@ export const useAddZzim = () => {
     },
   })
   return mutateAsync
+}
+
+export const useListZzim = () => {
+  return useQuery<ZzimListResponse>({
+    queryKey: ['zzim', 'list'],
+    queryFn: listZzim,
+  })
 }
