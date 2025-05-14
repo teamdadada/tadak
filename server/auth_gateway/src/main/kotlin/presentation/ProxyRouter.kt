@@ -46,4 +46,36 @@ fun Route.proxyRoutes(env: ApplicationEnvironment) {
             )
         }
     }
+
+    route("chat/{...}") {  // "/chat/**" 경로만 처리
+        handle {
+            val targetUri = proxyConfig.fastapiBaseUrl + call.request.uri.removePrefix("/chat")
+            val method = call.request.httpMethod
+
+            val token = call.request.headers["Authorization"]?.removePrefix("Bearer ")
+            val userMeta = token?.let { JwtUtil.verifyAndDecode(it) }
+
+            val requestBytes = call.receiveChannel().toByteArray()
+
+            val clientResponse = HttpClientProvider.client.request(targetUri) {
+                this.method = method
+                headers.appendAll(call.request.headers)
+                headers.remove(HttpHeaders.Host)
+                userMeta?.let {
+                    headers.append("X-User-Id", it.userUuid.toString())
+                    headers.append("X-User-Nickname", it.nickname)
+                    headers.append("X-User-Type", it.userType)
+                }
+                setBody(requestBytes)
+            }
+
+            val responseBytes = clientResponse.body<ByteReadChannel>().toByteArray()
+
+            call.respondBytes(
+                bytes = responseBytes,
+                status = clientResponse.status,
+                contentType = clientResponse.contentType()
+            )
+        }
+    }
 }
