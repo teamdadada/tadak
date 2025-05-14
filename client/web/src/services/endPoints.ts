@@ -4,7 +4,7 @@ export const USER_END_POINT = {
   ME: '/user/me',
   NICKNAME: '/user/nickname',
   IMG: '/user/img',
-  PASSWORD: '/user/password'
+  PASSWORD: '/user/password',
 }
 
 // authService
@@ -49,7 +49,8 @@ export const KEYBOARD_END_POINT = {
   UPDATE: (keyboardId: number) => `/keyboard/${keyboardId}`,
   DELETE: (keyboardId: number) => `/keyboard/${keyboardId}`,
   OPTION: '/keyboard/option',
-  PRODUCT_BY_CATEGORY: (categoryName: string) => `/keyboard/product?category=${categoryName}`,
+  PRODUCT_BY_CATEGORY: (categoryName: string) =>
+    `/keyboard/product?category=${categoryName}`,
   SELECTED_PRODUCTS: (keyboardId: number) => `/keyboard/${keyboardId}/products`,
   UPDATE_PRODUCTS: (keyboardId: number) => `/keyboards/${keyboardId}/products`,
   MODEL_3D: (keyboardId: number) => `/keyboard/${keyboardId}/model`,
@@ -71,4 +72,9 @@ export const CART_END_POINT = {
 // minioService
 export const MINIO_END_POINT = {
   UPLOAD: (bucketName: string) => `/images/${bucketName}`,
+}
+
+// zzimService
+export const ZZIM_END_POINT = {
+  CREATE: '/zzim',
 }
