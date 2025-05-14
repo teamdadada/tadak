@@ -14,6 +14,8 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
+import java.util.HashMap;
+import java.util.Map;
 
 @Configuration
 @EnableTransactionManagement
@@ -27,6 +29,7 @@ public class UserDbConfig {
     @Bean
     @ConfigurationProperties(prefix = "spring.user-datasource")
     public DataSourceProperties userDataSourceProperties() {
+
         return new DataSourceProperties();
     }
 
@@ -39,6 +42,9 @@ public class UserDbConfig {
 
     @Bean
     public LocalContainerEntityManagerFactoryBean userEntityManagerFactory(EntityManagerFactoryBuilder builder) {
+        Map<String, Object> properties = new HashMap<>();
+        properties.put("hibernate.hbm2ddl.auto", "none"); // DDL 실행 안 함
+
         return builder
                 .dataSource(userDataSource())
                 .packages("com.ssafy.tadak.spring.user.domain")
