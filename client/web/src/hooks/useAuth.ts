@@ -62,6 +62,7 @@ export const useNaverLogin = () => {
   const isProcessingRef = useRef(false)
   const navigate = useNavigate()
   const setUser = useUserStore((state) => state.setUser)
+  const setZzimList = useUserStore((state) => state.setZzimList)
 
   const login = async (code: string, redirectPath: string) => {
     if (isProcessingRef.current) return
@@ -71,9 +72,12 @@ export const useNaverLogin = () => {
       const start = Date.now()
 
       await naverLogin(code)
+
       const userInfo = await getUserInfo()
       setUser(userInfo)
-      console.log(userInfo)
+
+      const userZzimList: ZzimListResponse = await getZzimList()
+      setZzimList(userZzimList)
 
       const elapsed = Date.now() - start
       if (elapsed < 500) {
@@ -96,6 +100,7 @@ export const useKakaoLogin = () => {
   const isProcessingRef = useRef(false)
   const navigate = useNavigate()
   const setUser = useUserStore((state) => state.setUser)
+  const setZzimList = useUserStore((state) => state.setZzimList)
 
   const login = async (code: string, redirectPath: string) => {
     if (isProcessingRef.current) return
@@ -105,9 +110,12 @@ export const useKakaoLogin = () => {
       const start = Date.now()
 
       await kakaoLogin(code)
+
       const userInfo = await getUserInfo()
       setUser(userInfo)
-      console.log(userInfo)
+
+      const userZzimList: ZzimListResponse = await getZzimList()
+      setZzimList(userZzimList)
 
       const elapsed = Date.now() - start
       if (elapsed < 500) {
