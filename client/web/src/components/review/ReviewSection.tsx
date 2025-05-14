@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import ReviewItem from './ReviewItem'
 import { ProductDetailBase } from '@/types/product'
+import { Button } from '../ui/button'
 
 interface ReviewSectionProps {
   product: ProductDetailBase
@@ -76,9 +77,17 @@ const ReviewSection = ({ product }: ReviewSectionProps) => {
         <h2 className="py-2 w-[88px] text-xl font-semibold text-center">
           상품평
         </h2>
-        <button className="px-2 py-2 ml-auto mr-4 text-xs transition border rounded text-tadak-secondary border-tadak-secondary hover:bg-tadak-secondary hover:text-white">
+        <Button
+          variant="outline"
+          className="px-2 py-2 ml-auto mr-4 text-xs transition border rounded text-tadak-secondary border-tadak-secondary hover:bg-tadak-secondary hover:text-white"
+          onClick={() =>
+            navigate(`/product/${product.productId}/review/write`, {
+              state: { product },
+            })
+          }
+        >
           작성하기
-        </button>
+        </Button>
 
         <div className="absolute bottom-0 rounded z-1 bg-tadak-primary h-[2px] w-[88px]" />
       </div>
