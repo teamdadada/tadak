@@ -1,16 +1,9 @@
-import { cn } from '@/lib/utils'
 import { Product } from '@/types/shop'
 import { FaHeart, FaRegHeart } from 'react-icons/fa'
 import { useNavigate } from 'react-router-dom'
 
 interface ItemCardProps extends Product {
   size?: 'sm' | 'md' | 'lg'
-}
-
-const sizeClasses = {
-  sm: 'w-[150px] h-[200px] text-sm',
-  md: 'w-[250px] h-[330px] text-base',
-  lg: 'w-[300px] h-[360px] text-lg',
 }
 
 const ItemCard = ({
@@ -20,7 +13,6 @@ const ItemCard = ({
   thumbnail,
   type,
   liked = false,
-  size = 'md', // 기본은 중간 크기
 }: ItemCardProps) => {
   const navigate = useNavigate()
 
@@ -29,12 +21,9 @@ const ItemCard = ({
       onClick={() => {
         if (type) navigate(`/product/${type}/${productId}`)
       }}
-      className={cn(
-        'rounded-lg p-5 flex flex-col justify-between items-center relative bg-tadak-white cursor-pointer',
-        sizeClasses[size],
-      )}
+      className="w-full rounded-lg p-5 flex flex-col justify-between items-center relative bg-tadak-white cursor-pointer"
     >
-      <div className="relative flex items-center justify-center w-full h-full overflow-hidden ">
+      <div className="relative w-full aspect-square overflow-hidden">
         <img
           src={thumbnail}
           alt={name}

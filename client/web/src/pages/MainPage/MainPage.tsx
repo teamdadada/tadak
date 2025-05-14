@@ -194,7 +194,7 @@ const MainPage = () => {
           indicatorWidth={100}
         />
         <div className="relative min-h-[330px]">
-          <div className="grid grid-cols-1 min-[600px]:grid-cols-2 min-[800px]:grid-cols-3 min-[1200px]:grid-cols-4 gap-4 mt-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mt-6">
             {isPopularLoading ? (
               <div className="mt-12 text-center text-gray-500 col-span-full">
                 로딩 중...
@@ -234,7 +234,7 @@ const MainPage = () => {
           indicatorWidth={100}
         />
         <div className="relative min-h-[330px]">
-          <div className="grid grid-cols-1 min-[600px]:grid-cols-2 min-[800px]:grid-cols-3 min-[1200px]:grid-cols-4 gap-2 mt-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mt-6">
             {isNewLoading ? (
               <div className="mt-12 text-center text-gray-500 col-span-full">
                 로딩 중...
