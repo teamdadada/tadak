@@ -121,7 +121,7 @@ const MobileMenuBar = ({ selectedMenu, onMenuChange }: MobileMenuBarProps) => {
                 />
                 {isUpdatingImg && (
                   <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-20 rounded-full">
-                    <Loader2 className="h-6 w-6 text-tadak-blue animate-spin" />
+                    <Loader2 className="h-6 w-6 text-tadak-black animate-spin" />
                   </div>
                 )}
               </div>
