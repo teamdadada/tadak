@@ -17,11 +17,14 @@ from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 import src.chatbot.util.gemini_util as gemini
 from redis import Redis
+from urllib.parse import quote
 
 load_dotenv()
 
 REDIS_HOST = os.getenv("REDIS_HOST")
 REDIS_PORT = int(os.getenv("REDIS_PORT"))
+redis_pw = os.getenv("REDIS_PASSWORD")
+REDIS_PASSWORD = quote(redis_pw)
 
 qdrant = Qdrant(
         client=qdrantClient,
@@ -97,7 +100,7 @@ def get_response(user_id: int, query: str):
 def get_memory(user_id: str, window_size=30):
     chat_memory= RedisChatMessageHistory(
         session_id=user_id,
-        url=f"redis://{REDIS_HOST}:{REDIS_PORT}"
+        url=f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}"
     )
     return ConversationBufferWindowMemory(
         memory_key="chat_history",
@@ -131,7 +134,7 @@ async def upload_files(files: List[UploadFile], file_detail: str):
     return responses
 
 def trim_chat_history(user_id: str, max_length=50): # 남길 대화 수
-    r = Redis(host=REDIS_HOST, port=REDIS_PORT, db=0)
+    r = Redis(host=REDIS_HOST, port=REDIS_PORT, password= redis_pw, db=0)
     key = f"message_store:{user_id}"  # RedisChatMessageHistory 내부 키 형식에 맞춰야 함
     r.ltrim(key, 0, max_length * 2 - 1)
 
