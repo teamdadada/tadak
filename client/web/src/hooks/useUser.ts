@@ -3,6 +3,7 @@ import {
   getUserInfo,
   signUp,
   updateNickname,
+  updatePassword,
   updateProfileImg,
 } from '@/services/userService'
 import { useUserStore } from '@/store/userStore'
@@ -10,6 +11,7 @@ import {
   ErrorResponse,
   SignUpRequest,
   UpdateNicknameRequest,
+  UpdatePasswordRequest,
   UpdateProfileImgRequest,
   User,
 } from '@/types/user'
@@ -133,5 +135,33 @@ export const useUpdateProfileImg = () => {
       }
     },
   })
+  return mutateAsync
+}
+
+export const useUpdatePassword = () => {
+  const navigate = useNavigate()
+
+  const { mutateAsync } = useMutation({
+    mutationFn: (data: UpdatePasswordRequest) => updatePassword(data),
+    onSuccess: () => {
+      toast.success('비밀번호가 성공적으로 변경되었습니다!')
+    },
+    onError: (error: AxiosError<ErrorResponse>) => {
+      const status = error.response?.status
+      const code = error.response?.data?.code
+      const message = error.response?.data?.message
+
+      if (status === 401 && code === 'U4010') {
+        toast.error(message)
+      } else if (
+        (status == 401 && code === 'B4011') ||
+        (status == 404 && code === 'U4040')
+      ) {
+        navigate('/account/login', { replace: true })
+        toast.error(message)
+      }
+    },
+  })
+
   return mutateAsync
 }

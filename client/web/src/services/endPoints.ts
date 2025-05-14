@@ -4,6 +4,7 @@ export const USER_END_POINT = {
   ME: '/user/me',
   NICKNAME: '/user/nickname',
   IMG: '/user/img',
+  PASSWORD: '/user/password'
 }
 
 // authService
