@@ -55,7 +55,7 @@ const ProductDetailPage = () => {
           </div>
         </div>
       </div>
-      <ReviewSection />
+      <ReviewSection product={data} />
       <ProductDetailTabs imageUrl={data.detailImage} />
     </div>
   )
