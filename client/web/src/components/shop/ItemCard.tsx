@@ -1,9 +1,12 @@
 import { Product } from '@/types/shop'
 import { FaHeart, FaRegHeart } from 'react-icons/fa'
 import { useNavigate } from 'react-router-dom'
+import { useState } from 'react'
+import { useAddZzim } from '@/hooks/useZzim'
 
 interface ItemCardProps extends Product {
   size?: 'sm' | 'md' | 'lg'
+  onZzimChange?: (productId: number, isLiked: boolean) => void
 }
 
 const ItemCard = ({
@@ -13,8 +16,32 @@ const ItemCard = ({
   thumbnail,
   type,
   liked = false,
+  onZzimChange,
 }: ItemCardProps) => {
   const navigate = useNavigate()
+  const [isLiked, setIsLiked] = useState(liked)
+
+  const addZzim = useAddZzim()
+
+  const handleZzimClick = async (e: React.MouseEvent) => {
+    e.stopPropagation()
+
+    try {
+      if (isLiked) {
+        // 찜 삭제 로직 구현
+      } else {
+        await addZzim(productId)
+      }
+
+      setIsLiked(!isLiked)
+
+      if (onZzimChange) {
+        onZzimChange(productId, !isLiked)
+      }
+    } catch {
+      // 에러 처리 로직
+    }
+  }
 
   return (
     <div
@@ -29,9 +56,12 @@ const ItemCard = ({
           alt={name}
           className="object-cover w-full h-full"
         />
-        <div className="absolute p-1 rounded-lg top-2 right-2">
-          {liked ? (
-            <FaHeart className="w-5 h-5 text-tadak-warning" />
+        <div
+          className="absolute p-1 rounded-lg top-2 right-2 cursor-pointer"
+          onClick={handleZzimClick}
+        >
+          {isLiked ? (
+            <FaHeart className="w-5 h-5 text-tadak-warning drop-shadow-md " />
           ) : (
             <FaRegHeart className="w-5 h-5 text-tadak-white drop-shadow-md" />
           )}
