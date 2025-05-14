@@ -4,7 +4,7 @@ export const USER_END_POINT = {
   ME: '/user/me',
   NICKNAME: '/user/nickname',
   IMG: '/user/img',
-  PASSWORD: '/user/password'
+  PASSWORD: '/user/password',
 }
 
 // authService
@@ -35,6 +35,15 @@ export const SHOP_END_POINT = {
   },
 }
 
+// review
+export const REVIEW_END_POINT = {
+  LIST: (productId: number | string) => `/review/list/${productId}`,
+  SCORE: (productId: number | string) => `/review/score/${productId}`,
+  CREATE: (productId: number | string) => `/review/${productId}`,
+  DELETE: (reviewId: number | string) => `/review/${reviewId}`,
+  UPDATE: (productId: number | string) => `/review/${productId}`,
+}
+
 //chatbotService
 export const CHATBOT_END_POINT = {
   SEND_MESSAGE: '/chat',
@@ -49,7 +58,8 @@ export const KEYBOARD_END_POINT = {
   UPDATE: (keyboardId: number) => `/keyboard/${keyboardId}`,
   DELETE: (keyboardId: number) => `/keyboard/${keyboardId}`,
   OPTION: '/keyboard/option',
-  PRODUCT_BY_CATEGORY: (categoryName: string) => `/keyboard/product?category=${categoryName}`,
+  PRODUCT_BY_CATEGORY: (categoryName: string) =>
+    `/keyboard/product?category=${categoryName}`,
   SELECTED_PRODUCTS: (keyboardId: number) => `/keyboard/${keyboardId}/products`,
   UPDATE_PRODUCTS: (keyboardId: number) => `/keyboards/${keyboardId}/products`,
   MODEL_3D: (keyboardId: number) => `/keyboard/${keyboardId}/model`,
