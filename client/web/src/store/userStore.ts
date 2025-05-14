@@ -102,7 +102,7 @@ export const useUserStore = create<UserState>()(
         user: state.user,
         isLoaded: state.isLoaded,
         lastUpdated: state.lastUpdated,
-        zzimlist: state.zzimList,
+        zzimList: state.zzimList,
       }),
     },
   ),
