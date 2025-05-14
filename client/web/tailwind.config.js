@@ -17,6 +17,7 @@ module.exports = {
       colors: {
         'tadak-black': '#242424',
         'tadak-primary': '#FCA41C',
+        'tadak-light-primary': '#FFE4BB',
         'tadak-secondary': '#A4D232',
         'tadak-light-secondary': '#E3FAA8',
         'tadak-warning': '#F16363',
