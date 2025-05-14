@@ -7,7 +7,7 @@ import com.ssafy.tadak.spring.keyboard.domain.entity.KeyboardOption;
 import com.ssafy.tadak.spring.keyboard.domain.entity.KeycapOption;
 import com.ssafy.tadak.spring.keyboard.domain.entity.Option;
 import com.ssafy.tadak.spring.keyboard.domain.entity.SwitchOption;
-import com.ssafy.tadak.spring.keyboard.domain.repository.BareboneJpaRepository;
+import com.ssafy.tadak.spring.keyboard.domain.repository.BareboneOptionJpaRepository;
 import com.ssafy.tadak.spring.keyboard.domain.repository.CategoryJpaRepository;
 import com.ssafy.tadak.spring.keyboard.domain.repository.KeyboardJpaRepository;
 import com.ssafy.tadak.spring.keyboard.domain.repository.KeyboardOptionJpaRepository;
@@ -17,6 +17,7 @@ import com.ssafy.tadak.spring.keyboard.domain.repository.SwitchOptionJpaReposito
 import com.ssafy.tadak.spring.keyboard.dto.OptionDto;
 import com.ssafy.tadak.spring.keyboard.dto.request.Colors;
 import com.ssafy.tadak.spring.keyboard.dto.response.GetOptionsResponse;
+import com.ssafy.tadak.spring.keyboard.dto.response.GetProductListResponse;
 import com.ssafy.tadak.spring.keyboard.dto.response.KeyboardCreateResponse;
 import com.ssafy.tadak.spring.keyboard.dto.response.KeyboardDetailResponse;
 import com.ssafy.tadak.spring.keyboard.exception.KeyboardException;
@@ -24,6 +25,7 @@ import com.ssafy.tadak.spring.minio.domain.entity.Image;
 import com.ssafy.tadak.spring.minio.domain.repository.ImageJpaRepository;
 import com.ssafy.tadak.spring.minio.exception.MinioException;
 import com.ssafy.tadak.spring.minio.util.MinioUtil;
+import com.ssafy.tadak.spring.keyboard.converter.ProductConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -47,11 +49,13 @@ public class KeyboardService {
     private final KeyboardOptionJpaRepository keyboardOptionJpaRepository;
     private final ImageJpaRepository imageJpaRepository;
     private final MinioUtil minioUtil;
-    private final BareboneJpaRepository bareboneJpaRepository;
+    private final BareboneOptionJpaRepository bareboneJpaRepository;
     private final SwitchOptionJpaRepository switchOptionJpaRepository;
     private final KeycapOptionJpaRepository keycapOptionJpaRepository;
     private final OptionJpaRepository optionJpaRepository;
     private final CategoryJpaRepository categoryJpaRepository;
+    private final BareboneOptionJpaRepository bareboneOptionJpaRepository;
+    private final ProductConverter productConverter;
 
     /** 커스텀 키보드를 생성하는 메소드입니다.
      * 유저가 선택한 옵션에 따른 키보드를 생성합니다.
@@ -159,7 +163,7 @@ public class KeyboardService {
 
     // todo: @Transactional DeleteKeyboard
 
-    // fixme: 확장성 없음
+    // fixme: 카테고리 추가 시 확장성 없음
     /** 커스텀 키보드 옵션 조회
      * 커스텀 키보드 생성 시 선택 가능한 옵션들을 반환합니다.
      * **/
@@ -174,14 +178,14 @@ public class KeyboardService {
             //카테고리는 레이아웃, 재질 스위치가 있음 -> DB에 case 옵션대로 이름 들어가 있어야 함.
             List<Option> op = optionJpaRepository.findAllByCategory(c);
 
-            switch (c.getName()){
+            switch (c.getName().toLowerCase()){
                 case "layout":
                     layouts = getOptionList(op);
                     break;
                 case "material":
                     materials = getOptionList(op);
                     break;
-                case "switchType":
+                case "switchtype":
                     switchTypes = getOptionList(op);
             }
         }
@@ -191,6 +195,36 @@ public class KeyboardService {
         GetOptionsResponse.Keycap keycapOp = new GetOptionsResponse.Keycap();
 
         return new GetOptionsResponse(bareboneOp, switchOp, keycapOp);
+    }
+
+    /** 제품을 검색하는 메소드입니다.
+     * 선택한 옵션에 따라 제품을 조회합니다.
+     * **/
+    public GetProductListResponse getSwitchList(
+            Long typeId
+    ) {
+        List<SwitchOption> switchOptions = switchOptionJpaRepository.findAllByType(typeId);
+        List< GetProductListResponse.ProductInfo> result = productConverter.convertToProductInfoList(switchOptions);
+
+        return new GetProductListResponse(result);
+    }
+
+    public GetProductListResponse getBareboneList(
+            Long layout,
+            Long material
+    ) {
+        List<BareboneOption> bareboneOptions = bareboneOptionJpaRepository
+                                                .findAllByLayoutAndMaterial(layout,material);
+        List< GetProductListResponse.ProductInfo> result = productConverter.convertToProductInfoList(bareboneOptions);
+
+        return new GetProductListResponse(result);
+    }
+
+    public GetProductListResponse getKeycapList() {
+        List<KeycapOption> keyboardOptions = keycapOptionJpaRepository.findAll();
+        List< GetProductListResponse.ProductInfo> result = productConverter.convertToProductInfoList(keyboardOptions);
+
+        return new GetProductListResponse(result);
     }
 
     /** 키보드 불러오기
