@@ -5,6 +5,7 @@ import {
   updateNickname,
   updateProfileImg,
 } from '@/services/userService'
+import { useUserStore } from '@/store/userStore'
 import {
   ErrorResponse,
   SignUpRequest,
@@ -12,7 +13,7 @@ import {
   UpdateProfileImgRequest,
   User,
 } from '@/types/user'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { AxiosError } from 'axios'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
@@ -55,15 +56,28 @@ export const useGetUserInfo = () => {
 }
 
 export const useUpdateNickname = () => {
-  const queryClient = useQueryClient()
+  // const queryClient = useQueryClient()
   const navigate = useNavigate()
+
+  const user = useUserStore((state) => state.user) 
+  const setUser = useUserStore((state) => state.setUser) 
 
   const { mutateAsync } = useMutation({
     mutationFn: (data: UpdateNicknameRequest) => updateNickname(data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['user', 'me'] })
+
+    onSuccess: (_, variables) => {
+      // queryClient.invalidateQueries({ queryKey: ['user', 'me'] })
+
+      if (user) {
+        setUser({
+          ...user,
+          userName: variables.nickname,
+        })
+      }
+
       toast.success('닉네임이 수정되었습니다!')
     },
+
     onError: (error: AxiosError<ErrorResponse>) => {
       const status = error.response?.status
       const code = error.response?.data?.code
@@ -82,15 +96,32 @@ export const useUpdateNickname = () => {
 }
 
 export const useUpdateProfileImg = () => {
-  const queryClient = useQueryClient()
+  // const queryClient = useQueryClient()
   const navigate = useNavigate()
 
+  const user = useUserStore((state) => state.user)
+  const setUser = useUserStore((state) => state.setUser)
+
   const { mutateAsync } = useMutation({
-    mutationFn: (data: UpdateProfileImgRequest) => updateProfileImg(data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['user', 'me'] })
+
+    mutationFn: async (data: UpdateProfileImgRequest) => {
+      const response = await updateProfileImg(data)
+      const profileImgURL = response.headers.location
+      return { response, profileImgURL }
+    },
+
+    onSuccess: (result) => {
+      // queryClient.invalidateQueries({ queryKey: ['user', 'me'] })
+
+      if (user && result.profileImgURL) {
+        setUser({
+          ...user,
+          profileImg: result.profileImgURL,
+        })
+      }
       toast.success('프로필 이미지가 변경되었습니다!')
     },
+
     onError: (error: AxiosError<ErrorResponse>) => {
       const status = error.response?.status
       const code = error.response?.data?.code
