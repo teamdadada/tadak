@@ -12,6 +12,7 @@ import com.ssafy.tadak.spring.keyboard.domain.repository.KeyboardOptionJpaReposi
 import com.ssafy.tadak.spring.keyboard.domain.repository.KeycapOptionJpaRepository;
 import com.ssafy.tadak.spring.keyboard.domain.repository.OptionJpaRepository;
 import com.ssafy.tadak.spring.keyboard.domain.repository.SwitchOptionJpaRepository;
+import com.ssafy.tadak.spring.keyboard.dto.OptionDto;
 import com.ssafy.tadak.spring.keyboard.dto.request.Colors;
 import com.ssafy.tadak.spring.keyboard.dto.response.KeyboardDetailResponse;
 import com.ssafy.tadak.spring.keyboard.exception.KeyboardException;
@@ -128,9 +129,7 @@ public class KeyboardService {
         }
 
         //키보드 <옵션, id>를 저장하는 리스트
-        List<Map<String, Long>> options = new ArrayList<>();
-        Map<String, Long> op = getOptionMap(keyboard);
-        options.add(op);
+        List<OptionDto.SelectedOption> options = getOptionDto(keyboard);
 
         //부품 조회
         BareboneOption bareboneOption = keyboard.getBareboneOption();
@@ -152,18 +151,31 @@ public class KeyboardService {
     }
 
 
-    private Map<String, Long> getOptionMap(Keyboard keyboard) {
-        Map<String, Long> op = new HashMap<>();
+    private List<OptionDto.SelectedOption> getOptionDto(Keyboard keyboard) {
+        OptionDto.SelectedOption selectedOption = new OptionDto.SelectedOption();
 
         //키보드에 선택된 옵션들 확인
-        List<KeyboardOption> keyboardOptions = keyboardOptionJpaRepository.findAllByKeyboard(keyboard);
+        BareboneOption bareboneOption = keyboard.getBareboneOption();
+        //dto에 바인딩
+        selectedOption.setBareboneOption(
+                new OptionDto.Barebone(
+                        bareboneOption.getLayout(),
+                        bareboneOption.getMaterial()
+                )
+        );
 
-        for(KeyboardOption keyOpt : keyboardOptions){
-            Option selected = keyOpt.getOption();
-            //카테고리별 선택 옵션
-            op.put(selected.getCategory().getName(), selected.getId());
-        }
-        return op;
+        //스위치
+        SwitchOption switchOption = keyboard.getSwitchOption();
+        selectedOption.setSwitchOption(
+                new OptionDto.Switch(
+                        switchOption.getType()
+                )
+        );
+
+        List<OptionDto.SelectedOption> result = new ArrayList<>();
+        result.add(selectedOption);
+
+        return result;
     }
 
     private boolean isValidQuantity(
