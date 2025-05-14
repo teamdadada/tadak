@@ -3,6 +3,7 @@ package com.ssafy.tadak.spring.keyboard.controller;
 import com.ssafy.tadak.spring.auth.dto.UserInfo;
 import com.ssafy.tadak.spring.common.annotation.AuthUser;
 import com.ssafy.tadak.spring.keyboard.dto.request.CreateKeyboardRequest;
+import com.ssafy.tadak.spring.keyboard.dto.response.KeyboardCreateResponse;
 import com.ssafy.tadak.spring.keyboard.dto.response.KeyboardDetailResponse;
 import com.ssafy.tadak.spring.keyboard.service.KeyboardService;
 import lombok.RequiredArgsConstructor;
@@ -22,12 +23,11 @@ public class KeyboardController {
     private final KeyboardService keyboardService;
 
     @PostMapping
-    public ResponseEntity<String> createKeyboard(
+    public ResponseEntity<KeyboardCreateResponse> createKeyboard(
             @AuthUser UserInfo userInfo,
             @RequestBody CreateKeyboardRequest request
     ) {
         return ResponseEntity.status(HttpStatus.CREATED).body(
-                "\""+
                 keyboardService.createKeyboard(
                         userInfo.id(),
                         request.name(),
@@ -40,7 +40,6 @@ public class KeyboardController {
                         request.switchId(),
                         request.keycapId()
                 )
-                + "\" 가 생성되었습니다."
         );
     }
 

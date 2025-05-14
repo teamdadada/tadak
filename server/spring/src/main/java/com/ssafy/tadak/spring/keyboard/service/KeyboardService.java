@@ -14,6 +14,7 @@ import com.ssafy.tadak.spring.keyboard.domain.repository.OptionJpaRepository;
 import com.ssafy.tadak.spring.keyboard.domain.repository.SwitchOptionJpaRepository;
 import com.ssafy.tadak.spring.keyboard.dto.OptionDto;
 import com.ssafy.tadak.spring.keyboard.dto.request.Colors;
+import com.ssafy.tadak.spring.keyboard.dto.response.KeyboardCreateResponse;
 import com.ssafy.tadak.spring.keyboard.dto.response.KeyboardDetailResponse;
 import com.ssafy.tadak.spring.keyboard.exception.KeyboardException;
 import com.ssafy.tadak.spring.minio.domain.entity.Image;
@@ -51,7 +52,7 @@ public class KeyboardService {
      * 유저가 선택한 옵션에 따른 키보드를 생성합니다.
      * **/
     @Transactional
-    public String createKeyboard(
+    public KeyboardCreateResponse createKeyboard(
             Long userId,
             String keyboardName,
             Long thumbnailId,
@@ -98,7 +99,7 @@ public class KeyboardService {
 
         //키보드-옵션 생성
         createKeyboardOption(newKeyboard, optionIdList);
-        return newKeyboard.getId()+" "+newKeyboard.getName();
+        return new KeyboardCreateResponse(newKeyboard.getId(), newKeyboard.getName());
     }
 
     /** 키보드 상세 조회 **/
