@@ -34,6 +34,6 @@ public class UserInfoArgumentResolver implements HandlerMethodArgumentResolver {
             throw new UnauthorizedException(new ErrorCode("B4015", "인증되지 않은 요청입니다."));
         }
 
-        return new UserInfo(Integer.parseInt(userId), nickname, role);
+        return new UserInfo(Long.parseLong(userId), nickname, role);
     }
 }

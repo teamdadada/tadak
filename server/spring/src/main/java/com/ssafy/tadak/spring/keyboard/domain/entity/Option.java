@@ -1,4 +1,4 @@
-package com.ssafy.tadak.spring.minio.domain.entity;
+package com.ssafy.tadak.spring.keyboard.domain.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -7,43 +7,35 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
+@Table(name = "options")
 @Getter
-@Table(name = "images")
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Image {
+public class Option {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "image_id")
+    @Column(name = "option_id")
     private Long id;
 
     @ManyToOne
-    @JoinColumn(nullable = false, name = "bucket_id")
-    Bucket bucket;
+    @JoinColumn(name = "category_id")
+    private Category category;
 
-    @Column(nullable = false, name = "file_path")
-    String filePath;
+    @Column(name = "option_name")
+    private String partName;
+
+    @Column(name = "is_valid")
+    private Boolean isValid;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
-
-    @Builder
-    public Image(
-            Bucket bucket,
-            String filePath
-    ) {
-        this.bucket = bucket;
-        this.filePath = filePath;
-    }
 }

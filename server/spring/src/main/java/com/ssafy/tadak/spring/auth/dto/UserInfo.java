@@ -1,7 +1,7 @@
 package com.ssafy.tadak.spring.auth.dto;
 
 public record UserInfo (
-        Integer id,
+        Long id,
         String nickname,
         String role
 ){
