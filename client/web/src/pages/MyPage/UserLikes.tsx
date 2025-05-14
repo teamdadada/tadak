@@ -1,48 +1,34 @@
 import ItemCard from '@/components/shop/ItemCard'
 import Tabs from '@/components/ui/Tabs'
-import { Product, ProductType } from '@/types/shop'
+import { useListZzim } from '@/hooks/useZzim'
+import { ProductType } from '@/types/shop'
 import { useState } from 'react'
 
 const tabLabels = ['전체', '베어본', '스위치', '키캡']
-const exampleProductList: Product[] = [
-  {
-    productId: 1,
-    name: '베어본 키보드 1',
-    minPrice: 30000,
-    thumbnail:
-      'https://minio.tadak.kr/profile/profile_image_81d46d76-012a-4e30-8045-dca585dd9ada.jpg',
-    type: 'BAREBONE' as ProductType,
-  },
-  {
-    productId: 2,
-    name: '스위치 A',
-    minPrice: 12000,
-    thumbnail:
-      'https://minio.tadak.kr/profile/profile_image_81d46d76-012a-4e30-8045-dca585dd9ada.jpg',
-    type: 'SWITCH' as ProductType,
-  },
-  {
-    productId: 3,
-    name: '키캡 세트',
-    minPrice: 20000,
-    thumbnail:
-      'https://minio.tadak.kr/profile/profile_image_81d46d76-012a-4e30-8045-dca585dd9ada.jpg',
-    type: 'KEYCAP' as ProductType,
-  },
-]
 
 const UserLikes = () => {
+  const { data, isLoading } = useListZzim()
   const [selectedIndex, setSelectedIndex] = useState(0)
-
   const selectedTab = tabLabels[selectedIndex]
+
+  const zzimProducts =
+    data?.zzims.map((zzim) => ({
+      productId: zzim.item.productId,
+      name: zzim.item.name,
+      minPrice: zzim.item.minPrice,
+      thumbnail: zzim.item.thumbnail,
+      type: zzim.item.type as ProductType,
+      zzimId: zzim.zzimId,
+    })) || []
 
   const filteredProducts =
     selectedTab === '전체'
-      ? exampleProductList
-      : exampleProductList.filter((p) => {
-          if (selectedTab === '베어본') return p.type === 'BAREBONE'
-          if (selectedTab === '스위치') return p.type === 'SWITCH'
-          if (selectedTab === '키캡') return p.type === 'KEYCAP'
+      ? zzimProducts
+      : zzimProducts.filter((product) => {
+          if (selectedTab === '베어본') return product.type === 'BAREBONE'
+          if (selectedTab === '스위치') return product.type === 'SWITCH'
+          if (selectedTab === '키캡') return product.type === 'KEYCAP'
+          return false // 명시적인 기본 반환값 추가
         })
 
   return (
@@ -56,11 +42,20 @@ const UserLikes = () => {
         indicatorHeight={2}
         tabClassName="text-base"
       />
-      <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-4 mt-6">
-        {filteredProducts.map((product) => (
-          <ItemCard key={product.productId} {...product} />
-        ))}
-      </div>
+
+      {isLoading ? (
+        <div className="flex justify-center items-center h-40">로딩 중</div>
+      ) : filteredProducts.length > 0 ? (
+        <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-4 mt-6">
+          {filteredProducts.map((product) => (
+            <ItemCard key={product.productId} {...product} />
+          ))}
+        </div>
+      ) : (
+        <div className="flex justify-center items-center h-40 text-gray-500">
+          아직 찜한 상품이 없습니다.
+        </div>
+      )}
     </div>
   )
 }
