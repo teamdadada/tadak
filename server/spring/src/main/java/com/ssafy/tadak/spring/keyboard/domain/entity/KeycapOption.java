@@ -30,7 +30,7 @@ public class KeycapOption {
     @Column
     private Integer price;
 
-    @Column
+    @Column(nullable = false)
     private Integer quantity;
 
     @OneToOne

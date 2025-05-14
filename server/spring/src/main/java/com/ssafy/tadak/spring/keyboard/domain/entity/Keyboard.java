@@ -3,6 +3,7 @@ package com.ssafy.tadak.spring.keyboard.domain.entity;
 import com.ssafy.tadak.spring.keyboard.converter.ColorJsonConverter;
 import com.ssafy.tadak.spring.keyboard.dto.request.Colors;
 import com.ssafy.tadak.spring.minio.domain.entity.Image;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
@@ -78,7 +79,7 @@ public class Keyboard {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @OneToMany (mappedBy = "keyboard")
+    @OneToMany (mappedBy = "keyboard", cascade = CascadeType.REMOVE)
     private List<KeyboardOption> keyboardOptions;
 
     @Builder

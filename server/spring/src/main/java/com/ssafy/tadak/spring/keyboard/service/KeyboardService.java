@@ -73,14 +73,11 @@ public class KeyboardService {
         isValidQuantity(bareboneOption, switchOption, keycapOption);
 
         //파일 엔티티 조회
-        Image image=null;
-        Image model=null;
-
-        image = imageJpaRepository.findById(thumbnailId)
+        Image image = imageJpaRepository.findById(thumbnailId)
                 .orElseThrow(()->new MinioException.MinioNotFoundException(FILE_NOTFOUND));
 
 
-        model = imageJpaRepository.findById(modelId)
+        Image model = imageJpaRepository.findById(modelId)
                 .orElseThrow(()->new MinioException.MinioNotFoundException(FILE_NOTFOUND));
 
         //키보드 생성
@@ -118,11 +115,17 @@ public class KeyboardService {
 
         //썸네일 불러오기
         Image thumbnail = keyboard.getThumbnail();
-        String thumbnailUrl = minioUtil.getImageUrl(thumbnail.getBucket(), thumbnail.getFilePath());
+        String thumbnailUrl=null;
+        if(thumbnail!=null) {
+            thumbnailUrl = minioUtil.getImageUrl(thumbnail.getBucket(), thumbnail.getFilePath());
+        }
 
         //모델 불러오기
         Image model = keyboard.getModel();
-        String model3dUrl= minioUtil.getImageUrl(model.getBucket(), model.getFilePath());
+        String model3dUrl=null;
+        if(model!=null) {
+            model3dUrl = minioUtil.getImageUrl(model.getBucket(), model.getFilePath());
+        }
 
         //키보드 <옵션, id>를 저장하는 리스트
         List<Map<String, Long>> options = new ArrayList<>();
