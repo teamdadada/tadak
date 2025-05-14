@@ -36,16 +36,9 @@ public class User {
     @Column(name = "user_type", nullable = false)
     private String userType;
 
+    @Column(name = "login_type", nullable = false)
+    private String loginType;
+
     // --- Constructors ---
     protected User() {}
-
-    public User(String userId, String userPassword, String userName, String profileImg, String userType) {
-        this.userId = userId;
-        this.userPassword = userPassword;
-        this.userName = userName;
-        this.profileImg = profileImg;
-        this.userType = userType;
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
-    }
 }
