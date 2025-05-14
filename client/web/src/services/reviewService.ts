@@ -1,4 +1,8 @@
-import { ReviewListResponse, ReviewScoreResponse } from '@/types/review'
+import {
+  ReviewListResponse,
+  ReviewPayload,
+  ReviewScoreResponse,
+} from '@/types/review'
 import { REVIEW_END_POINT } from './endPoints'
 import http from './http-common'
 
@@ -23,4 +27,12 @@ export const getReviewScore = async (
 
 export const deleteReview = async (reviewId: number) => {
   return http.delete(`review/${reviewId}`)
+}
+
+export const postReview = async (productId: number, payload: ReviewPayload) => {
+  return http.post(`/review/write/${productId}`, payload, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+    },
+  })
 }

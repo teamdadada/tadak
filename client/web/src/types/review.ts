@@ -26,3 +26,8 @@ export interface ReviewScoreResponse {
     [score: number]: number
   }
 }
+
+export interface ReviewPayload {
+  reviewContent: string
+  imageList: string[]
+}
