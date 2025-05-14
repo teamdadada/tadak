@@ -31,4 +31,6 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     ReviewSummary getReviewSummary(@Param("productId") Long productId);
 
     boolean existsByProductId(long productId);
+
+    List<Review> findByAuthorIdOrderByReviewIdDesc(long l);
 }
