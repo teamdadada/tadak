@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 
 interface ChatbotToggleButtonProps {
   onClick: () => void
-  isOpen: boolean 
+  isOpen: boolean
 }
 
 const ChatbotToggleButton = ({ onClick, isOpen }: ChatbotToggleButtonProps) => {
@@ -25,7 +25,7 @@ const ChatbotToggleButton = ({ onClick, isOpen }: ChatbotToggleButtonProps) => {
     // 툴팁 8초 후 숨기기
     const hideTooltipTimer = setTimeout(() => {
       setIsTooltipVisible(false)
-    }, 11000) 
+    }, 11000)
 
     return () => {
       clearTimeout(showTooltipTimer)
@@ -43,7 +43,6 @@ const ChatbotToggleButton = ({ onClick, isOpen }: ChatbotToggleButtonProps) => {
 
     // 페이지 로드 20초 후부터 시작
     const initialDelay = setTimeout(() => {
-
       setIsBouncing(true)
       setTimeout(() => setIsBouncing(false), 1000)
 
@@ -60,7 +59,7 @@ const ChatbotToggleButton = ({ onClick, isOpen }: ChatbotToggleButtonProps) => {
     }, 20000)
 
     return () => clearTimeout(initialDelay)
-  }, [isOpen]) 
+  }, [isOpen])
 
   // 마우스 호버 시 챗봇이 닫혀있을 때만 툴팁 표시
   const handleMouseEnter = () => {
@@ -93,14 +92,14 @@ const ChatbotToggleButton = ({ onClick, isOpen }: ChatbotToggleButtonProps) => {
       {/* 사용자에게 챗봇 기능 알리는 말풍선 (챗봇이 닫혀있을 때만 표시) */}
       {!isOpen && (
         <div
-          className={`absolute -top-16 right-0 bg-white p-2 rounded-lg shadow-lg 
-                      text-sm whitespace-nowrap transition-opacity duration-500
+          className={`absolute -top-14 right-0 bg-white p-2 rounded-lg shadow-lg
+                      text-sm whitespace-nowrap transition-opacity duration-300
                       ${isTooltipVisible ? 'opacity-100' : 'opacity-0'}`}
         >
           <div className="text-tadak-primary font-medium">
             키보드 추천받아 보세요!
           </div>
-          <div className="absolute bottom-0 right-6 w-3 h-3 bg-white transform rotate-45 translate-y-1/2"></div>
+          <div className="absolute bottom-0 shadow-lg right-6 w-3 h-3 bg-white transform rotate-45 translate-y-1/2"></div>
         </div>
       )}
     </button>

@@ -20,6 +20,7 @@ interface UserState {
   getUserName: () => string | undefined
   getProfileImage: () => string | undefined
   getLoginType: () => string | undefined
+  getUserUuid: () => number | undefined
 }
 
 const initialState = {
@@ -54,6 +55,7 @@ export const useUserStore = create<UserState>()(
       getUserName: () => get().user?.userName,
       getProfileImage: () => get().user?.profileImg,
       getLoginType: () => get().user?.loginType,
+      getUserUuid: () => get().user?.userUuid,
     })),
     {
       name: 'user-storage',

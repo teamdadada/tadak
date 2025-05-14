@@ -15,9 +15,9 @@ export const useSendMessage = () => {
   return mutateAsync
 }
 
-export const useGetChatHistory = (userId: string) => {
+export const useGetChatHistory = () => {
   return useQuery<HistoryResponse>({
     queryKey: ['chat'],
-    queryFn: () => getChatHistory(userId),
+    queryFn: getChatHistory
   })
 }
