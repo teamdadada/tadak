@@ -28,6 +28,13 @@ public class ReviewController {
         return ResponseEntity.ok(reviewService.getReviewById(reviewId));
     }
 
+    @GetMapping("/list/me")
+    public ResponseEntity<ReviewListResponse> getMyReviews(
+            @AuthUser UserInfo userInfo
+    ) {
+        return ResponseEntity.ok(reviewService.getMyReviews(userInfo));
+    }
+
     @GetMapping("/score/{product_id}")
     public ResponseEntity<ReviewScoreReponse> getReviewScoreById(
             @PathVariable("product_id") Long productId
