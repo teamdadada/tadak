@@ -4,7 +4,7 @@ import { useMutation, useQuery } from '@tanstack/react-query'
 import { toast } from 'sonner'
 
 export const useSendMessage = () => {
-  const { mutateAsync } = useMutation({
+  const { mutateAsync, isPending } = useMutation({
     mutationFn: sendMessage,
     onSuccess: () => {},
     onError: () => {
@@ -12,12 +12,12 @@ export const useSendMessage = () => {
     },
   })
 
-  return mutateAsync
+  return { sendMessage: mutateAsync, isPending }
 }
 
 export const useGetChatHistory = () => {
   return useQuery<HistoryResponse>({
     queryKey: ['chat'],
-    queryFn: getChatHistory
+    queryFn: getChatHistory,
   })
 }

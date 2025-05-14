@@ -20,9 +20,7 @@ const ChatbotWindow = () => {
   const getUserName = useUserStore((state) => state.getUserName)
   const userName = getUserName()
 
-  const sendMessage = useSendMessage()
-
-  // 채팅 기록 불러오기
+  const { sendMessage, isPending } = useSendMessage()
   const { data: chatHistory, isLoading } = useGetChatHistory()
 
   const [messages, setMessages] = useState<HistoryResponse>([
@@ -107,7 +105,7 @@ const ChatbotWindow = () => {
           </Link>
         ) : (
           // 로그인 유저
-          <ChatbotInput onSend={handleSendMessage} />
+          <ChatbotInput onSend={handleSendMessage} disabled={isPending} />
         )}
       </div>
     </motion.div>

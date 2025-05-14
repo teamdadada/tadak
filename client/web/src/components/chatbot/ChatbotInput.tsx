@@ -1,18 +1,32 @@
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { useState } from 'react'
+import { useState, FormEvent, KeyboardEvent } from 'react'
 
-interface Props {
+interface ChatbotInputProps {
   onSend: (message: string) => void
+  disabled?: boolean
 }
 
-const ChatbotInput = ({ onSend }: Props) => {
+const ChatbotInput = ({ onSend, disabled = false }: ChatbotInputProps) => {
   const [input, setInput] = useState('')
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
-    onSend(input)
-    setInput('')
+    handleSend()
+  }
+
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault()
+      handleSend()
+    }
+  }
+
+  const handleSend = () => {
+    if (input.trim() && !disabled) {
+      onSend(input)
+      setInput('')
+    }
   }
 
   return (
@@ -24,10 +38,24 @@ const ChatbotInput = ({ onSend }: Props) => {
         <Input
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="메시지를 입력하세요..."
-          className="flex-1 border p-5 border-tadak-light-gray rounded-lg "
+          onKeyDown={handleKeyDown}
+          placeholder={
+            disabled ? '타덕이 대답 중...' : '메시지를 입력하세요...'
+          }
+          disabled={disabled}
+          className={`flex-1 border p-5 border-tadak-light-gray rounded-lg ${
+            disabled ? 'bg-tadak-light-gray text-tadak-black' : ''
+          }`}
         />
-        <Button type="submit" className="px-4 py-5 ">
+        <Button
+          type="submit"
+          disabled={!input.trim() || disabled}
+          className={`px-4 py-5 ${
+            !input.trim() || disabled
+              ? 'bg-tadak-gray text-tadak-black hover:bg-tadak-gray cursor-not-allowed'
+              : 'bg-tadak-primary text-white hover:bg-tadak-primary'
+          }`}
+        >
           전송
         </Button>
       </div>
