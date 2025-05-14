@@ -1,43 +1,70 @@
 import { useUserStore } from '@/store/userStore'
+import { PencilIcon } from 'lucide-react'
+import { useState } from 'react'
+import { useUpdateNickname } from '@/hooks/useUser'
+import { UpdateNicknameRequest } from '@/types/user'
 import { MenuType } from './MyPage'
+import ProfileImage from '@/components/mypage/ProfileImage'
+import SidebarMenu from '@/components/mypage/SidebarMenu'
+import NicknameModal from '@/components/mypage/NicknameModal'
 
 interface SidebarProps {
   selectedMenu: MenuType
   onMenuChange: (menu: MenuType) => void
 }
 
-interface MenuCategory {
-  title: string
-  items: MenuType[]
-}
-
 const MypageSidebar = ({ selectedMenu, onMenuChange }: SidebarProps) => {
-  const menuCategories: MenuCategory[] = [
+  const [isNicknameModalOpen, setIsNicknameModalOpen] = useState(false)
+
+  const menuCategories = [
     {
       title: '나의 계정정보',
-      items: ['회원 정보'],
+      items: ['회원 정보'] as MenuType[],
     },
     {
       title: '나의 쇼핑정보',
-      items: ['결제 내역', '작성한 리뷰'],
+      items: ['결제 내역', '작성한 리뷰'] as MenuType[],
     },
   ]
 
   const getUserProfileImage = useUserStore((s) => s.getProfileImage)
   const getUserName = useUserStore((s) => s.getUserName)
+  const updateNickname = useUpdateNickname()
 
   const userProfileImage = getUserProfileImage()
-  const userName = getUserName()
+  const userName = getUserName() || '익명'
+
+  const handleNicknameEditClick = () => {
+    setIsNicknameModalOpen(true)
+  }
+
+  const handleNicknameSubmit = async (newNickname: string) => {
+    const updateData: UpdateNicknameRequest = {
+      nickname: newNickname,
+    }
+
+    await updateNickname(updateData)
+  }
 
   return (
     <div className="w-full md:w-48 lg:w-64 p-6 mt-10">
       {/* 프로필 */}
-      <div className="flex flex-col gap-6 mb-4">
+      <div className="flex flex-col gap-4 mb-4">
         {/* 프로필 사진 */}
-        <img src={userProfileImage} alt="profileImage" className="p-2" />
+        <ProfileImage imageUrl={userProfileImage} />
+
         {/* 닉네임 */}
         <div className="px-1">
-          <p className="text-3xl font-extrabold">{userName}</p>
+          <div className="flex justify-between items-end ">
+            <p className="text-3xl font-extrabold">{userName}</p>
+            <button
+              onClick={handleNicknameEditClick}
+              className="p-0 rounded-full"
+              aria-label="닉네임 수정"
+            >
+              <PencilIcon size={14} className="text-tadak-gray" />
+            </button>
+          </div>
         </div>
       </div>
 
@@ -64,31 +91,19 @@ const MypageSidebar = ({ selectedMenu, onMenuChange }: SidebarProps) => {
       </div>
 
       {/* 메뉴 목록 */}
-      <div className="space-y-6">
-        {menuCategories.map((category) => (
-          <div key={category.title} className="space-y-2">
-            <h3 className="px-1 text-md font-extrabold text-tadak-black">
-              {category.title}
-            </h3>
-            <ul className="text-tadak-dark-gray">
-              {category.items.map((item) => (
-                <li key={item}>
-                  <button
-                    onClick={() => onMenuChange(item)}
-                    className={`w-full text-left py-2 px-3 ${
-                      selectedMenu === item
-                        ? 'font-medium text-tadak-black'
-                        : ' hover:underline'
-                    }`}
-                  >
-                    {item}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
-      </div>
+      <SidebarMenu
+        selectedMenu={selectedMenu}
+        onMenuChange={onMenuChange}
+        categories={menuCategories}
+      />
+
+      {/* 닉네임 수정 모달 */}
+      <NicknameModal
+        isOpen={isNicknameModalOpen}
+        onClose={() => setIsNicknameModalOpen(false)}
+        currentNickname={userName}
+        onSubmit={handleNicknameSubmit}
+      />
     </div>
   )
 }
