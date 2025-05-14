@@ -1,13 +1,13 @@
 import ItemCard from '@/components/shop/ItemCard'
 import Tabs from '@/components/ui/Tabs'
-import { useListZzim } from '@/hooks/useZzim'
+import { useGetZzimList } from '@/hooks/useZzim'
 import { ProductType } from '@/types/shop'
 import { useState } from 'react'
 
 const tabLabels = ['전체', '베어본', '스위치', '키캡']
 
 const UserLikes = () => {
-  const { data, isLoading } = useListZzim()
+  const { data, isLoading } = useGetZzimList()
   const [selectedIndex, setSelectedIndex] = useState(0)
   const selectedTab = tabLabels[selectedIndex]
 
@@ -28,7 +28,7 @@ const UserLikes = () => {
           if (selectedTab === '베어본') return product.type === 'BAREBONE'
           if (selectedTab === '스위치') return product.type === 'SWITCH'
           if (selectedTab === '키캡') return product.type === 'KEYCAP'
-          return false // 명시적인 기본 반환값 추가
+          return false
         })
 
   return (

@@ -8,7 +8,7 @@ export const addZzim = async (productId: number) => {
   return response
 }
 
-export const listZzim = async () => {
+export const getZzimList = async () => {
   const response = await http.get<ZzimListResponse>(ZZIM_END_POINT.LIST)
   return response.data
 }
