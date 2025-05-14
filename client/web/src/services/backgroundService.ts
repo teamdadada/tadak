@@ -1,11 +1,19 @@
 import http from '@/services/http-common'
 import { BACKGROUND_END_POINT } from './endPoints'
+// import { BackgroundImage } from '@/types/background'
+import { mockBackgroundList } from '@/mocks/background/mockBackgroundList'
 
 // 배경 이미지 목록 조회
+// Mock 데이터
 export const fetchBackgroundList = async () => {
-  const response = await http.get(BACKGROUND_END_POINT.LIST)
-  return response.data
+  return mockBackgroundList // 목업 데이터 반환
 }
+
+// 실제 API
+// export const fetchBackgroundList = async (): Promise<BackgroundImage[]> => {
+//   const response = await http.get(BACKGROUND_END_POINT.LIST)
+//   return response.data
+// }
 
 // 배경 이미지 삭제
 export const deleteBackground = async (backgroundId: number) => {

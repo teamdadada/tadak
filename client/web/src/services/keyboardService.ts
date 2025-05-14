@@ -1,11 +1,19 @@
 import http from '@/services/http-common'
 import { KEYBOARD_END_POINT } from './endPoints'
+// import { KeyboardSummary } from '@/types/keyboard'
+import { mockKeyboardList } from '@/mocks/keyboard/mockKeyboardList'
 
 // 키보드 목록 조회
+// Mock 데이터
 export const fetchKeyboardList = async () => {
-  const response = await http.get(KEYBOARD_END_POINT.LIST)
-  return response.data
+  return mockKeyboardList // 목업 데이터 반환
 }
+
+// 실제 API
+// export const fetchKeyboardList = async (): Promise<KeyboardSummary[]> => {
+//   const response = await http.get(KEYBOARD_END_POINT.LIST)
+//   return response.data
+// }
 
 // TODO: 키보드 디자인 등록
 export const createKeyboard = async (payload: any) => {
@@ -63,6 +71,6 @@ export const fetchKeyboardModel3D = async (keyboardId: number) => {
 
 // TODO: 키보드 배치 정보 저장
 export const saveKeyboardArrangement = async (payload: any) => {
-    const response = await http.post(KEYBOARD_END_POINT.SAVE_ARRANGEMENT, payload)
-    return response.data
-  }
+  const response = await http.post(KEYBOARD_END_POINT.SAVE_ARRANGEMENT, payload)
+  return response.data
+}

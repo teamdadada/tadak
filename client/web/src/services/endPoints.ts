@@ -67,5 +67,5 @@ export const CART_END_POINT = {
 
 // minioService
 export const MINIO_END_POINT = {
-  UPLOAD: (bucketName: string) => `/minio/${bucketName}`,
+  UPLOAD: (bucketName: string) => `/images/${bucketName}`,
 }

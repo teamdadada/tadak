@@ -1,31 +1,28 @@
-// src/components/customKeyboard/ItemGrid.tsx
 import { useState } from 'react'
 import ItemCard from './ItemCard'
 import { ReactComponent as PlusIcon } from '@/assets/icons/plus.svg'
 
-const mockItems = [
-  { id: 1, name: '내 타닥 키보드1', imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRaTcMQZNfVnj_OOiGam9QzK2e5PHYJf67xUw&s' },
-  { id: 2, name: '마이 로망', imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRaTcMQZNfVnj_OOiGam9QzK2e5PHYJf67xUw&s' },
-  { id: 3, name: '월급날', imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRaTcMQZNfVnj_OOiGam9QzK2e5PHYJf67xUw&s' },
-  { id: 4, name: '내 타닥 키보드1', imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRaTcMQZNfVnj_OOiGam9QzK2e5PHYJf67xUw&s' },
-  { id: 5, name: '마이 로망', imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRaTcMQZNfVnj_OOiGam9QzK2e5PHYJf67xUw&s' },
-  { id: 6, name: '월급날', imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRaTcMQZNfVnj_OOiGam9QzK2e5PHYJf67xUw&s' },
-  { id: 7, name: '내 타닥 키보드1', imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRaTcMQZNfVnj_OOiGam9QzK2e5PHYJf67xUw&s' },
-  { id: 8, name: '마이 로망', imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRaTcMQZNfVnj_OOiGam9QzK2e5PHYJf67xUw&s' },
-  { id: 9, name: '월급날', imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRaTcMQZNfVnj_OOiGam9QzK2e5PHYJf67xUw&s' },
-  { id: 10, name: '마이 로망', imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRaTcMQZNfVnj_OOiGam9QzK2e5PHYJf67xUw&s' },
-  { id: 11, name: '월급날', imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRaTcMQZNfVnj_OOiGam9QzK2e5PHYJf67xUw&s' },
-]
+interface Item {
+  id: number
+  name: string
+  imageUrl: string
+}
 
-const ItemGrid = () => {
+interface ItemGridProps {
+  items: Item[]
+  itemType: 'keyboard' | 'desk'
+}
+
+const ItemGrid = ({ items, itemType }: ItemGridProps) => {
   const [openItemId, setOpenItemId] = useState<number | null>(null)
 
   return (
     <div className="grid grid-cols-3 gap-4">
-      {mockItems.map((item) => (
+      {items.map((item) => (
         <ItemCard
           key={item.id}
           item={item}
+          itemType={itemType}
           isOpen={openItemId === item.id}
           onOpenChange={(open) => setOpenItemId(open ? item.id : null)}
         />
