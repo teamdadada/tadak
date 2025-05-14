@@ -16,4 +16,6 @@ public interface ZzimRepository extends JpaRepository<Zzim, Long> {
     List<Zzim> findAllByOwnerId(long ownerId);
 
     Optional<Zzim> findByProductIdAndOwnerId(long productId, long userId);
+
+    int countByOwnerId(long l);
 }

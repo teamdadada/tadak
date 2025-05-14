@@ -2,6 +2,7 @@ package com.ssafy.tadak.spring.zzim.controller;
 
 import com.ssafy.tadak.spring.auth.dto.UserInfo;
 import com.ssafy.tadak.spring.common.annotation.AuthUser;
+import com.ssafy.tadak.spring.zzim.dto.response.ZzimCntResponse;
 import com.ssafy.tadak.spring.zzim.dto.response.ZzimListResponse;
 import com.ssafy.tadak.spring.zzim.service.ZzimService;
 import lombok.NoArgsConstructor;
@@ -36,6 +37,11 @@ public class ZzimController {
     ) {
         zzimService.deleteZzim(userInfo, productId);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/cnt")
+    public ResponseEntity<ZzimCntResponse> getZzimCnt(@AuthUser UserInfo userInfo) {
+        return ResponseEntity.ok(zzimService.getZzimMeta(userInfo));
     }
 
     @GetMapping("/list")
