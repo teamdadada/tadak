@@ -33,3 +33,8 @@ export interface UpdateNicknameRequest {
 export interface UpdateProfileImgRequest {
   file: File
 }
+
+export interface UpdatePasswordRequest {
+  old: string
+  new: string
+}
