@@ -15,5 +15,14 @@ export interface Review {
 
 export interface ReviewListResponse {
   count: number
-  rivews: Review[]
+  reviews: Review[]
+}
+
+export interface ReviewScoreResponse {
+  isExist: boolean
+  productId: number
+  totalScore: number
+  scoreCounts: {
+    [score: number]: number
+  }
 }
