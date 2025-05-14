@@ -20,3 +20,7 @@ export const getReviewScore = async (
   )
   return data
 }
+
+export const deleteReview = async (reviewId: number) => {
+  return http.delete(`review/${reviewId}`)
+}

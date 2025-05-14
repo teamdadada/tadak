@@ -1,4 +1,5 @@
 import { Review } from '@/types/review'
+import ReviewDeleteDialog from './ReviewDeleteDialog'
 
 interface ReviewItemProps {
   review: Review
@@ -6,7 +7,7 @@ interface ReviewItemProps {
 
 const ReviewItem = ({ review }: ReviewItemProps) => {
   const me = 1
-  const { author, content, score, images } = review
+  const { author, content, score, images, reviewId } = review
   const { id, name, profileImg } = author
 
   return (
@@ -35,9 +36,7 @@ const ReviewItem = ({ review }: ReviewItemProps) => {
             <button className="px-2 py-1 text-xs transition border rounded text-tadak-secondary border-tadak-secondary hover:bg-tadak-secondary hover:text-white">
               수정
             </button>
-            <button className="px-2 py-1 text-xs transition border rounded text-tadak-secondary border-tadak-secondary hover:bg-tadak-secondary hover:text-white">
-              삭제
-            </button>
+            <ReviewDeleteDialog reviewId={reviewId} />
           </div>
         )}
       </div>
