@@ -38,8 +38,10 @@ public class BareboneOption {
     private Image image;
 
     //옵션들
+    @Column
     private Long layout;
 
+    @Column
     private Long material;
 
     @Column(name = "is_valid")

@@ -23,6 +23,7 @@ import com.ssafy.tadak.spring.minio.util.MinioUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,6 +36,7 @@ import static com.ssafy.tadak.spring.minio.exception.MinioErrorCode.FILE_NOTFOUN
 @Service
 @Slf4j
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class KeyboardService {
     private final KeyboardJpaRepository keyboardJpaRepository;
     private final KeyboardOptionJpaRepository keyboardOptionJpaRepository;
@@ -48,6 +50,7 @@ public class KeyboardService {
     /** 커스텀 키보드를 생성하는 메소드입니다.
      * 유저가 선택한 옵션에 따른 키보드를 생성합니다.
      * **/
+    @Transactional
     public String createKeyboard(
             Long userId,
             String keyboardName,
