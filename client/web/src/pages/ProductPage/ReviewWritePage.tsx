@@ -72,7 +72,7 @@ const ReviewWritePage = () => {
         ))}
         <label
           htmlFor="image-upload"
-          className="px-4 py-2 text-xs transition border rounded w-fit h-fit text-tadak-secondary border-tadak-secondary hover:bg-tadak-secondary hover:text-white"
+          className="px-4 py-2 text-xs transition border rounded w-fit h-fit text-tadak-secondary border-tadak-secondary hover:bg-tadak-secondary hover:text-tadak-white"
         >
           이미지 추가
         </label>
@@ -91,12 +91,16 @@ const ReviewWritePage = () => {
         placeholder="리뷰를 입력해주세요"
         rows={5}
         className="flex mt-4"
+        maxLength={255}
       />
+      <div className="text-sm text-right text-tadak-gray">
+        {content.length} / 255자
+      </div>
       <Button
         size="default"
         onClick={handleSubmit}
         disabled={isLoading}
-        className="px-4 py-2 ml-auto mr-4 text-xs transition"
+        className="px-4 py-2 ml-auto text-xs transition"
       >
         {isLoading ? '등록 중...' : '리뷰 등록'}
       </Button>

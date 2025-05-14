@@ -27,7 +27,7 @@ const ReviewSection = ({ product }: ReviewSectionProps) => {
         </h2>
         <Button
           variant="outline"
-          className="px-2 py-2 ml-auto mr-4 text-xs transition border rounded text-tadak-secondary border-tadak-secondary hover:bg-tadak-secondary hover:text-white"
+          className="px-2 py-2 ml-auto mr-4 text-xs transition border rounded text-tadak-secondary border-tadak-secondary hover:bg-tadak-secondary hover:text-tadak-white"
           onClick={() =>
             navigate(`/product/${product.productId}/review/write`, {
               state: { product },

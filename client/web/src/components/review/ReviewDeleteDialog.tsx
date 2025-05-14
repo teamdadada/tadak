@@ -31,7 +31,7 @@ const ReviewDeleteDialog = ({ reviewId }: { reviewId: number }) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <button className="px-2 py-1 text-xs transition border rounded text-tadak-secondary border-tadak-secondary hover:bg-tadak-secondary hover:text-white">
+        <button className="px-2 py-1 text-xs transition border rounded text-tadak-secondary border-tadak-secondary hover:bg-tadak-secondary hover:text-tadak-white">
           삭제
         </button>
       </DialogTrigger>
@@ -44,13 +44,13 @@ const ReviewDeleteDialog = ({ reviewId }: { reviewId: number }) => {
         </DialogHeader>
         <DialogFooter>
           <DialogClose asChild>
-            <button className="px-3 py-1 text-sm border rounded hover:bg-gray-100">
+            <button className="px-3 py-1 text-sm border rounded hover:bg-tadak-light-gray">
               취소
             </button>
           </DialogClose>
           <button
             onClick={handleDelete}
-            className="px-3 py-1 text-sm text-white bg-red-500 rounded hover:bg-red-600"
+            className="px-3 py-1 text-sm rounded text-tadak-white bg-tadak-warning"
           >
             삭제
           </button>

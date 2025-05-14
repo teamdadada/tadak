@@ -48,7 +48,7 @@ const ReviewItem = ({ review }: ReviewItemProps) => {
               key={idx}
               src={imgUrl}
               alt={`리뷰 이미지 ${idx + 1}`}
-              className="object-cover w-24 h-24 border border-gray-200 rounded-md"
+              className="object-cover w-24 h-24 border rounded-md border-tadak-light-gray"
             />
           ))}
         </div>
