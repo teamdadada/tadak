@@ -19,7 +19,7 @@ const DesignStep = ({ step, setStep }: DesignStepProps) => {
       <div className="flex mt-6 gap-4 h-[590px]">
         {/* 왼쪽 영역 */}
         <div className="flex flex-col flex-1">
-          <div className="flex-1 flex items-center justify-center">
+          <div className="flex items-center justify-center h-[400px]">
             <KeyboardPreview3D />
           </div>
           <div className="mt-6 h-60 items-center justify-center">
