@@ -1,4 +1,4 @@
-import { PencilIcon } from 'lucide-react'
+import { Loader2, PencilIcon } from 'lucide-react'
 import { useRef, useState } from 'react'
 import { useUpdateProfileImg } from '@/hooks/useUser'
 import { UpdateProfileImgRequest } from '@/types/user'
@@ -49,8 +49,8 @@ const ProfileImage = ({ imageUrl }: ProfileImageProps) => {
         className={`p-2  md:w-48 md:h-48 lg:w-64 lg:h-48 object-cover  ${isUpdating ? 'opacity-50' : ''}`}
       />
       {isUpdating && (
-        <div className="absolute inset-0 flex items-center justify-center">
-          <span className="animate-pulse">업로드 중...</span>
+        <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-50 ">
+          <Loader2 className="h-8 w-8 text-tadak-blue animate-spin" />
         </div>
       )}
       <div
