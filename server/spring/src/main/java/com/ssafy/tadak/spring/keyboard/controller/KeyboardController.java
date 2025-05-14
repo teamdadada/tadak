@@ -3,6 +3,7 @@ package com.ssafy.tadak.spring.keyboard.controller;
 import com.ssafy.tadak.spring.auth.dto.UserInfo;
 import com.ssafy.tadak.spring.common.annotation.AuthUser;
 import com.ssafy.tadak.spring.keyboard.dto.request.CreateKeyboardRequest;
+import com.ssafy.tadak.spring.keyboard.dto.response.GetOptionsResponse;
 import com.ssafy.tadak.spring.keyboard.dto.response.KeyboardCreateResponse;
 import com.ssafy.tadak.spring.keyboard.dto.response.KeyboardDetailResponse;
 import com.ssafy.tadak.spring.keyboard.service.KeyboardService;
@@ -51,6 +52,10 @@ public class KeyboardController {
         return ResponseEntity.ok(
                 keyboardService.getKeyboardDetail(userInfo.id(), keboardId)
         );
+    }
 
+    @GetMapping("/option")
+    public ResponseEntity<GetOptionsResponse> getKeyboardOption(){
+        return ResponseEntity.ok(keyboardService.getAllOptions());
     }
 }
