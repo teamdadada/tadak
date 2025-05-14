@@ -76,5 +76,5 @@ export const MINIO_END_POINT = {
 
 // zzimService
 export const ZZIM_END_POINT = {
-  CREATE: '/zzim',
+  ADD: (productId: number) => `/zzim/${productId}`,
 }
