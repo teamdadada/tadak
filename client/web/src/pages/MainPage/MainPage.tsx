@@ -189,7 +189,7 @@ const MainPage = () => {
           items={['베어본', '스위치', '키캡']}
           selectedIndex={activePopularTab}
           onChange={setActivePopularTab}
-          width={300}
+          width={'100%'}
           tabWidth={100}
           indicatorWidth={100}
         />
@@ -229,7 +229,7 @@ const MainPage = () => {
           items={['베어본', '스위치', '키캡']}
           selectedIndex={activeNewTab}
           onChange={setActiveNewTab}
-          width={300}
+          width={'100%'}
           tabWidth={100}
           indicatorWidth={100}
         />
