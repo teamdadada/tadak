@@ -66,8 +66,6 @@ export const useUpdateNickname = () => {
     mutationFn: (data: UpdateNicknameRequest) => updateNickname(data),
 
     onSuccess: (_, variables) => {
-      // queryClient.invalidateQueries({ queryKey: ['user', 'me'] })
-
       if (user) {
         setUser({
           ...user,
@@ -96,7 +94,6 @@ export const useUpdateNickname = () => {
 }
 
 export const useUpdateProfileImg = () => {
-  // const queryClient = useQueryClient()
   const navigate = useNavigate()
 
   const user = useUserStore((state) => state.user)
@@ -105,21 +102,17 @@ export const useUpdateProfileImg = () => {
   const { mutateAsync } = useMutation({
     mutationFn: async (data: UpdateProfileImgRequest) => {
       const response = await updateProfileImg(data)
-      console.log(response.headers)
       const profileImgURL = response.headers.location
       return { response, profileImgURL }
     },
 
     onSuccess: (result) => {
-      // queryClient.invalidateQueries({ queryKey: ['user', 'me'] })
-
       if (user && result.profileImgURL) {
         setUser({
           ...user,
           profileImg: result.profileImgURL,
         })
       }
-      console.log(result.profileImgURL)
 
       toast.success('프로필 이미지가 변경되었습니다!')
     },
