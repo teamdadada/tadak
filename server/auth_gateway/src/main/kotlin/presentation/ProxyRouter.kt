@@ -49,7 +49,7 @@ fun Route.proxyRoutes(env: ApplicationEnvironment) {
 
     route("chat/{...}") {  // "/chat/**" 경로만 처리
         handle {
-            val targetUri = proxyConfig.fastapiBaseUrl + call.request.uri.removePrefix("/chat")
+            val targetUri = proxyConfig.fastapiBaseUrl + call.request.uri
             val method = call.request.httpMethod
 
             val token = call.request.headers["Authorization"]?.removePrefix("Bearer ")
