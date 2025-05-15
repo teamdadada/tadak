@@ -15,6 +15,7 @@ export const useAddZzim = () => {
     mutationFn: addZzim,
     onSuccess: async () => {
       queryClient.invalidateQueries({ queryKey: ['zzim'] })
+      toast.success('찜 목록에 추가되었습니다!')
       try {
         const zzimListResponse = await getZzimList()
         setZzimList(zzimListResponse)
