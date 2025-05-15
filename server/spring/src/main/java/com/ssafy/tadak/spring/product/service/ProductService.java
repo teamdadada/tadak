@@ -1,5 +1,6 @@
 package com.ssafy.tadak.spring.product.service;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ssafy.tadak.spring.product.domain.entity.Product;
 import com.ssafy.tadak.spring.product.domain.repository.ProductRepository;
 import com.ssafy.tadak.spring.product.domain.repository.ProductRepositoryCustom;
@@ -85,13 +86,12 @@ public class ProductService {
                         .computeIfAbsent(p.getProductType(), k -> new ArrayList<>())
                         .add(p.getProductId())
         );
-
         Map<Long, Document> documents = new HashMap<>();
 
         productIds.forEach((productType, ids) -> {
-            Query query = new Query(Criteria.where("_id").in(ids));
+            Query query = new Query(Criteria.where("product_id").in(ids));
             List<Document> docs = productRepositoryCustom.find(query, Document.class, productType);
-            documents.put(productType, docs);
+            docs.forEach(doc -> documents.put(doc.getInteger("product_id").longValue(), doc));
         });
 
         List<ProductSimpleDto> result = new ArrayList<>();
@@ -99,15 +99,22 @@ public class ProductService {
                 p -> {
                     ProductType type = p.getProductType();
                     Long productId = p.getProductId();
-
-                    Document doc = documents.get(p.getProductType()).get(0);
+                    Document doc = documents.get(productId);
+                    result.add(
+                                ProductSimpleDto.builder()
+                                .productId(productId)
+                                .name(p.getProductName())
+                                .minPrice(doc.getInteger("min_price"))
+                                .hits(doc.getInteger("hit"))
+                                .thumbnail(doc.getString("thumbnail"))
+                                .type(type)
+                                .cursor(String.format("%d_%d", doc.getInteger("hit"), productId))
+                                .build()
+                    );
                 }
-        );
+            );
 
-        List<ProductSimpleDto> productsDto = products.stream()
-                .map(ProductSimpleDto::from).toList();
-
-        return ProductListResponse.of(productsDto, size);
+        return ProductListResponse.of(result, size);
     }
 
     @Transactional(readOnly = true)
