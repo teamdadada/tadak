@@ -47,8 +47,9 @@ const KakaoShareButton = ({ kbtiType }: { kbtiType: string }) => {
 
   return (
     <Button
+      size="lg"
       onClick={handleShare}
-      className="px-4 py-2 text-white bg-yellow-400 rounded-lg hover:bg-yellow-500"
+      className="bg-[#FEE500] rounded-lg text-tadak-black hover:bg-[#FEE500] hover:text-tadak-black"
     >
       카카오톡 공유하기
     </Button>

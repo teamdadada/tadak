@@ -1,4 +1,4 @@
-import KbtiStartImage from '@/assets/images/KBTI_start.svg'
+import KbtiStartImage from '@/assets/images/KBTI_start.png'
 import { Button } from '@/components/ui/button'
 import { useNavigate } from 'react-router-dom'
 

@@ -6,7 +6,7 @@ interface ProductPreviewCardProps {
 
 const ProductPreviewCard = ({ product }: ProductPreviewCardProps) => {
   return (
-    <div className="flex items-center gap-4 p-4 mb-6 border-b border-tadak-light-gray">
+    <div className="flex items-center gap-4 p-4 border-b border-tadak-light-gray">
       <img
         src={product.thumbnail}
         alt={product.name}
