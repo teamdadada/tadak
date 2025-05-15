@@ -10,9 +10,12 @@ export const getReviewList = async (
   productId: number | string,
   sort: 'latest' | 'score' = 'latest',
 ): Promise<ReviewListResponse> => {
-  const url = `${REVIEW_END_POINT.LIST(productId)}?sort=${sort}`
-
-  const { data } = await http.get<ReviewListResponse>(url)
+  const { data } = await http.get<ReviewListResponse>(
+    REVIEW_END_POINT.LIST(productId),
+    {
+      params: { sort },
+    },
+  )
   return data
 }
 
@@ -26,13 +29,9 @@ export const getReviewScore = async (
 }
 
 export const deleteReview = async (reviewId: number) => {
-  return http.delete(`review/${reviewId}`)
+  return http.delete(REVIEW_END_POINT.DELETE(reviewId))
 }
 
 export const postReview = async (productId: number, payload: ReviewPayload) => {
-  return http.post(`/review/write/${productId}`, payload, {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-    },
-  })
+  return http.post(REVIEW_END_POINT.CREATE(productId), payload)
 }

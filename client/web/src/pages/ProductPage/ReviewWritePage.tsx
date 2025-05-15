@@ -1,5 +1,6 @@
 import ProductPreviewCard from '@/components/product/ProductPreviewCard'
 import ReviewImagePreview from '@/components/review/ReviewImagePreview'
+import StarRating from '@/components/review/StarRating'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { uploadImageToMinio } from '@/services/minioService'
@@ -14,6 +15,7 @@ const ReviewWritePage = () => {
   const location = useLocation()
   const product = location.state?.product as ProductDetailBase
 
+  const [score, setScore] = useState(0)
   const [content, setContent] = useState('')
   const [images, setImages] = useState<File[]>([])
   const [isLoading, setIsLoading] = useState(false)
@@ -57,6 +59,7 @@ const ReviewWritePage = () => {
 
       // 리뷰 등록
       await postReview(product.productId, {
+        score: score,
         reviewContent: content,
         imageList: uploadedUrls,
       })
@@ -75,6 +78,10 @@ const ReviewWritePage = () => {
     <div className="flex flex-col max-w-6xl gap-4 p-6 mx-auto">
       <h1 className="text-2xl font-semibold">리뷰 작성하기</h1>
       <ProductPreviewCard product={product} />
+      <div className="flex items-center gap-2 mt-2">
+        <span className="text-sm text-tadak-dark-gray">별점</span>
+        <StarRating score={score} onChange={setScore} />
+      </div>
       <div className="flex flex-wrap items-end gap-2">
         {images.map((file, idx) => (
           <ReviewImagePreview
@@ -85,9 +92,9 @@ const ReviewWritePage = () => {
         ))}
         <label
           htmlFor="image-upload"
-          className="px-4 py-2 text-xs transition border rounded w-fit h-fit text-tadak-secondary border-tadak-secondary hover:bg-tadak-secondary hover:text-tadak-white"
+          className="flex items-center justify-center w-24 h-24 border-2 border-dashed rounded-md cursor-pointer text-tadak-secondary border-tadak-secondary hover:bg-tadak-light-gray"
         >
-          이미지 추가
+          <span className="text-3xl">＋</span>
         </label>
         <input
           id="image-upload"

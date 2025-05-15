@@ -33,9 +33,9 @@ const ReviewItem = ({ review }: ReviewItemProps) => {
         {/* 수정 및 삭제 버튼 */}
         {me === id && (
           <div className="mt-2 space-x-2">
-            <button className="px-2 py-1 text-xs transition border rounded text-tadak-secondary border-tadak-secondary hover:bg-tadak-secondary hover:text-white">
+            {/* <button className="px-2 py-1 text-xs transition border rounded text-tadak-secondary border-tadak-secondary hover:bg-tadak-secondary hover:text-white">
               수정
-            </button>
+            </button> */}
             <ReviewDeleteDialog reviewId={reviewId} />
           </div>
         )}

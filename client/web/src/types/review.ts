@@ -28,6 +28,7 @@ export interface ReviewScoreResponse {
 }
 
 export interface ReviewPayload {
+  score: number
   reviewContent: string
   imageList: string[]
 }
