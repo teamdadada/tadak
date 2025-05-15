@@ -28,7 +28,7 @@ public class Option {
     private Category category;
 
     @Column(name = "option_name")
-    private String partName;
+    private String optionName;
 
     @Column(name = "is_valid")
     private Boolean isValid;
