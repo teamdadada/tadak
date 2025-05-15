@@ -78,6 +78,6 @@ export const MINIO_END_POINT = {
 export const ZZIM_END_POINT = {
   ADD: (productId: number) => `/zzim/${productId}`,
   LIST: '/zzim/list',
-  DELETE: (zzimId: number) => `/zzim/${zzimId}`,
+  DELETE: (productId: number) => `/zzim/${productId}`,
   COUNT: '/zzim/cnt',
 }

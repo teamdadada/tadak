@@ -55,12 +55,19 @@ export const useGetZzimList = () => {
 
 export const useDeleteZzim = () => {
   const queryClient = useQueryClient()
+  const setZzimList = useUserStore((state) => state.setZzimList)
 
   const { mutateAsync } = useMutation({
     mutationFn: deleteZzim,
-    onSuccess: () => {
+    onSuccess: async () => {
       queryClient.invalidateQueries({ queryKey: ['zzim'] })
       toast.success('찜 목록에서 제거되었습니다!')
+      try {
+        const zzimListResponse = await getZzimList()
+        setZzimList(zzimListResponse)
+      } catch {
+        // 에러 처리
+      }
     },
   })
   return mutateAsync
