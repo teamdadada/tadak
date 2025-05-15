@@ -28,7 +28,7 @@ export interface ReviewScoreResponse {
 }
 
 export interface ReviewPayload {
-  score: number
+  reviewScore: number
   reviewContent: string
   imageList: string[]
 }

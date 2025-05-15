@@ -6,19 +6,35 @@ import { Textarea } from '@/components/ui/textarea'
 import { uploadImageToMinio } from '@/services/minioService'
 import { postReview } from '@/services/reviewService'
 import { ProductDetailBase } from '@/types/product'
+import { AxiosError } from 'axios'
 import { useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
+
+interface ErrorResponse {
+  code: string
+  message: string
+}
 
 const ReviewWritePage = () => {
   const navigate = useNavigate()
-  const location = useLocation()
-  const product = location.state?.product as ProductDetailBase
 
   const [score, setScore] = useState(0)
   const [content, setContent] = useState('')
   const [images, setImages] = useState<File[]>([])
   const [isLoading, setIsLoading] = useState(false)
+  const [uploadedImageUrls, setUploadedImageUrls] = useState<string[] | null>(
+    null,
+  )
+
+  const stored = sessionStorage.getItem('reviewProduct')
+
+  if (!stored) {
+    toast.error('상품 정보가 없습니다.')
+    navigate('/')
+    return null
+  }
+  const product = JSON.parse(stored) as ProductDetailBase
 
   const handleAddImages = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return
@@ -52,23 +68,41 @@ const ReviewWritePage = () => {
     }
 
     try {
-      // 이미지 업로드
-      const uploadedUrls = await Promise.all(
-        images.map((file) => uploadImageToMinio('review', file)),
-      )
+      setIsLoading(true)
+
+      // 이미 업로드한 이미지가 있다면 재사용
+      let imageUrlsOnly = uploadedImageUrls
+      if (!imageUrlsOnly) {
+        const uploaded = await Promise.all(
+          images.map((file) => uploadImageToMinio('review', file)),
+        )
+        imageUrlsOnly = uploaded.map((item) => item.url)
+        setUploadedImageUrls(imageUrlsOnly)
+      }
 
       // 리뷰 등록
       await postReview(product.productId, {
-        score: score,
+        reviewScore: score,
         reviewContent: content,
-        imageList: uploadedUrls,
+        imageList: imageUrlsOnly,
       })
 
       toast.success('리뷰가 성공적으로 등록되었습니다!')
       navigate(-1)
     } catch (err) {
-      console.error(err)
-      toast.error('리뷰 등록 중 오류가 발생했습니다.')
+      const error = err as AxiosError<ErrorResponse>
+
+      const res = error.response
+
+      if (res?.status === 401 && res.data?.code === 'B4015') {
+        toast.error('로그인이 필요한 기능입니다.')
+      } else if (res?.status === 409 && res.data?.code === 'R4090') {
+        toast.error('이미 작성한 리뷰가 존재합니다.')
+      } else if (res?.status === 500 && res.data?.code === 'S5000') {
+        toast.error(res.data.message || '서버 오류가 발생했습니다.')
+      } else {
+        toast.error('리뷰 등록 중 예상치 못한 오류가 발생했습니다.')
+      }
     } finally {
       setIsLoading(false)
     }

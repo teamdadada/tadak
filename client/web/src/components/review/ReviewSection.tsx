@@ -28,11 +28,10 @@ const ReviewSection = ({ product }: ReviewSectionProps) => {
         <Button
           variant="outline"
           className="px-2 py-2 ml-auto mr-4 text-xs transition border rounded text-tadak-secondary border-tadak-secondary hover:bg-tadak-secondary hover:text-tadak-white"
-          onClick={() =>
-            navigate(`/product/${product.productId}/review/write`, {
-              state: { product },
-            })
-          }
+          onClick={() => {
+            sessionStorage.setItem('reviewProduct', JSON.stringify(product))
+            navigate(`/product/${product.productId}/review/write`)
+          }}
         >
           작성하기
         </Button>
