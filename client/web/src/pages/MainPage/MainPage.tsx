@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Autoplay, Pagination, Navigation } from 'swiper/modules'
 import { useQuery } from '@tanstack/react-query'
+import { motion } from 'framer-motion'
+import heart from '@/assets/images/heart.png'
 
 // @ts-ignore
 import 'swiper/css'
@@ -18,8 +20,16 @@ import { Product } from '@/types/shop'
 import Chatbot from '@/components/chatbot/Chatbot'
 // import { getPopularItems, MockItem } from '@/mocks/mockPopularItems'
 // import { getNewItems } from '@/mocks/mockNewItems'
+import ThanksImage from '@/assets/images/thanks.png'
 
 const bannerSlides = [
+  {
+    text: '스승의 날',
+    subText: '컨설턴트님 감사합니다!!  - A703 일동-',
+    route: null,
+    bgColor: '#FFE0E0', // 연한 빨강
+    imageUrl: ThanksImage,
+  },
   {
     text: '타닥으로 시작하는 나만의 키보드 여정',
     subText: '처음이라도 괜찮아요. 타닥이 용어부터 조립까지 함께할게요.',
@@ -55,6 +65,7 @@ const MainPage = () => {
   const [activeNewTab, setActiveNewTab] = useState(1)
   // const [popularItems, setPopularItems] = useState<MockItem[]>([])
   // const [newItems, setNewItems] = useState<MockItem[]>([])
+  const [showHearts, setShowHearts] = useState(false)
   const navigate = useNavigate()
 
   const {
@@ -103,11 +114,53 @@ const MainPage = () => {
 
   return (
     <div className="flex flex-col items-center w-full">
+      {/* 하트 애니메이션 */}
+      {showHearts &&
+        Array.from({ length: 10 }, (_, i) => {
+          const isLeftSide = Math.random() < 0.5
+          const left = isLeftSide
+            ? `${5 + Math.random() * 20}%`
+            : `${75 + Math.random() * 20}%`
+
+          const delay = Math.random() * 0.1
+          const duration = 3 + Math.random() * 2
+          const rotate = Math.random() * 30 - 15
+          const size = 48 + Math.random() * 24
+
+          return (
+            <motion.img
+              key={i}
+              src={heart}
+              alt="heart"
+              className="pointer-events-none fixed z-50"
+              initial={{ y: '100vh', opacity: 1, scale: 1, rotate: 0 }}
+              animate={{
+                y: ['100vh', '-30vh'],
+                scale: [1, 1.3, 1],
+                rotate: [0, rotate, -rotate, 0],
+                opacity: [1, 0.8, 0.4, 0],
+              }}
+              transition={{
+                duration,
+                delay,
+                repeat: Infinity,
+                repeatType: 'loop',
+                ease: 'easeInOut',
+              }}
+              style={{
+                left,
+                width: `${size}px`,
+                height: `${size}px`,
+              }}
+            />
+          )
+        })}
+
       {/* 배너 캐러셀 */}
       <Swiper
         modules={[Autoplay, Pagination, Navigation]}
         autoplay={{
-          delay: 2000, // 2초마다 자동 전환
+          delay: 3000, // 2초마다 자동 전환
           disableOnInteraction: false, // 유저 조작 후에도 자동 재생 유지
         }}
         pagination={{
@@ -122,7 +175,13 @@ const MainPage = () => {
         {bannerSlides.map((slide, idx) => (
           <SwiperSlide key={idx}>
             <div
-              onClick={() => slide.route && navigate(slide.route)}
+              onClick={() => {
+                if (idx === 0) {
+                  setShowHearts(true)
+                  setTimeout(() => setShowHearts(false), 3000)
+                }
+                slide.route && navigate(slide.route)
+              }}
               style={{ backgroundColor: slide.bgColor }}
               className="flex flex-col min-[1060px]:flex-row justify-between items-center h-full cursor-pointer px-2 min-[1060px]:px-20 min-[1200px]:px-40"
             >
@@ -135,9 +194,17 @@ const MainPage = () => {
                 </p>
               </div>
               <div className="flex items-center justify-end flex-1">
-                <div className="flex items-center justify-center mb-6 rounded-md min-w-96 min-h-52 text-tadak-gray">
-                  이미지 자리
-                </div>
+                {slide.imageUrl ? (
+                  <img
+                    src={slide.imageUrl}
+                    alt="배너 이미지"
+                    className="mb-6 w-40 h-52 object-contain rounded-md mr-20"
+                  />
+                ) : (
+                  <div className="flex items-center justify-center mb-6 rounded-md min-w-96 min-h-52 text-tadak-gray">
+                    이미지 자리
+                  </div>
+                )}
               </div>
             </div>
           </SwiperSlide>
