@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface KeyboardOptionJpaRepository extends JpaRepository<KeyboardOption, Long> {
     List<KeyboardOption> findAllByKeyboard(Keyboard keyboard);
+
+    void deleteAllByKeyboard(Keyboard keyboard);
 }
