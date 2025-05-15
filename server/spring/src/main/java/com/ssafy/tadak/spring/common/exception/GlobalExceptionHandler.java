@@ -12,6 +12,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.Arrays;
@@ -67,6 +68,12 @@ public class GlobalExceptionHandler {
                 getStackTrace(exception)
         ));
         return ResponseEntity.status(exception.getHttpStatus()).body(ErrorResponse.from(errorCode));
+    }
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<ErrorResponse> handleMaxSizeException(MaxUploadSizeExceededException e) {
+        return ResponseEntity.status(413) // 413 Payload Too Large
+                .body(new ErrorResponse("S4130", "업로드 가능한 파일 크기를 초과했습니다."));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
