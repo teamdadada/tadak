@@ -5,9 +5,11 @@ import {
   signIn,
 } from '@/services/authService'
 import { getUserInfo } from '@/services/userService'
+import { getZzimList } from '@/services/zzimService'
 import { useAuthStore } from '@/store/authStore'
 import { useUserStore } from '@/store/userStore'
 import { ErrorResponse, User } from '@/types/user'
+import { ZzimListResponse } from '@/types/zzim'
 import { useMutation } from '@tanstack/react-query'
 import { AxiosError } from 'axios'
 import { useRef } from 'react'
@@ -15,7 +17,9 @@ import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 
 export const useSignIn = () => {
-  const { setUser } = useUserStore()
+  const setUser = useUserStore((state) => state.setUser)
+  const setZzimList = useUserStore((state) => state.setZzimList)
+
   const { mutateAsync } = useMutation({
     mutationFn: signIn,
     onSuccess: async (accessToken) => {
@@ -27,6 +31,10 @@ export const useSignIn = () => {
       try {
         const userInfo: User = await getUserInfo()
         setUser(userInfo)
+
+        const userZzimList: ZzimListResponse = await getZzimList()
+        setZzimList(userZzimList)
+
         toast.success('로그인 성공!')
       } catch (e) {
         console.error('getUserInfo 에러 발생:', e)
@@ -54,6 +62,7 @@ export const useNaverLogin = () => {
   const isProcessingRef = useRef(false)
   const navigate = useNavigate()
   const setUser = useUserStore((state) => state.setUser)
+  const setZzimList = useUserStore((state) => state.setZzimList)
 
   const login = async (code: string, redirectPath: string) => {
     if (isProcessingRef.current) return
@@ -63,9 +72,12 @@ export const useNaverLogin = () => {
       const start = Date.now()
 
       await naverLogin(code)
+
       const userInfo = await getUserInfo()
       setUser(userInfo)
-      console.log(userInfo)
+
+      const userZzimList: ZzimListResponse = await getZzimList()
+      setZzimList(userZzimList)
 
       const elapsed = Date.now() - start
       if (elapsed < 500) {
@@ -88,6 +100,7 @@ export const useKakaoLogin = () => {
   const isProcessingRef = useRef(false)
   const navigate = useNavigate()
   const setUser = useUserStore((state) => state.setUser)
+  const setZzimList = useUserStore((state) => state.setZzimList)
 
   const login = async (code: string, redirectPath: string) => {
     if (isProcessingRef.current) return
@@ -97,9 +110,12 @@ export const useKakaoLogin = () => {
       const start = Date.now()
 
       await kakaoLogin(code)
+
       const userInfo = await getUserInfo()
       setUser(userInfo)
-      console.log(userInfo)
+
+      const userZzimList: ZzimListResponse = await getZzimList()
+      setZzimList(userZzimList)
 
       const elapsed = Date.now() - start
       if (elapsed < 500) {

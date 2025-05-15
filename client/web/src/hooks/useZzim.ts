@@ -1,4 +1,5 @@
-import { addZzim, listZzim } from '@/services/zzimService'
+import { addZzim, getZzimList } from '@/services/zzimService'
+import { useUserStore } from '@/store/userStore'
 import { ErrorResponse } from '@/types/user'
 import { ZzimListResponse } from '@/types/zzim'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
@@ -7,10 +8,20 @@ import { toast } from 'sonner'
 
 export const useAddZzim = () => {
   const queryClient = useQueryClient()
+  // const addZzimItem = useUserStore((state) => state.addZzimItem)
+  const setZzimList = useUserStore((state) => state.setZzimList)
+
   const { mutateAsync } = useMutation({
     mutationFn: addZzim,
-    onSuccess: () => {
+    onSuccess: async () => {
       queryClient.invalidateQueries({ queryKey: ['zzim'] })
+      toast.success('찜 목록에 추가되었습니다!')
+      try {
+        const zzimListResponse = await getZzimList()
+        setZzimList(zzimListResponse)
+      } catch {
+        // 에러 처리
+      }
     },
     onError: (error: AxiosError<ErrorResponse>) => {
       const message = error.response?.data?.message
@@ -20,9 +31,9 @@ export const useAddZzim = () => {
   return mutateAsync
 }
 
-export const useListZzim = () => {
+export const useGetZzimList = () => {
   return useQuery<ZzimListResponse>({
     queryKey: ['zzim', 'list'],
-    queryFn: listZzim,
+    queryFn: getZzimList,
   })
 }

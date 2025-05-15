@@ -1,8 +1,9 @@
 import { Product } from '@/types/shop'
 import { FaHeart, FaRegHeart } from 'react-icons/fa'
 import { useNavigate } from 'react-router-dom'
-import { useState } from 'react'
 import { useAddZzim } from '@/hooks/useZzim'
+import { useUserStore } from '@/store/userStore'
+import { useEffect, useState } from 'react'
 
 interface ItemCardProps extends Product {
   size?: 'sm' | 'md' | 'lg'
@@ -15,11 +16,18 @@ const ItemCard = ({
   minPrice,
   thumbnail,
   type,
-  liked = false,
   onZzimChange,
 }: ItemCardProps) => {
   const navigate = useNavigate()
-  const [isLiked, setIsLiked] = useState(liked)
+
+  // const isZzimItem = useUserStore((state) => state.isZzimItem)
+  const [isLiked, setIsLiked] = useState(false)
+  const zzimList = useUserStore((state) => state.zzimList)
+
+  useEffect(() => {
+    const liked = zzimList.some((item) => item.item.productId === productId)
+    setIsLiked(liked)
+  }, [zzimList, productId])
 
   const addZzim = useAddZzim()
 
@@ -32,8 +40,6 @@ const ItemCard = ({
       } else {
         await addZzim(productId)
       }
-
-      setIsLiked(!isLiked)
 
       if (onZzimChange) {
         onZzimChange(productId, !isLiked)

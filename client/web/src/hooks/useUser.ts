@@ -6,6 +6,7 @@ import {
   updatePassword,
   updateProfileImg,
 } from '@/services/userService'
+import { getZzimList } from '@/services/zzimService'
 import { useUserStore } from '@/store/userStore'
 import {
   ErrorResponse,
@@ -15,6 +16,7 @@ import {
   UpdateProfileImgRequest,
   User,
 } from '@/types/user'
+import { ZzimListResponse } from '@/types/zzim'
 import { logoutUtil } from '@/utils/auth'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { AxiosError } from 'axios'
@@ -22,7 +24,8 @@ import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 
 export const useSignUp = () => {
-  const { setUser } = useUserStore()
+  const setUser = useUserStore((state) => state.setUser)
+  const setZzimList = useUserStore((state) => state.setZzimList)
 
   const { mutateAsync } = useMutation({
     mutationFn: async (data: SignUpRequest) => {
@@ -31,8 +34,12 @@ export const useSignUp = () => {
 
       // 자동 로그인
       await signIn({ userId: data.userId, password: data.password })
+
       const userInfo: User = await getUserInfo()
       setUser(userInfo)
+
+      const userZzimList: ZzimListResponse = await getZzimList()
+      setZzimList(userZzimList)
 
       return signUpResponse
     },
