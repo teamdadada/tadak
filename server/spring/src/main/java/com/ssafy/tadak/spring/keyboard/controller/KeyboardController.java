@@ -3,21 +3,27 @@ package com.ssafy.tadak.spring.keyboard.controller;
 import com.ssafy.tadak.spring.auth.dto.UserInfo;
 import com.ssafy.tadak.spring.common.annotation.AuthUser;
 import com.ssafy.tadak.spring.keyboard.dto.request.CreateKeyboardRequest;
+import com.ssafy.tadak.spring.keyboard.dto.request.UpdateKeyboardRequest;
+import com.ssafy.tadak.spring.keyboard.dto.response.GetKeyboardListResponse;
 import com.ssafy.tadak.spring.keyboard.dto.response.GetOptionsResponse;
 import com.ssafy.tadak.spring.keyboard.dto.response.GetProductListResponse;
 import com.ssafy.tadak.spring.keyboard.dto.response.KeyboardCreateResponse;
-import com.ssafy.tadak.spring.keyboard.dto.response.KeyboardDetailResponse;
+import com.ssafy.tadak.spring.keyboard.dto.response.GetKeyboardDetailResponse;
 import com.ssafy.tadak.spring.keyboard.service.KeyboardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/keyboard")
@@ -46,8 +52,17 @@ public class KeyboardController {
         );
     }
 
+    @GetMapping
+    public ResponseEntity<List<GetKeyboardListResponse>> getKeyboardList(
+            @AuthUser UserInfo userInfo
+    ) {
+        return ResponseEntity.ok(
+                keyboardService.getKeyboardList(userInfo.id())
+        );
+    }
+
     @GetMapping("/{keyboard-id}")
-    public ResponseEntity<KeyboardDetailResponse> getKeyboardDetail(
+    public ResponseEntity<GetKeyboardDetailResponse> getKeyboardDetail(
             @AuthUser UserInfo userInfo,
             @PathVariable(name = "keyboard-id") Long keboardId
     ) throws Exception {
@@ -86,5 +101,36 @@ public class KeyboardController {
         return ResponseEntity.ok(
                 keyboardService.getSwitchList(type)
         );
+    }
+
+    @PatchMapping("/{keyboard-id}")
+    public ResponseEntity<Void> updateKeyboard(
+            @AuthUser UserInfo userinfo,
+            @PathVariable(name = "keyboard-id") Long keyboardId,
+            @RequestBody UpdateKeyboardRequest request
+    ) throws Exception {
+        keyboardService.updateKeyboard(
+                userinfo.id(),
+                keyboardId,
+                request.name(),
+                request.thumbnailId(),
+                request.modelId(),
+                request.totalPrice(),
+                request.colors(),
+                request.options(),
+                request.bareboneId(),
+                request.switchId(),
+                request.keycapId()
+        );
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{keyboard-id}")
+    public ResponseEntity<Void> deleteKeyboard(
+            @AuthUser UserInfo userInfo,
+            @PathVariable(name = "keyboard-id") Long keyboardId
+    ) throws Exception {
+        keyboardService.deleteKeyboard(userInfo.id(), keyboardId);
+        return ResponseEntity.ok().build();
     }
 }

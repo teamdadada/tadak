@@ -6,7 +6,7 @@ import com.ssafy.tadak.spring.keyboard.dto.request.Colors;
 import java.util.List;
 import java.util.Map;
 
-public record KeyboardDetailResponse(
+public record GetKeyboardDetailResponse(
         Long keyboardId,
         String name,
         List<OptionDto.SelectedOption> options,
