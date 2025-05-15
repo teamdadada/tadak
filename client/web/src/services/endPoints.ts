@@ -47,7 +47,7 @@ export const REVIEW_END_POINT = {
 //chatbotService
 export const CHATBOT_END_POINT = {
   SEND_MESSAGE: '/chat',
-  GET_HISTORY: (userId: string) => `/chat/${userId}`,
+  GET_HISTORY: '/chat',
 }
 
 // keyboardService
@@ -81,4 +81,12 @@ export const CART_END_POINT = {
 // minioService
 export const MINIO_END_POINT = {
   UPLOAD: (bucketName: string) => `/images/${bucketName}`,
+}
+
+// zzimService
+export const ZZIM_END_POINT = {
+  ADD: (productId: number) => `/zzim/${productId}`,
+  LIST: '/zzim/list',
+  DELETE: (productId: number) => `/zzim/${productId}`,
+  COUNT: '/zzim/cnt',
 }
