@@ -68,7 +68,7 @@ public class KeyboardController {
         );
     }
 
-    //todo: 옵션 null인 경우 있는지?
+    //옵션 null인 경우 없음
     @GetMapping("/barebone")
     public ResponseEntity<GetProductListResponse> getBarebone(
             @RequestParam(name = "layout") Long layout,
