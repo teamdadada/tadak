@@ -2,10 +2,12 @@ package com.ssafy.tadak.spring.product.dto.response.list;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ssafy.tadak.spring.product.util.enums.ProductType;
+import lombok.Builder;
 import com.ssafy.tadak.spring.common.enums.SortType;
 
 import java.util.Map;
 
+@Builder
 public record ProductSimpleDto(
         Long productId,
         String name,
