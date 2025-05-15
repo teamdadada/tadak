@@ -1,5 +1,8 @@
 package com.ssafy.tadak.spring.keyboard.service;
 
+import com.ssafy.tadak.spring.common.exception.ErrorCode;
+import com.ssafy.tadak.spring.common.exception.GlobalException;
+import com.ssafy.tadak.spring.common.exception.status.NotFoundException;
 import com.ssafy.tadak.spring.keyboard.domain.entity.BareboneOption;
 import com.ssafy.tadak.spring.keyboard.domain.entity.Category;
 import com.ssafy.tadak.spring.keyboard.domain.entity.Keyboard;
@@ -14,13 +17,16 @@ import com.ssafy.tadak.spring.keyboard.domain.repository.KeyboardOptionJpaReposi
 import com.ssafy.tadak.spring.keyboard.domain.repository.KeycapOptionJpaRepository;
 import com.ssafy.tadak.spring.keyboard.domain.repository.OptionJpaRepository;
 import com.ssafy.tadak.spring.keyboard.domain.repository.SwitchOptionJpaRepository;
+import com.ssafy.tadak.spring.keyboard.dto.KeyboardUpdateDto;
 import com.ssafy.tadak.spring.keyboard.dto.OptionDto;
 import com.ssafy.tadak.spring.keyboard.dto.request.Colors;
+import com.ssafy.tadak.spring.keyboard.dto.response.GetKeyboardListResponse;
 import com.ssafy.tadak.spring.keyboard.dto.response.GetOptionsResponse;
 import com.ssafy.tadak.spring.keyboard.dto.response.GetProductListResponse;
 import com.ssafy.tadak.spring.keyboard.dto.response.KeyboardCreateResponse;
-import com.ssafy.tadak.spring.keyboard.dto.response.KeyboardDetailResponse;
+import com.ssafy.tadak.spring.keyboard.dto.response.GetKeyboardDetailResponse;
 import com.ssafy.tadak.spring.keyboard.exception.KeyboardException;
+import com.ssafy.tadak.spring.keyboard.mapper.KeyboardMapper;
 import com.ssafy.tadak.spring.minio.domain.entity.Image;
 import com.ssafy.tadak.spring.minio.domain.repository.ImageJpaRepository;
 import com.ssafy.tadak.spring.minio.exception.MinioException;
@@ -56,6 +62,7 @@ public class KeyboardService {
     private final CategoryJpaRepository categoryJpaRepository;
     private final BareboneOptionJpaRepository bareboneOptionJpaRepository;
     private final ProductConverter productConverter;
+    private final KeyboardMapper keyboardMapper;
 
     /** 커스텀 키보드를 생성하는 메소드입니다.
      * 유저가 선택한 옵션에 따른 키보드를 생성합니다.
@@ -111,10 +118,41 @@ public class KeyboardService {
         return new KeyboardCreateResponse(newKeyboard.getId(), newKeyboard.getName());
     }
 
+    /** 키보드 리스트 조회
+     * 유저가 생성한 키보드들의 간단한 정보들을 반환합니다.
+     * 생성일 기준 오름차순으로 반환합니다.
+     * **/
+    public List<GetKeyboardListResponse> getKeyboardList(Long userId){
+        List<Keyboard> userKeyboardList = keyboardJpaRepository.findAllByUserIdOrderByCreatedAtAsc((userId));
+
+        if(userKeyboardList.isEmpty()){
+            return List.of();
+        }
+
+        return userKeyboardList.stream()
+                .map(keyboard -> {
+                    Image thumbnail = keyboard.getThumbnail();
+                    String imageUrl = null;
+                    if(thumbnail != null){
+                        try {
+                            imageUrl = minioUtil.getImageUrl(thumbnail.getBucket(), thumbnail.getFilePath());
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                     return new GetKeyboardListResponse(
+                             keyboard.getId(),
+                             keyboard.getName(),
+                             imageUrl
+                     );
+                })
+                .toList();
+    }
+
     /** 키보드 상세 조회
      * 키보드 생성 시 선택했던 옵션, 색상, 부품 정보를 함께 반환합니다.
      * **/
-    public KeyboardDetailResponse getKeyboardDetail(
+    public GetKeyboardDetailResponse getKeyboardDetail(
             Long userId,
             Long keyboardId
     ) throws Exception {
@@ -143,9 +181,9 @@ public class KeyboardService {
         KeycapOption keycapOption = keyboard.getKeycapOption();
 
         //키보드에 선택된 부품들 정보 <부품타입, 부품상세>
-        Map<String, KeyboardDetailResponse.SelectedProduct> selectedProducts = getProductMap(bareboneOption, switchOption, keycapOption);
+        Map<String, GetKeyboardDetailResponse.SelectedProduct> selectedProducts = getProductMap(bareboneOption, switchOption, keycapOption);
 
-        return new KeyboardDetailResponse(
+        return new GetKeyboardDetailResponse(
                 keyboardId,
                 keyboard.getName(),
                 options,
@@ -156,12 +194,102 @@ public class KeyboardService {
         );
     }
 
+    /** 키보드 옵션 수정
+     * 커스텀 키보드 옵션을 업데이트하는 메소드입니다.
+     * 기존 옵션들을 모두 지우고 옵션을 다시 저장합니다.
+     * **/
     @Transactional
-    public void updateKeyboard(Long userId, Long keyboardId){
+    public void updateKeyboard(
+            Long userId,
+            Long keyboardId,
+            String name,
+            Long thumbnailId,
+            Long modelId,
+            Integer totalPrice,
+            Colors colors,
+            List<Long> options,
+            Long bareboneId,
+            Long switchId,
+            Long keycapId
+    ) throws Exception {
         Keyboard keyboard = getKeyboard(userId, keyboardId);
+
+        if(options == null || options.isEmpty()){
+            throw new KeyboardException.KeyboardBadRequestException(BADREQUEST);
+        }
+        //기존 옵션들 삭제
+        keyboardOptionJpaRepository.deleteAllByKeyboard(keyboard);
+        //새로운 옵션 등록
+        createKeyboardOption(keyboard, options);
+
+        //옵션 유효성 검증
+        Image thumbnail = null;
+        Image model = null;
+
+        // todo: 이미지 커스텀 오류로 변경
+        if(thumbnailId != null){
+            //기존 이미지 삭제
+            Image cur = keyboard.getThumbnail();
+            minioUtil.deleteFile(cur.getFilePath(), cur.getBucket().getName());
+            imageJpaRepository.deleteById(thumbnailId);
+            //테이블에 이미지가 존재하는지 체크
+            thumbnail = imageJpaRepository.findById(thumbnailId)
+                    .orElseThrow(()->new NotFoundException(new ErrorCode("I4040","이미지를 찾을 수 없습니다.")));
+        }
+        if(modelId != null){
+            //기존 모델 이미지 삭제
+            Image cur = keyboard.getModel();
+            minioUtil.deleteFile(cur.getFilePath(), cur.getBucket().getName());
+            imageJpaRepository.deleteById(modelId);
+            //테이블에 이미지가 존재하는지 체크
+            model = imageJpaRepository.findById(modelId)
+                    .orElseThrow(()->new NotFoundException(new ErrorCode("I4040","이미지를 찾을 수 없습니다.")));
+        }
+
+        BareboneOption bareboneOption = null;
+        KeycapOption keycapOption = null;
+        SwitchOption switchOption = null;
+
+        if(bareboneId != null){
+            bareboneOption = bareboneOptionJpaRepository.findById(bareboneId)
+                    .orElseThrow(()->new KeyboardException.KeyboardNotFoundException(PART_OPTION_NOTFOUND));
+        }
+        if(switchId != null){
+            switchOption = switchOptionJpaRepository.findById(switchId)
+                    .orElseThrow(()->new KeyboardException.KeyboardNotFoundException(PART_OPTION_NOTFOUND));
+        }
+        if(keycapId != null){
+            keycapOption = keycapOptionJpaRepository.findById(keycapId)
+                    .orElseThrow(()->new KeyboardException.KeyboardNotFoundException(PART_OPTION_NOTFOUND));
+        }
+        
+        //키보드 정보 업데이트 (mapstruct 적용)
+        keyboardMapper.updateKeyboardFromDto(
+                KeyboardUpdateDto.builder()
+                        .name(name)
+                        .thumbnail(thumbnail)
+                        .model(model)
+                        .price(totalPrice)
+                        .colors(colors)
+                        .bareboneOption(bareboneOption)
+                        .switchOption(switchOption)
+                        .keycapOption(keycapOption)
+                        .build(),
+                keyboard
+        );
     }
 
-    // todo: @Transactional DeleteKeyboard
+    @Transactional
+    public void deleteKeyboard(Long userId, Long keyboardId) throws Exception {
+        Keyboard keyboard = getKeyboard(userId, keyboardId);
+
+        Image thumbnail = keyboard.getThumbnail();
+        Image model = keyboard.getModel();
+        minioUtil.deleteFile(thumbnail.getFilePath(), thumbnail.getBucket().getName());
+        minioUtil.deleteFile(model.getFilePath(), model.getBucket().getName());
+
+        keyboardJpaRepository.delete(keyboard);
+    }
 
     // fixme: 카테고리 추가 시 확장성 없음
     /** 커스텀 키보드 옵션 조회
@@ -312,12 +440,12 @@ public class KeyboardService {
     }
 
     // fixme: 옵션 확장성 없음. 리팩토링 필요
-    private Map<String, KeyboardDetailResponse.SelectedProduct> getProductMap(
+    private Map<String, GetKeyboardDetailResponse.SelectedProduct> getProductMap(
             BareboneOption bareboneOption,
             SwitchOption switchOption,
             KeycapOption keycapOption
     ) throws Exception {
-        Map<String, KeyboardDetailResponse.SelectedProduct> result = new HashMap<>();
+        Map<String, GetKeyboardDetailResponse.SelectedProduct> result = new HashMap<>();
 
         if(bareboneOption != null) {
             //배어본 옵션 상세
@@ -327,7 +455,7 @@ public class KeyboardService {
                 bareboneImageUrl = minioUtil.getImageUrl(bareboneImage.getBucket(), bareboneImage.getFilePath());
             }
 
-            KeyboardDetailResponse.SelectedProduct selectedBarebone = new KeyboardDetailResponse.SelectedProduct(
+            GetKeyboardDetailResponse.SelectedProduct selectedBarebone = new GetKeyboardDetailResponse.SelectedProduct(
                     bareboneOption.getId(),
                     bareboneOption.getName(),
                     bareboneOption.getPrice(),
@@ -346,7 +474,7 @@ public class KeyboardService {
                 switchImageUrl = minioUtil.getImageUrl(switchImage.getBucket(), switchImage.getFilePath());
             }
 
-            KeyboardDetailResponse.SelectedProduct selectedSwitch = new KeyboardDetailResponse.SelectedProduct(
+            GetKeyboardDetailResponse.SelectedProduct selectedSwitch = new GetKeyboardDetailResponse.SelectedProduct(
                     switchOption.getId(),
                     switchOption.getName(),
                     switchOption.getPrice(),
@@ -365,7 +493,7 @@ public class KeyboardService {
                 keycapImageUrl =  minioUtil.getImageUrl(keycapImage.getBucket(), keycapImage.getFilePath());
             }
 
-            KeyboardDetailResponse.SelectedProduct selectedKeycap = new KeyboardDetailResponse.SelectedProduct(
+            GetKeyboardDetailResponse.SelectedProduct selectedKeycap = new GetKeyboardDetailResponse.SelectedProduct(
                     keycapOption.getId(),
                     keycapOption.getName(),
                     keycapOption.getPrice(),
