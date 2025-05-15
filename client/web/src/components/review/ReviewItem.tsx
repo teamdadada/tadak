@@ -1,12 +1,17 @@
 import { Review } from '@/types/review'
+import ReviewDeleteDialog from './ReviewDeleteDialog'
+import { useUserStore } from '@/store/userStore'
 
 interface ReviewItemProps {
   review: Review
+  productId: number
 }
 
-const ReviewItem = ({ review }: ReviewItemProps) => {
-  const me = 1
-  const { author, content, score, images } = review
+const ReviewItem = ({ review, productId }: ReviewItemProps) => {
+  const userSotre = useUserStore()
+  const me = userSotre.getUserUuid()
+
+  const { author, content, score, images, reviewId } = review
   const { id, name, profileImg } = author
 
   return (
@@ -32,12 +37,10 @@ const ReviewItem = ({ review }: ReviewItemProps) => {
         {/* 수정 및 삭제 버튼 */}
         {me === id && (
           <div className="mt-2 space-x-2">
-            <button className="px-2 py-1 text-xs transition border rounded text-tadak-secondary border-tadak-secondary hover:bg-tadak-secondary hover:text-white">
+            {/* <button className="px-2 py-1 text-xs transition border rounded text-tadak-secondary border-tadak-secondary hover:bg-tadak-secondary hover:text-white">
               수정
-            </button>
-            <button className="px-2 py-1 text-xs transition border rounded text-tadak-secondary border-tadak-secondary hover:bg-tadak-secondary hover:text-white">
-              삭제
-            </button>
+            </button> */}
+            <ReviewDeleteDialog reviewId={reviewId} productId={productId} />
           </div>
         )}
       </div>
@@ -49,7 +52,7 @@ const ReviewItem = ({ review }: ReviewItemProps) => {
               key={idx}
               src={imgUrl}
               alt={`리뷰 이미지 ${idx + 1}`}
-              className="object-cover w-24 h-24 border border-gray-200 rounded-md"
+              className="object-cover w-24 h-24 border rounded-md border-tadak-light-gray"
             />
           ))}
         </div>

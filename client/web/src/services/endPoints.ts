@@ -35,6 +35,15 @@ export const SHOP_END_POINT = {
   },
 }
 
+// review
+export const REVIEW_END_POINT = {
+  LIST: (productId: number | string) => `/review/list/${productId}`,
+  SCORE: (productId: number | string) => `/review/score/${productId}`,
+  CREATE: (productId: number | string) => `/review/${productId}`,
+  DELETE: (reviewId: number | string) => `/review/${reviewId}`,
+  UPDATE: (productId: number | string) => `/review/${productId}`,
+}
+
 //chatbotService
 export const CHATBOT_END_POINT = {
   SEND_MESSAGE: '/chat',
