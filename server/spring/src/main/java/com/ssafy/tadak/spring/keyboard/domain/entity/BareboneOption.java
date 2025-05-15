@@ -1,5 +1,6 @@
 package com.ssafy.tadak.spring.keyboard.domain.entity;
 
+import com.ssafy.tadak.spring.keyboard.domain.ProductOption;
 import com.ssafy.tadak.spring.minio.domain.entity.Image;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -18,7 +19,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "barebone_optioins")
 @Getter
-public class BareboneOption {
+public class BareboneOption implements ProductOption {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "barebone_id")

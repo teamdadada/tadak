@@ -1,12 +1,14 @@
 package com.ssafy.tadak.spring.keyboard.service;
 
 import com.ssafy.tadak.spring.keyboard.domain.entity.BareboneOption;
+import com.ssafy.tadak.spring.keyboard.domain.entity.Category;
 import com.ssafy.tadak.spring.keyboard.domain.entity.Keyboard;
 import com.ssafy.tadak.spring.keyboard.domain.entity.KeyboardOption;
 import com.ssafy.tadak.spring.keyboard.domain.entity.KeycapOption;
 import com.ssafy.tadak.spring.keyboard.domain.entity.Option;
 import com.ssafy.tadak.spring.keyboard.domain.entity.SwitchOption;
-import com.ssafy.tadak.spring.keyboard.domain.repository.BareboneJpaRepository;
+import com.ssafy.tadak.spring.keyboard.domain.repository.BareboneOptionJpaRepository;
+import com.ssafy.tadak.spring.keyboard.domain.repository.CategoryJpaRepository;
 import com.ssafy.tadak.spring.keyboard.domain.repository.KeyboardJpaRepository;
 import com.ssafy.tadak.spring.keyboard.domain.repository.KeyboardOptionJpaRepository;
 import com.ssafy.tadak.spring.keyboard.domain.repository.KeycapOptionJpaRepository;
@@ -14,6 +16,8 @@ import com.ssafy.tadak.spring.keyboard.domain.repository.OptionJpaRepository;
 import com.ssafy.tadak.spring.keyboard.domain.repository.SwitchOptionJpaRepository;
 import com.ssafy.tadak.spring.keyboard.dto.OptionDto;
 import com.ssafy.tadak.spring.keyboard.dto.request.Colors;
+import com.ssafy.tadak.spring.keyboard.dto.response.GetOptionsResponse;
+import com.ssafy.tadak.spring.keyboard.dto.response.GetProductListResponse;
 import com.ssafy.tadak.spring.keyboard.dto.response.KeyboardCreateResponse;
 import com.ssafy.tadak.spring.keyboard.dto.response.KeyboardDetailResponse;
 import com.ssafy.tadak.spring.keyboard.exception.KeyboardException;
@@ -21,8 +25,10 @@ import com.ssafy.tadak.spring.minio.domain.entity.Image;
 import com.ssafy.tadak.spring.minio.domain.repository.ImageJpaRepository;
 import com.ssafy.tadak.spring.minio.exception.MinioException;
 import com.ssafy.tadak.spring.minio.util.MinioUtil;
+import com.ssafy.tadak.spring.keyboard.converter.ProductConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,10 +49,13 @@ public class KeyboardService {
     private final KeyboardOptionJpaRepository keyboardOptionJpaRepository;
     private final ImageJpaRepository imageJpaRepository;
     private final MinioUtil minioUtil;
-    private final BareboneJpaRepository bareboneJpaRepository;
+    private final BareboneOptionJpaRepository bareboneJpaRepository;
     private final SwitchOptionJpaRepository switchOptionJpaRepository;
     private final KeycapOptionJpaRepository keycapOptionJpaRepository;
     private final OptionJpaRepository optionJpaRepository;
+    private final CategoryJpaRepository categoryJpaRepository;
+    private final BareboneOptionJpaRepository bareboneOptionJpaRepository;
+    private final ProductConverter productConverter;
 
     /** 커스텀 키보드를 생성하는 메소드입니다.
      * 유저가 선택한 옵션에 따른 키보드를 생성합니다.
@@ -102,17 +111,14 @@ public class KeyboardService {
         return new KeyboardCreateResponse(newKeyboard.getId(), newKeyboard.getName());
     }
 
-    /** 키보드 상세 조회 **/
+    /** 키보드 상세 조회
+     * 키보드 생성 시 선택했던 옵션, 색상, 부품 정보를 함께 반환합니다.
+     * **/
     public KeyboardDetailResponse getKeyboardDetail(
             Long userId,
             Long keyboardId
     ) throws Exception {
-        Keyboard keyboard = keyboardJpaRepository.findById(keyboardId)
-                .orElseThrow(()->new KeyboardException.KeyboardNotFoundException(KEYBOARD_NOTFOUND));
-
-        if (!keyboard.getUserId().equals(userId)) {
-            throw new KeyboardException.KeyboardUnauthorizedException(KEYBOARD_FORBIDDEN);
-        }
+        Keyboard keyboard = getKeyboard(userId, keyboardId);
 
         //썸네일 불러오기
         Image thumbnail = keyboard.getThumbnail();
@@ -150,7 +156,94 @@ public class KeyboardService {
         );
     }
 
+    @Transactional
+    public void updateKeyboard(Long userId, Long keyboardId){
+        Keyboard keyboard = getKeyboard(userId, keyboardId);
+    }
 
+    // todo: @Transactional DeleteKeyboard
+
+    // fixme: 카테고리 추가 시 확장성 없음
+    /** 커스텀 키보드 옵션 조회
+     * 커스텀 키보드 생성 시 선택 가능한 옵션들을 반환합니다.
+     * **/
+    public GetOptionsResponse getAllOptions(){
+        List<Category> category = categoryJpaRepository.findAll();
+
+        List<GetOptionsResponse.OptionName> layouts = null;
+        List<GetOptionsResponse.OptionName> materials = null;
+        List<GetOptionsResponse.OptionName> switchTypes = null;
+
+        for(Category c : category){
+            //카테고리는 레이아웃, 재질 스위치가 있음 -> DB에 case 옵션대로 이름 들어가 있어야 함.
+            List<Option> op = optionJpaRepository.findAllByCategory(c);
+
+            switch (c.getName().toLowerCase()){
+                case "layout":
+                    layouts = getOptionList(op);
+                    break;
+                case "material":
+                    materials = getOptionList(op);
+                    break;
+                case "switchtype":
+                    switchTypes = getOptionList(op);
+            }
+        }
+
+        GetOptionsResponse.Barebone bareboneOp = new GetOptionsResponse.Barebone(layouts, materials);
+        GetOptionsResponse.Switch switchOp = new GetOptionsResponse.Switch(switchTypes);
+        GetOptionsResponse.Keycap keycapOp = new GetOptionsResponse.Keycap();
+
+        return new GetOptionsResponse(bareboneOp, switchOp, keycapOp);
+    }
+
+    /** 제품을 검색하는 메소드입니다.
+     * 선택한 옵션에 따라 제품을 조회합니다.
+     * **/
+    public GetProductListResponse getSwitchList(
+            Long typeId
+    ) {
+        List<SwitchOption> switchOptions = switchOptionJpaRepository.findAllByType(typeId);
+        List< GetProductListResponse.ProductInfo> result = productConverter.convertToProductInfoList(switchOptions);
+
+        return new GetProductListResponse(result);
+    }
+
+    public GetProductListResponse getBareboneList(
+            Long layout,
+            Long material
+    ) {
+        List<BareboneOption> bareboneOptions = bareboneOptionJpaRepository
+                                                .findAllByLayoutAndMaterial(layout,material);
+        List< GetProductListResponse.ProductInfo> result = productConverter.convertToProductInfoList(bareboneOptions);
+
+        return new GetProductListResponse(result);
+    }
+
+    public GetProductListResponse getKeycapList() {
+        List<KeycapOption> keyboardOptions = keycapOptionJpaRepository.findAll();
+        List< GetProductListResponse.ProductInfo> result = productConverter.convertToProductInfoList(keyboardOptions);
+
+        return new GetProductListResponse(result);
+    }
+
+    /** 키보드 불러오기
+     * 키보드를 레포지토리에서 가져오고 유저가 만든 키보드가 맞는지 확인합니다.
+     * **/
+    @NotNull
+    private Keyboard getKeyboard(Long userId, Long keyboardId) {
+        Keyboard keyboard = keyboardJpaRepository.findById(keyboardId)
+                .orElseThrow(()->new KeyboardException.KeyboardNotFoundException(KEYBOARD_NOTFOUND));
+
+        if (!keyboard.getUserId().equals(userId)) {
+            throw new KeyboardException.KeyboardUnauthorizedException(KEYBOARD_FORBIDDEN);
+        }
+        return keyboard;
+    }
+
+    /** 키보드 선택 옵션 불러오기
+     *  이미 생성되어 있는 키보드에서 선택되어 있는 옵션들을 반환하는 메서드입니다.
+     * **/
     private List<OptionDto.SelectedOption> getOptionDto(Keyboard keyboard) {
         OptionDto.SelectedOption selectedOption = new OptionDto.SelectedOption();
 
@@ -178,6 +271,7 @@ public class KeyboardService {
         return result;
     }
 
+    /** 제품 수량이 1개 이상인자 확인합니다. **/
     private boolean isValidQuantity(
             BareboneOption bareboneOption,
             SwitchOption switchOption,
@@ -190,6 +284,18 @@ public class KeyboardService {
             throw new KeyboardException.KeyboardConflictException(PART_OPTION_CONFLICT);
         }
         return true;
+    }
+
+    /**
+     * 키보드 옵션들을 카테고리별로 정리하기 위한 메소드입니다.
+     * **/
+    private List<GetOptionsResponse.OptionName> getOptionList(List<Option> op){
+        List<GetOptionsResponse.OptionName> options = new ArrayList<>();
+
+        for(Option o : op){
+            options.add(new GetOptionsResponse.OptionName(o.getId(), o.getOptionName()));
+        }
+        return options;
     }
 
     private void createKeyboardOption(Keyboard newKeyboard, List<Long> optionIdList) {
