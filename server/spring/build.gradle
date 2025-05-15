@@ -42,6 +42,14 @@ dependencies {
 
     // Jackson
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+
+    // MinIO
+    implementation 'io.minio:minio:8.5.17'
+
+    //Mapstruct
+    implementation 'org.mapstruct:mapstruct:1.6.3'
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
+
 }
 
 tasks.named('test') {
