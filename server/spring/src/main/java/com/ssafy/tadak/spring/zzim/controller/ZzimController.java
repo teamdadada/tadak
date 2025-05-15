@@ -2,6 +2,7 @@ package com.ssafy.tadak.spring.zzim.controller;
 
 import com.ssafy.tadak.spring.auth.dto.UserInfo;
 import com.ssafy.tadak.spring.common.annotation.AuthUser;
+import com.ssafy.tadak.spring.zzim.dto.response.ZzimAddResponse;
 import com.ssafy.tadak.spring.zzim.dto.response.ZzimCntResponse;
 import com.ssafy.tadak.spring.zzim.dto.response.ZzimListResponse;
 import com.ssafy.tadak.spring.zzim.service.ZzimService;
@@ -22,12 +23,13 @@ public class ZzimController {
     private final ZzimService zzimService;
 
     @PostMapping("/{product_id}")
-    public ResponseEntity<Void> zzim(
+    public ResponseEntity<ZzimAddResponse> zzim(
             @PathVariable("product_id") Long productId,
             @AuthUser UserInfo userInfo
     ) {
-        zzimService.addZzim(userInfo, productId);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        long zzimId = zzimService.addZzim(userInfo, productId);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ZzimAddResponse(zzimId));
     }
 
     @DeleteMapping("/{product_id}")
