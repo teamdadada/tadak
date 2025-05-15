@@ -61,7 +61,11 @@ const ReviewSection = ({ product }: ReviewSectionProps) => {
           reviews
             .slice(0, 3)
             .map((review) => (
-              <ReviewItem key={review.reviewId} review={review} />
+              <ReviewItem
+                key={review.reviewId}
+                review={review}
+                productId={product.productId}
+              />
             ))
         )}
       </div>

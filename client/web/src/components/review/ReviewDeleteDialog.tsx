@@ -13,7 +13,13 @@ import { toast } from 'sonner'
 import { useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
 
-const ReviewDeleteDialog = ({ reviewId }: { reviewId: number }) => {
+const ReviewDeleteDialog = ({
+  reviewId,
+  productId,
+}: {
+  reviewId: number
+  productId: number
+}) => {
   const [open, setOpen] = useState(false)
   const queryClient = useQueryClient()
 
@@ -21,7 +27,7 @@ const ReviewDeleteDialog = ({ reviewId }: { reviewId: number }) => {
     try {
       await deleteReview(reviewId)
       toast.success('리뷰가 삭제되었습니다.')
-      queryClient.invalidateQueries({ queryKey: ['reviews'] })
+      queryClient.invalidateQueries({ queryKey: ['reviewList', productId] })
       setOpen(false)
     } catch {
       toast.error('삭제에 실패했습니다.')

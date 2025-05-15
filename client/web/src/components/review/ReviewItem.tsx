@@ -1,12 +1,16 @@
 import { Review } from '@/types/review'
 import ReviewDeleteDialog from './ReviewDeleteDialog'
+import { useUserStore } from '@/store/userStore'
 
 interface ReviewItemProps {
   review: Review
+  productId: number
 }
 
-const ReviewItem = ({ review }: ReviewItemProps) => {
-  const me = 1
+const ReviewItem = ({ review, productId }: ReviewItemProps) => {
+  const userSotre = useUserStore()
+  const me = userSotre.getUserUuid()
+
   const { author, content, score, images, reviewId } = review
   const { id, name, profileImg } = author
 
@@ -36,7 +40,7 @@ const ReviewItem = ({ review }: ReviewItemProps) => {
             {/* <button className="px-2 py-1 text-xs transition border rounded text-tadak-secondary border-tadak-secondary hover:bg-tadak-secondary hover:text-white">
               수정
             </button> */}
-            <ReviewDeleteDialog reviewId={reviewId} />
+            <ReviewDeleteDialog reviewId={reviewId} productId={productId} />
           </div>
         )}
       </div>

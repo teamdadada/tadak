@@ -33,7 +33,11 @@ const ProductReviewPage = () => {
       {/* 리뷰 리스트 */}
       <div className="space-y-4">
         {reviews.map((review) => (
-          <ReviewItem key={review.reviewId} review={review} />
+          <ReviewItem
+            key={review.reviewId}
+            review={review}
+            productId={productId}
+          />
         ))}
       </div>
     </div>
