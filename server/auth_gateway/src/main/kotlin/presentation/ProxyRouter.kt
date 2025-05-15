@@ -16,7 +16,7 @@ import io.ktor.utils.io.*
 fun Route.proxyRoutes(proxyConfig: ProxyConfig) {
 
     proxyConfig.rules.forEach { rule ->
-        route(rule.pathPrefix) {
+        route(rule.pathPrefix+"{...}") {
             handle {
                 val targetUri = "${rule.targetUrl}${call.request.uri}"
 
