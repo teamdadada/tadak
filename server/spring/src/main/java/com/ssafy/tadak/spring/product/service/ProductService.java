@@ -19,9 +19,14 @@ import com.ssafy.tadak.spring.product.util.ProductUtil;
 import com.ssafy.tadak.spring.product.util.enums.ProductType;
 import com.ssafy.tadak.spring.common.enums.SortType;
 import lombok.RequiredArgsConstructor;
+import org.bson.Document;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -65,6 +70,47 @@ public class ProductService {
     }
 
     @Transactional(readOnly = true)
+    public ProductListResponse getProductListByQuery(
+            String keyword,
+            String cursor,
+            int size
+    ) {
+        int[] cursorInfo = separateCursor(cursor);
+        int hitC = cursorInfo[0];
+        int idC = cursorInfo[1];
+        List<Product> products = productRepository.searchByNameWithCursor(keyword, hitC, idC, size);
+        Map<ProductType, List<Long>> productIds = new HashMap<>();
+        products.forEach(p ->
+                productIds
+                        .computeIfAbsent(p.getProductType(), k -> new ArrayList<>())
+                        .add(p.getProductId())
+        );
+
+        Map<Long, Document> documents = new HashMap<>();
+
+        productIds.forEach((productType, ids) -> {
+            Query query = new Query(Criteria.where("_id").in(ids));
+            List<Document> docs = productRepositoryCustom.find(query, Document.class, productType);
+            documents.put(productType, docs);
+        });
+
+        List<ProductSimpleDto> result = new ArrayList<>();
+        products.forEach(
+                p -> {
+                    ProductType type = p.getProductType();
+                    Long productId = p.getProductId();
+
+                    Document doc = documents.get(p.getProductType()).get(0);
+                }
+        );
+
+        List<ProductSimpleDto> productsDto = products.stream()
+                .map(ProductSimpleDto::from).toList();
+
+        return ProductListResponse.of(productsDto, size);
+    }
+
+    @Transactional(readOnly = true)
     public ProductListResponse getProductList(
             ProductType type,
             String cursor,
@@ -98,5 +144,10 @@ public class ProductService {
                 .toList();
 
         return ProductListResponse.of(dtoList, cursorRequest.size());
+    }
+
+    private int[] separateCursor(String cursor) {
+        String[] split = cursor.split("_");
+        return new int[]{Integer.parseInt(split[0]), Integer.parseInt(split[1])};
     }
 }
