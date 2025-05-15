@@ -12,3 +12,13 @@ export const getZzimList = async () => {
   const response = await http.get<ZzimListResponse>(ZZIM_END_POINT.LIST)
   return response.data
 }
+
+export const deleteZzim = async (zzimId: number) => {
+  const response = await http.delete(ZZIM_END_POINT.DELETE(zzimId))
+  return response
+}
+
+export const getZzimCount = async () => {
+  const response = await http.get(ZZIM_END_POINT.COUNT)
+  return response
+}
