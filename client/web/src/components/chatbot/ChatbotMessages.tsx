@@ -1,7 +1,16 @@
 import { HistoryResponse } from '@/types/chatbot'
 import { useEffect, useRef } from 'react'
+import LoadingBubble from './LoadingBubble'
 
-const ChatbotMessages = ({ messages }: { messages: HistoryResponse }) => {
+interface ChatbotMessagesProps {
+  messages: HistoryResponse
+  isLoading?: boolean
+}
+
+const ChatbotMessages = ({
+  messages,
+  isLoading = false,
+}: ChatbotMessagesProps) => {
   const scrollRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -12,7 +21,7 @@ const ChatbotMessages = ({ messages }: { messages: HistoryResponse }) => {
         behavior: 'smooth',
       })
     }
-  }, [messages])
+  }, [messages, isLoading])
 
   return (
     <div
@@ -33,11 +42,16 @@ const ChatbotMessages = ({ messages }: { messages: HistoryResponse }) => {
         }
 
         return (
-          <div className="text-[15px] py-3 px-4 max-w-sm border-none rounded-lg mr-auto bg-tadak-light-gray whitespace-pre-wrap ">
+          <div
+            key={i}
+            className="text-[15px] py-3 px-4 max-w-sm border-none rounded-lg mr-auto bg-tadak-light-gray whitespace-pre-wrap"
+          >
             {msg.content}
           </div>
         )
       })}
+
+      {isLoading && <LoadingBubble />}
     </div>
   )
 }

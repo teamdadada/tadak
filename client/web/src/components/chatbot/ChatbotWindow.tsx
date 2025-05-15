@@ -25,6 +25,8 @@ const ChatbotWindow = () => {
 
   // 초기 메시지 상태
   const [messages, setMessages] = useState<HistoryResponse>([])
+  // 메시지 로딩 상태 추가
+  const [isMessageLoading, setIsMessageLoading] = useState(false)
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -63,13 +65,35 @@ const ChatbotWindow = () => {
 
     // 유저 메시지 추가
     setMessages((prev) => [...prev, { type: 'human', content: input }])
-    const response = await sendMessage({
-      query: input,
-      user_id: String(userId),
-    })
 
-    // 응답 메시지 추가
-    setMessages((prev) => [...prev, { type: 'ai', content: response.response }])
+    // 메시지 로딩 상태 활성화
+    setIsMessageLoading(true)
+
+    try {
+      const response = await sendMessage({
+        query: input,
+        user_id: String(userId),
+      })
+
+      // 응답 메시지 추가
+      setMessages((prev) => [
+        ...prev,
+        { type: 'ai', content: response.response },
+      ])
+    } catch (error) {
+      console.error('메시지 전송 오류:', error)
+      // 오류 발생 시 오류 메시지 추가
+      setMessages((prev) => [
+        ...prev,
+        {
+          type: 'ai',
+          content: '앗! 메시지 전송 중 오류가 발생했덕! 다시 시도해주덕!',
+        },
+      ])
+    } finally {
+      // 로딩 상태 해제
+      setIsMessageLoading(false)
+    }
   }
 
   return (
@@ -92,7 +116,7 @@ const ChatbotWindow = () => {
             <DotWave />
           </div>
         ) : (
-          <ChatbotMessages messages={messages} />
+          <ChatbotMessages messages={messages} isLoading={isMessageLoading} />
         )}
 
         {!isAuthenticated ? (
@@ -105,7 +129,10 @@ const ChatbotWindow = () => {
           </Link>
         ) : (
           // 로그인 유저
-          <ChatbotInput onSend={handleSendMessage} disabled={isPending} />
+          <ChatbotInput
+            onSend={handleSendMessage}
+            disabled={isPending || isMessageLoading}
+          />
         )}
       </div>
     </motion.div>
