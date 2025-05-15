@@ -2,8 +2,8 @@ package com.ssafy.tadak.spring.product.util.enums;
 
 public enum ProductType {
 	BAREBONE("barebone_specs"),
-	SWITCH("switch_specs"),
-	KEYCAP("keycap_specs");
+	SWITCH("switches_specs"),
+	KEYCAP("keycaps_specs");
 
 	private final String productType;
 

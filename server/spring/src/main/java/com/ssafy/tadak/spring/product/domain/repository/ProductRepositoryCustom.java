@@ -27,6 +27,7 @@ public class ProductRepositoryCustom {
     private final EntityManager entityManager;
 
     public List<Document> find(Query query, Class<Document> clazz, ProductType type) {
+        System.out.println("찾기: " + type.toString());
         return mongoTemplate.find(query, clazz, type.toString());
     }
 

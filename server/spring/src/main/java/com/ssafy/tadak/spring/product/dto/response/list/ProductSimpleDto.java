@@ -4,9 +4,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ssafy.tadak.spring.product.domain.entity.Product;
 import com.ssafy.tadak.spring.product.util.enums.ProductType;
 import com.ssafy.tadak.spring.product.util.enums.SortType;
+import lombok.Builder;
 
 import java.util.Map;
 
+@Builder
 public record ProductSimpleDto(
         Long productId,
         String name,
