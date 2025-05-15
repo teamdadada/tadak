@@ -12,7 +12,20 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <AppRoutes />
       </QueryClientProvider>
-      <Toaster position="top-center" />
+      <Toaster
+        position="top-center"
+        richColors={true}
+        toastOptions={{
+          style: {
+            background: 'white',
+            border: 'none',
+          },
+          classNames: {
+            title: '!text-black',
+            description: '!text-black',
+          },
+        }}
+      />
     </>
     // react-query 전역 설정
   )

@@ -25,3 +25,16 @@ export interface User {
   profileImg: string
   loginType: string
 }
+
+export interface UpdateNicknameRequest {
+  nickname: string
+}
+
+export interface UpdateProfileImgRequest {
+  file: File
+}
+
+export interface UpdatePasswordRequest {
+  old: string
+  new: string
+}
