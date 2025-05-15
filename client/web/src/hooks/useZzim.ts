@@ -4,10 +4,12 @@ import { ErrorResponse } from '@/types/user'
 import { ZzimListResponse } from '@/types/zzim'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { AxiosError } from 'axios'
+import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 
 export const useAddZzim = () => {
   const queryClient = useQueryClient()
+  const navigate = useNavigate()
   // const addZzimItem = useUserStore((state) => state.addZzimItem)
   const setZzimList = useUserStore((state) => state.setZzimList)
 
@@ -24,8 +26,16 @@ export const useAddZzim = () => {
       }
     },
     onError: (error: AxiosError<ErrorResponse>) => {
+      const status = error.response?.status
+      // const code = error.response?.data?.code
       const message = error.response?.data?.message
-      toast.error(message)
+
+      if (status == 401) {
+        navigate('/account/login', { replace: true })
+        toast.error('로그인 후 이용하실 수 있습니다.')
+      } else {
+        toast.error(message)
+      }
     },
   })
   return mutateAsync
