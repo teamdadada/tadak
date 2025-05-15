@@ -15,6 +15,7 @@ import org.springframework.data.domain.*;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 import static com.ssafy.tadak.spring.product.exception.exception.ProductException.ProductBadRequestException;
 
@@ -26,6 +27,10 @@ public class ProductRepositoryCustom {
 
     private final MongoTemplate mongoTemplate;
     private final EntityManager entityManager;
+
+    public List<Document> find(Query query, Class<Document> clazz, ProductType type) {
+        return mongoTemplate.find(query, clazz, type.toString());
+    }
 
     public List<Map<String, Object>> findFilteredProductsByCursor(
             ProductType type,
