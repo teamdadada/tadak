@@ -23,23 +23,12 @@ const ChatbotWindow = () => {
   const { sendMessage, isPending } = useSendMessage()
   const { data: chatHistory, isLoading } = useGetChatHistory()
 
-  const [messages, setMessages] = useState<HistoryResponse>([
-    {
-      type: 'ai',
-      content: `${userName}님 안녕하덕! 🐥\n키보드에 대해 궁금한 점을 물어보면 타덕이가 대답해줄거덕!`,
-    },
-  ])
+  // 초기 메시지 상태
+  const [messages, setMessages] = useState<HistoryResponse>([])
 
-  // 채팅 기록이 있으면 메시지 업데이트
-  useEffect(() => {
-    if (chatHistory) {
-      setMessages(chatHistory)
-    }
-  }, [chatHistory])
-
-  // 비로그인 유저에게 출력되는 메시지
   useEffect(() => {
     if (!isAuthenticated) {
+      // 비로그인 유저 메시지
       setMessages([
         {
           type: 'ai',
@@ -55,8 +44,19 @@ const ChatbotWindow = () => {
             '로그인하면 대화 기록을 저장하고, 맞춤 키보드 추천까지 받을 수 있덕!',
         },
       ])
+    } else if (chatHistory && chatHistory.length > 0) {
+      // 채팅 기록이 있으면 그대로 사용
+      setMessages(chatHistory)
+    } else if (!isLoading) {
+      // 로그인 상태이고 채팅 기록이 없거나 로딩 완료된 경우 기본 환영 메시지 사용
+      setMessages([
+        {
+          type: 'ai',
+          content: `${userName || ''}님 안녕하덕! 🐥\n키보드에 대해 궁금한 점을 물어보면 타덕이가 대답해줄거덕!`,
+        },
+      ])
     }
-  }, [isAuthenticated])
+  }, [isAuthenticated, chatHistory, isLoading, userName])
 
   const handleSendMessage = async (input: string) => {
     if (!input.trim()) return
