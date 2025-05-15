@@ -17,3 +17,7 @@ export interface ZzimListResponse {
   count: number
   zzims: ZzimRecord[]
 }
+
+export interface ZzimCountResponse {
+  cnt: number
+}

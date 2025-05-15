@@ -7,6 +7,7 @@ import { MenuType } from './MyPage'
 import ProfileImage from '@/components/mypage/ProfileImage'
 import SidebarMenu from '@/components/mypage/SidebarMenu'
 import NicknameModal from '@/components/mypage/NicknameModal'
+import { useGetZzimCount } from '@/hooks/useZzim'
 
 interface SidebarProps {
   selectedMenu: MenuType
@@ -30,6 +31,8 @@ const MypageSidebar = ({ selectedMenu, onMenuChange }: SidebarProps) => {
   const getUserProfileImage = useUserStore((s) => s.getProfileImage)
   const getUserName = useUserStore((s) => s.getUserName)
   const updateNickname = useUpdateNickname()
+
+  const { data } = useGetZzimCount()
 
   const userProfileImage = getUserProfileImage()
   const userName = getUserName() || '익명'
@@ -75,7 +78,7 @@ const MypageSidebar = ({ selectedMenu, onMenuChange }: SidebarProps) => {
             selectedMenu === '찜' ? 'font-bold ' : 'bg-white hover:underline'
           }`}
         >
-          찜 3
+          찜 {data?.cnt !== undefined ? data.cnt : ''}
         </button>
 
         <button
@@ -86,7 +89,7 @@ const MypageSidebar = ({ selectedMenu, onMenuChange }: SidebarProps) => {
               : 'bg-white hover:underline'
           }`}
         >
-          장바구니 4
+          장바구니
         </button>
       </div>
 

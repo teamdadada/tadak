@@ -14,6 +14,7 @@ import { useRef, useState } from 'react'
 import { useUpdateNickname, useUpdateProfileImg } from '@/hooks/useUser'
 import { UpdateProfileImgRequest } from '@/types/user'
 import NicknameModal from '@/components/mypage/NicknameModal'
+import { useGetZzimCount } from '@/hooks/useZzim'
 
 interface MobileMenuBarProps {
   selectedMenu: MenuType
@@ -55,10 +56,11 @@ const MobileMenuBar = ({ selectedMenu, onMenuChange }: MobileMenuBarProps) => {
         return null
     }
   }
+  const { data: zzimCountData } = useGetZzimCount()
 
-  const menuBadges: Partial<Record<MenuType, number>> = {
-    찜: 3,
-    장바구니: 4,
+  const menuBadges: Partial<Record<MenuType, number | undefined>> = {
+    찜: zzimCountData?.cnt,
+    장바구니: 0,
   }
 
   const getUserProfileImage = useUserStore((s) => s.getProfileImage)
@@ -178,11 +180,13 @@ const MobileMenuBar = ({ selectedMenu, onMenuChange }: MobileMenuBarProps) => {
               {renderIcon(item)}
 
               {/* 배지 */}
-              {menuBadges[item] && (
-                <span className="absolute -top-2 -right-2 bg-tadak-secondary text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
-                  {menuBadges[item]}
-                </span>
-              )}
+              {menuBadges[item] !== undefined &&
+                menuBadges[item] !== null &&
+                menuBadges[item] > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-tadak-secondary text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+                    {menuBadges[item]}
+                  </span>
+                )}
             </div>
             <span className="text-xs whitespace-nowrap">{item}</span>
           </button>

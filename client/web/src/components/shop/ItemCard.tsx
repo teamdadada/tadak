@@ -1,7 +1,7 @@
 import { Product } from '@/types/shop'
 import { FaHeart, FaRegHeart } from 'react-icons/fa'
 import { useNavigate } from 'react-router-dom'
-import { useAddZzim } from '@/hooks/useZzim'
+import { useAddZzim, useDeleteZzim } from '@/hooks/useZzim'
 import { useUserStore } from '@/store/userStore'
 import { useEffect, useState } from 'react'
 
@@ -27,16 +27,17 @@ const ItemCard = ({
   useEffect(() => {
     const liked = zzimList.some((item) => item.item.productId === productId)
     setIsLiked(liked)
-  }, [zzimList, productId])
+  }, [zzimList, productId, isLiked])
 
   const addZzim = useAddZzim()
+  const deleteZzim = useDeleteZzim()
 
   const handleZzimClick = async (e: React.MouseEvent) => {
     e.stopPropagation()
 
     try {
       if (isLiked) {
-        // 찜 삭제 로직 구현
+        await deleteZzim(productId)
       } else {
         await addZzim(productId)
       }
