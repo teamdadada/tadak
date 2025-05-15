@@ -9,6 +9,7 @@ const TypingArea = () => {
   const [currentSentenceIndex, setCurrentSentenceIndex] = useState(0)
   const [selectedSentences, setSelectedSentences] = useState<string[]>([])
   const inputRef = useRef<HTMLInputElement>(null)
+  const audioCache = useRef<Record<string, HTMLAudioElement>>({})
 
   const selectedSoundKey = useSoundStore((state) => state.selectedSoundKey)
 
@@ -34,69 +35,53 @@ const TypingArea = () => {
         return
       }
 
-      // 선택된 키보드 타입과 색상 추출
-      let soundPrefix = ''
+      const keyboardTypeMap = {
+        저소음: 'silent',
+        'G PRO 2.0': 'gpro2',
+      } as const
 
-      if (selectedSoundKey.includes('저소음')) {
-        // 저소음축인 경우
-        const color = selectedSoundKey.includes('적축')
-          ? 'red'
-          : selectedSoundKey.includes('백축')
-            ? 'white'
-            : selectedSoundKey.includes('황축')
-              ? 'yellow'
-              : selectedSoundKey.includes('갈축')
-                ? 'brown'
-                : 'black' // 기본값
+      const colorMap = {
+        적축: 'red',
+        청축: 'blue',
+        황축: 'yellow',
+        갈축: 'brown',
+        백축: 'white',
+        흑축: 'black',
+        은축: 'silver',
+      } as const
 
-        soundPrefix = `silent_${color}`
-      } else {
-        // 일반축인 경우
-        const color = selectedSoundKey.includes('적축')
-          ? 'red'
-          : selectedSoundKey.includes('청축')
-            ? 'blue'
-            : selectedSoundKey.includes('황축')
-              ? 'yellow'
-              : selectedSoundKey.includes('갈축')
-                ? 'brown'
-                : selectedSoundKey.includes('흑축')
-                  ? 'black'
-                  : selectedSoundKey.includes('백축')
-                    ? 'white'
-                    : 'silver' // 기본값
-
-        soundPrefix = `gpro2_${color}`
+      const keyTypeMap = {
+        Space: 'space',
+        Enter: 'enter',
+        Backspace: 'enter',
+        ShiftLeft: 'enter',
+        ShiftRight: 'enter',
+        Tab: 'enter',
+        CapsLock: 'enter',
       }
 
-      // 키 종류에 따른 소리 타입 결정
-      let soundType = 'normal'
+      const lastSpaceIndex = selectedSoundKey.lastIndexOf(' ')
+      const korKeyboardType = selectedSoundKey.substring(0, lastSpaceIndex)
+      const korColor = selectedSoundKey.substring(lastSpaceIndex + 1)
 
-      if (keyCode === 'Space') {
-        soundType = 'space'
-      } else if (
-        [
-          'Enter',
-          'Backspace',
-          'ShiftLeft',
-          'ShiftRight',
-          'Tab',
-          'CapsLock',
-        ].includes(keyCode)
-      ) {
-        soundType = 'enter'
-      }
+      const keyboardType =
+        keyboardTypeMap[korKeyboardType as keyof typeof keyboardTypeMap]
+      const color = colorMap[korColor as keyof typeof colorMap]
+
+      const soundType =
+        keyTypeMap[keyCode as keyof typeof keyTypeMap] || 'normal'
 
       // 최종 소리 파일 경로 생성
-      const soundPath = `/sounds/${soundPrefix}_${soundType}.mp3`
-
-      // 소리 재생
-      const audio = new Audio(soundPath)
-      audio.play()
+      const soundPath = `/sounds/${keyboardType}_${color}_${soundType}.mp3`
+      const cachedAudio = audioCache.current[soundPath] || new Audio(soundPath)
+      if (!audioCache.current[soundPath]) {
+        audioCache.current[soundPath] = cachedAudio
+      }
+      cachedAudio.currentTime = 0
+      cachedAudio.play()
     },
     [selectedSoundKey],
   )
-
   // 현재 문장
   const currentSentence = selectedSentences[currentSentenceIndex] ?? ''
 
