@@ -1,7 +1,7 @@
 import http from './http-common'
 
 import { ZZIM_END_POINT } from './endPoints'
-import { ZzimListResponse } from '@/types/zzim'
+import { ZzimCountResponse, ZzimListResponse } from '@/types/zzim'
 
 export const addZzim = async (productId: number) => {
   const response = await http.post(ZZIM_END_POINT.ADD(productId))
@@ -19,6 +19,6 @@ export const deleteZzim = async (zzimId: number) => {
 }
 
 export const getZzimCount = async () => {
-  const response = await http.get(ZZIM_END_POINT.COUNT)
-  return response
+  const response = await http.get<ZzimCountResponse>(ZZIM_END_POINT.COUNT)
+  return response.data
 }

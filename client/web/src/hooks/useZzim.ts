@@ -1,7 +1,12 @@
-import { addZzim, getZzimList } from '@/services/zzimService'
+import {
+  addZzim,
+  deleteZzim,
+  getZzimCount,
+  getZzimList,
+} from '@/services/zzimService'
 import { useUserStore } from '@/store/userStore'
 import { ErrorResponse } from '@/types/user'
-import { ZzimListResponse } from '@/types/zzim'
+import { ZzimCountResponse, ZzimListResponse } from '@/types/zzim'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { AxiosError } from 'axios'
 import { useNavigate } from 'react-router-dom'
@@ -45,5 +50,25 @@ export const useGetZzimList = () => {
   return useQuery<ZzimListResponse>({
     queryKey: ['zzim', 'list'],
     queryFn: getZzimList,
+  })
+}
+
+export const useDeleteZzim = () => {
+  const queryClient = useQueryClient()
+
+  const { mutateAsync } = useMutation({
+    mutationFn: deleteZzim,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['zzim'] })
+      toast.success('찜 목록에서 제거되었습니다!')
+    },
+  })
+  return mutateAsync
+}
+
+export const useGetZzimCount = () => {
+  return useQuery<ZzimCountResponse>({
+    queryKey: ['zzim', 'count'],
+    queryFn: getZzimCount,
   })
 }
