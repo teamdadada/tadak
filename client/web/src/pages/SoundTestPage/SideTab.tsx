@@ -29,17 +29,17 @@ const switchKeyMap: Record<SwitchType, string[]> = {
 
 const SideTab = () => {
   const switchOptions = Object.values(SwitchType)
+
+  const selectedSoundKey = useSoundStore((state) => state.selectedSoundKey)
+  const setSelectedSoundKey = useSoundStore(
+    (state) => state.setSelectedSoundKey,
+  )
+
   const [selectedSwitchType, setSelectedSwitchType] = useState<SwitchType>(
     SwitchType.Clicky,
   )
 
-  const [selectedKey, setSelectedKey] = useState<string>('G PRO 2.0 적축')
-
   const keyList = switchKeyMap[selectedSwitchType]
-
-  const setSelectedSoundKey = useSoundStore(
-    (state) => state.setSelectedSoundKey,
-  )
 
   return (
     <div className="p-4">
@@ -49,7 +49,9 @@ const SideTab = () => {
         onChange={(i) => {
           const newType = switchOptions[i] as SwitchType
           setSelectedSwitchType(newType)
-          setSelectedKey(switchKeyMap[newType][0])
+
+          const firstKeyOfNewType = switchKeyMap[newType][0]
+          setSelectedSoundKey(firstKeyOfNewType)
         }}
         width="100%"
         tabWidth="50%"
@@ -61,13 +63,12 @@ const SideTab = () => {
           <li
             key={key}
             onClick={() => {
-              setSelectedKey(key)
               setSelectedSoundKey(key)
             }}
             className="flex items-center justify-between p-4 cursor-pointer hover:bg-tadak-light-gray text-tadak-black text-[15px]"
           >
-            <span className={key === selectedKey ? 'font-semibold' : ''}>
-              {key === selectedKey ? '✓ ' : ''}
+            <span className={key === selectedSoundKey ? 'font-semibold' : ''}>
+              {key === selectedSoundKey ? '✓ ' : ''}
               {key}
             </span>
             <Play className="w-4 h-4 fill-tadak-black" />
