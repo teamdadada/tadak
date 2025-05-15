@@ -6,6 +6,8 @@ type AuthState = {
   accessToken: string | null
   isAuthenticated: boolean
 
+  getIsAuthenticated: () => boolean
+
   setAccessToken: (token: string) => void
   clearAccessToken: () => void
 }
@@ -17,8 +19,10 @@ const initialState = {
 
 export const useAuthStore = create<AuthState>()(
   persist(
-    immer((set) => ({
+    immer((set, get) => ({
       ...initialState,
+
+      getIsAuthenticated: () => get().isAuthenticated,
 
       setAccessToken: (token: string) => {
         set((state) => {

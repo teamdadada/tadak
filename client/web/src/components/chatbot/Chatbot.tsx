@@ -9,7 +9,7 @@ const Chatbot = () => {
   return (
     <div className="fixed bottom-5 right-5 z-50">
       <AnimatePresence>{isOpen && <ChatbotWindow />}</AnimatePresence>
-      <ChatbotToggleButton onClick={() => setIsOpen(!isOpen)} />
+      <ChatbotToggleButton isOpen={isOpen} onClick={() => setIsOpen(!isOpen)} />
     </div>
   )
 }

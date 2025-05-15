@@ -8,6 +8,7 @@ import AsideRecommendation from '@/components/shop/AsideRecommendation'
 import { FilterByType, ProductType } from '@/types/shop'
 import FilterPanel from '@/components/shop/FilterPanel'
 import PageIntroBanner from '@/components/common/PageIntroBanner'
+import Chatbot from '@/components/chatbot/Chatbot'
 
 const ShopPage = () => {
   const categories = ['베어본', '스위치', '키캡']
@@ -142,6 +143,7 @@ const ShopPage = () => {
           <AsideRecommendation />
         </div>
       </div>
+      <Chatbot />
     </div>
   )
 }
