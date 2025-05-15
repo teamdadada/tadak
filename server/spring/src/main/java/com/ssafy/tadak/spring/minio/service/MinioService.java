@@ -5,6 +5,7 @@ import com.ssafy.tadak.spring.minio.domain.entity.Image;
 import com.ssafy.tadak.spring.minio.domain.repository.BucketJpaRepository;
 import com.ssafy.tadak.spring.minio.domain.repository.ImageJpaRepository;
 import com.ssafy.tadak.spring.minio.dto.response.UploadResponse;
+import com.ssafy.tadak.spring.minio.exception.ImageException;
 import com.ssafy.tadak.spring.minio.util.MinioUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +15,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 
 import java.util.UUID;
+
+import static com.ssafy.tadak.spring.minio.exception.ImageErrorCode.IMAGE_NOTFOUND;
 
 @Service
 @RequiredArgsConstructor
@@ -74,6 +77,13 @@ public class MinioService {
         } catch (Exception e) {
             throw new RuntimeException("삭제 실패: "+e.getMessage());
         }
+    }
+
+    public String getPublicUrl(Long imageId) throws Exception {
+        Image image = imageJpaRepository.findById(imageId)
+                .orElseThrow(()->new ImageException.ImageNotFoundException(IMAGE_NOTFOUND));
+
+        return minioUtil.getPublicUrl(image.getBucket(), image.getFilePath());
     }
 
     public String getPresignedUrl(String bucketName, String fileName) throws Exception {
