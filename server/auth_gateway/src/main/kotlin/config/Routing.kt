@@ -7,9 +7,11 @@ import io.ktor.server.application.*
 import io.ktor.server.routing.*
 
 fun Application.configureRouting() {
+    val proxyConfig = environment.config.proxyConfig()
+
     routing {
         authRoutes()
         userRoutes()
-        proxyRoutes(environment)
+        proxyRoutes(proxyConfig)
     }
 }
