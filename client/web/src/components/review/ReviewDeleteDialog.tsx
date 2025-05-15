@@ -49,17 +49,15 @@ const ReviewDeleteDialog = ({
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
-          <DialogClose asChild>
-            <button className="px-3 py-1 text-sm border rounded hover:bg-tadak-light-gray">
-              취소
-            </button>
-          </DialogClose>
           <button
             onClick={handleDelete}
             className="px-3 py-1 text-sm rounded text-tadak-white bg-tadak-warning"
           >
             삭제
           </button>
+          <DialogClose asChild>
+            <button className="px-3 py-1 text-sm border rounded">취소</button>
+          </DialogClose>
         </DialogFooter>
       </DialogContent>
     </Dialog>
