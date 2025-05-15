@@ -9,6 +9,7 @@ import com.ssafy.tadak.spring.minio.util.MinioUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 
@@ -17,6 +18,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional(readOnly = true)
 public class MinioService {
     private final int URL_EXPIRE = 600;
 
@@ -24,6 +26,7 @@ public class MinioService {
     private final BucketJpaRepository bucketJpaRepository;
     private final ImageJpaRepository imageJpaRepository;
 
+    @Transactional
     public void checkAndCreateBucket(String bucketName) throws Exception {
         boolean isExist = minioUtil.checkBucket(bucketName);
         if(!isExist) {
@@ -37,6 +40,7 @@ public class MinioService {
         }
     }
 
+    @Transactional
     public UploadResponse uploadFile(
             MultipartFile file,
             String bucketName
@@ -57,6 +61,7 @@ public class MinioService {
         }
     }
 
+    @Transactional
     public String deleteFile(Long imageId) throws Exception {
         Image image = imageJpaRepository.findById(imageId)
                 .orElseThrow(()->new RuntimeException("이미지를 찾을 수 없습니다."));
