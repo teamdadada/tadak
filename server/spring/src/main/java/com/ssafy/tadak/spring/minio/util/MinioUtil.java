@@ -69,6 +69,10 @@ public class MinioUtil {
         return getImageUrl(bucket, fileName);
     }
 
+    public String getPublicUrl(Bucket bucket, String fileName){
+        return String.format("%s/%s/%s", endpoint, bucket.getName(), fileName);
+    }
+
     public String getImageUrl(Bucket bucket, String fileName) throws Exception {
         if(bucket.getIsPublic()) {
             return String.format("%s/%s/%s", endpoint, bucket.getName(), fileName);
