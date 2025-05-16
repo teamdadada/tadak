@@ -1,7 +1,9 @@
 package com.ssafy.tadak.spring.common.exception;
 
 import com.ssafy.tadak.spring.common.exception.dto.ErrorResponse;
+import com.ssafy.tadak.spring.mattermost.infrastructure.MattermostNotifier;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,13 +12,18 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
+import java.util.Arrays;
 import java.util.stream.Collectors;
 
 @Slf4j
 @RestControllerAdvice
+@RequiredArgsConstructor
 public class GlobalExceptionHandler {
 
+    private final MattermostNotifier mattermostNotifier;
     private static final String LOG_FORMAT = "request = {}, {} \n class = {} \n code = {} \n message = {}";
 
     @ExceptionHandler(GlobalException.class)
@@ -35,7 +42,38 @@ public class GlobalExceptionHandler {
                 errorCode.message()
         );
         exception.printStackTrace();
+        mattermostNotifier.send(String.format(
+                """
+                ##### Request Endpoint
+                ```
+                %s %s
+                ```
+                ##### Error Code
+                ```
+                %s
+                ```
+                ##### Error Message
+                ```
+                %s
+                ```
+                ##### StackTrace
+                ```
+                %s
+                ```
+                """,
+                request.getMethod(),
+                request.getRequestURI(),
+                errorCode.code(),
+                errorCode.message(),
+                getStackTrace(exception)
+        ));
         return ResponseEntity.status(exception.getHttpStatus()).body(ErrorResponse.from(errorCode));
+    }
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<ErrorResponse> handleMaxSizeException(MaxUploadSizeExceededException e) {
+        return ResponseEntity.status(413) // 413 Payload Too Large
+                .body(new ErrorResponse("S4130", "업로드 가능한 파일 크기를 초과했습니다."));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -58,6 +96,31 @@ public class GlobalExceptionHandler {
                 errorMessage
         );
         exception.printStackTrace();
+        mattermostNotifier.send(String.format(
+                """
+                ##### Request Endpoint
+                ```
+                %s %s
+                ```
+                ##### Error Code
+                ```
+                %s
+                ```
+                ##### Error Message
+                ```
+                %s
+                ```
+                ##### StackTrace
+                ```
+                %s
+                ```
+                """,
+                request.getMethod(),
+                request.getRequestURI(),
+                "V4000",
+                errorMessage,
+                getStackTrace(exception)
+        ));
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(ErrorResponse.from(new ErrorCode("400", errorMessage)));
@@ -84,12 +147,79 @@ public class GlobalExceptionHandler {
                 errorMessage
         );
         exception.printStackTrace();
+        mattermostNotifier.send(String.format(
+                """
+                ##### Request Endpoint
+                ```
+                %s %s
+                ```
+                ##### Error Code
+                ```
+                %s
+                ```
+                ##### Error Message
+                ```
+                %s
+                ```
+                ##### StackTrace
+                ```
+                %s
+                ```
+                """,
+                request.getMethod(),
+                request.getRequestURI(),
+                "V4000",
+                errorMessage,
+                getStackTrace(exception)
+        ));
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new ErrorResponse("400", errorMessage));
     }
 
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<ErrorResponse> handleNoResourceFound(
+            NoResourceFoundException exception,
+            HttpServletRequest request
+    ) {
+        log.warn(
+                LOG_FORMAT,
+                request.getMethod(),
+                request.getRequestURI(),
+                exception.getClass().getSimpleName(),
+                HttpStatus.NOT_FOUND,
+                "정적 리소스를 찾을 수 없습니다."
+        );
+        mattermostNotifier.send(String.format(
+                """
+                ##### Request Endpoint
+                ```
+                %s %s
+                ```
+                ##### Error Code
+                ```
+                %s
+                ```
+                ##### Error Message
+                ```
+                %s
+                ```
+                ##### StackTrace
+                ```
+                %s
+                ```
+                """,
+                request.getMethod(),
+                request.getRequestURI(),
+                "V4040",
+                "정적 리소스를 찾을 수 없습니다.",
+                getStackTrace(exception)
+        ));
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse("404", "정적 리소스를 찾을 수 없습니다."));
+    }
+
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Void> handleServerException(
+    public ResponseEntity<ErrorResponse> handleServerException(
             Exception exception,
             HttpServletRequest request
     ){
@@ -102,6 +232,38 @@ public class GlobalExceptionHandler {
                 exception.getMessage()
         );
         exception.printStackTrace();
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        mattermostNotifier.send(String.format(
+                """
+                ##### Request Endpoint
+                ```
+                %s %s
+                ```
+                ##### Error Code
+                ```
+                %s
+                ```
+                ##### Error Message
+                ```
+                %s
+                ```
+                ##### StackTrace
+                ```
+                %s
+                ```
+                """,
+                request.getMethod(),
+                request.getRequestURI(),
+                "S5000",
+                exception.getMessage(),
+                getStackTrace(exception)
+        ));
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new ErrorResponse("S5000", exception.getMessage()));
+    }
+
+    private String getStackTrace(Exception ex) {
+        return Arrays.stream(ex.getStackTrace())
+                .map(StackTraceElement::toString)
+                .collect(Collectors.joining("\n"));
     }
 }

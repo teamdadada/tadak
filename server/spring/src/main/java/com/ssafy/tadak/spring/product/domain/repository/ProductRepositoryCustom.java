@@ -1,21 +1,25 @@
 package com.ssafy.tadak.spring.product.domain.repository;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.tadak.spring.product.domain.entity.Product;
+import com.ssafy.tadak.spring.product.domain.entity.Switch;
+import com.ssafy.tadak.spring.product.dto.response.list.ProductSimpleDto;
+import com.ssafy.tadak.spring.product.exception.errorCode.ProductErrorCode;
 import com.ssafy.tadak.spring.product.util.enums.ProductType;
-import com.ssafy.tadak.spring.product.util.enums.SortType;
+import com.ssafy.tadak.spring.common.enums.SortType;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.bson.Document;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
+import static com.ssafy.tadak.spring.product.exception.exception.ProductException.ProductBadRequestException;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Repository
 @RequiredArgsConstructor
@@ -24,44 +28,66 @@ public class ProductRepositoryCustom {
     private final MongoTemplate mongoTemplate;
     private final EntityManager entityManager;
 
-    public Page<Product> findFilteredProducts(
+    public List<Document> find(Query query, Class<Document> clazz, ProductType type) {
+        System.out.println("찾기: " + type.toString());
+        return mongoTemplate.find(query, clazz, type.toString());
+    }
+
+    public List<Map<String, Object>> findFilteredProductsByCursor(
             ProductType type,
             Map<String, List<String>> filters,
             Integer minPriceMin,
             Integer minPriceMax,
-            Pageable pageable,
+            String cursor,
+            int size,
             SortType sortType
     ) {
         String collection = getCollectionName(type);
-        Query query = buildMongoQuery(filters, minPriceMin, minPriceMax);
+        Query query = buildMongoQuery(filters, minPriceMin, minPriceMax, size);
 
-        if (sortType == SortType.LATEST) {
-            query.with(org.springframework.data.domain.Sort.by(
-                    org.springframework.data.domain.Sort.Direction.DESC,
-                    "release_year", "release_month"
-            ));
+        String sortKey = switch (sortType) {
+            case LATEST -> "latest_sort_key";
+            case POPULAR -> "popular_sort_key";
+            default -> throw new ProductBadRequestException(ProductErrorCode.PRODUCT_BAD_SORTTYPE);
+        };
+
+        if (cursor != null && !cursor.isBlank()) {
+            query.addCriteria(Criteria.where(sortKey).lt(cursor));
         }
 
-        query.with(pageable);
+        query.with(Sort.by(Sort.Direction.DESC, sortKey));
+        List<Document> specs = mongoTemplate.find(query, Document.class, collection);
 
-        List<Document> docs = mongoTemplate.find(query, Document.class, collection);
-        long total = mongoTemplate.count(query.skip(0).limit(0), collection);
-        List<Long> ids = getProductIds(docs);
+        ObjectMapper objectMapper = new ObjectMapper();
+        List<Map<String, Object>> specMaps = specs.stream()
+                .map(doc -> objectMapper.convertValue(doc, new TypeReference<Map<String, Object>>() {}))
+                .toList();
 
-        if (ids.isEmpty())
-            return new PageImpl<>(List.of(), pageable, total);
+        return specMaps;
+    }
 
-        List<Product> products;
-        if (sortType == SortType.POPULAR) {
-            products = fetchProductsFromRdbSorted(ids, type, "hits", true, pageable);
-        } else {
-            products = fetchProductsPreserveOrder(ids, type);
-            Map<Long, Product> map = products.stream()
-                    .collect(Collectors.toMap(Product::getProductId, p -> p));
-            products = ids.stream().map(map::get).filter(Objects::nonNull).toList();
-        }
+    public List<Map<String, Object>> findByIds(List<Long> ids) {
+        List<Document> barebones = mongoTemplate.find(
+                Query.query(Criteria.where("product_id").in(ids)), Document.class, "barebone_specs");
+        List<Document> switches = mongoTemplate.find(
+                Query.query(Criteria.where("product_id").in(ids)), Document.class, "switches_specs");
+        List<Document> keycaps = mongoTemplate.find(
+                Query.query(Criteria.where("product_id").in(ids)), Document.class, "keycaps_specs");
+        barebones.forEach(doc -> doc.put("type", "BAREBONE"));
+        switches.forEach(doc -> doc.put("type", "SWITCH"));
+        keycaps.forEach(doc -> doc.put("type", "KEYCAP"));
 
-        return new PageImpl<>(products, pageable, total);
+        List<Document> specs = new ArrayList<>();
+        specs.addAll(barebones);
+        specs.addAll(switches);
+        specs.addAll(keycaps);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        List<Map<String, Object>> specMaps = specs.stream()
+                .map(doc -> objectMapper.convertValue(doc, new TypeReference<Map<String, Object>>() {}))
+                .toList();
+
+        return specMaps;
     }
 
     private String getCollectionName(ProductType type) {
@@ -72,7 +98,7 @@ public class ProductRepositoryCustom {
         };
     }
 
-    private Query buildMongoQuery(Map<String, List<String>> filters, Integer minPriceMin, Integer minPriceMax) {
+    private Query buildMongoQuery(Map<String, List<String>> filters, Integer minPriceMin, Integer minPriceMax, Integer size) {
         Query query = new Query();
 
         if (filters != null) {
@@ -92,45 +118,8 @@ public class ProductRepositoryCustom {
             query.addCriteria(priceCriteria);
         }
 
+        query.limit(size);
+
         return query;
-    }
-
-    private List<Long> getProductIds(List<Document> docs) {
-        return docs.stream()
-                .map(doc -> {
-                    Number n = doc.get("product_id", Number.class);
-                    return n != null ? n.longValue() : null;
-                })
-                .filter(Objects::nonNull)
-                .toList();
-    }
-
-    private List<Product> fetchProductsPreserveOrder(List<Long> ids, ProductType type) {
-        return entityManager.createQuery("""
-                SELECT p FROM Product p
-                WHERE p.productId IN :ids AND p.productType = :type
-                """, Product.class)
-                .setParameter("ids", ids)
-                .setParameter("type", type)
-                .getResultList();
-    }
-
-    private List<Product> fetchProductsFromRdbSorted(
-            List<Long> ids,
-            ProductType type,
-            String sortField,
-            boolean descending,
-            Pageable pageable
-    ) {
-        String jpql = "SELECT p FROM Product p " +
-                "WHERE p.productId IN :ids AND p.productType = :type " +
-                "ORDER BY p." + sortField + (descending ? " DESC" : " ASC");
-
-        return entityManager.createQuery(jpql, Product.class)
-                .setParameter("ids", ids)
-                .setParameter("type", type)
-                .setFirstResult((int) pageable.getOffset())
-                .setMaxResults(pageable.getPageSize())
-                .getResultList();
     }
 }

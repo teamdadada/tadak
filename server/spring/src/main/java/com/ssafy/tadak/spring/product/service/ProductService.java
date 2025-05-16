@@ -1,8 +1,10 @@
 package com.ssafy.tadak.spring.product.service;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ssafy.tadak.spring.product.domain.entity.Product;
 import com.ssafy.tadak.spring.product.domain.repository.ProductRepository;
 import com.ssafy.tadak.spring.product.domain.repository.ProductRepositoryCustom;
+import com.ssafy.tadak.spring.product.dto.request.ProductsCursorRequest;
 import com.ssafy.tadak.spring.product.dto.response.list.ProductSimpleDto;
 import com.ssafy.tadak.spring.product.dto.request.ProductDetailRequest;
 import com.ssafy.tadak.spring.product.dto.request.list.BareboneListRequest;
@@ -16,15 +18,16 @@ import com.ssafy.tadak.spring.product.exception.exception.ProductNotFoundExcepti
 import com.ssafy.tadak.spring.product.util.FieldNameMapper;
 import com.ssafy.tadak.spring.product.util.ProductUtil;
 import com.ssafy.tadak.spring.product.util.enums.ProductType;
-import com.ssafy.tadak.spring.product.util.enums.SortType;
+import com.ssafy.tadak.spring.common.enums.SortType;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.bson.Document;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -43,6 +46,7 @@ public class ProductService {
      * @param productId 제품 번호
      * @return 제품 상세 정보
      */
+    @Transactional(readOnly = true)
     public ProductDetailResponse getProductDetail(ProductType productType, Long productId) {
         ProductDetailRequest request = new ProductDetailRequest(productType, productId);
         Product product = productRepository.findByProductIdAndProductType(
@@ -67,55 +71,90 @@ public class ProductService {
     }
 
     @Transactional(readOnly = true)
-    public ProductListResponse getLatestList(ProductType type, int page, int size,
-                                             BareboneListRequest bareboneFilter,
-                                             SwitchListRequest switchFilter,
-                                             KeycapListRequest keycapFilter) {
-        return getProductList(type, page, size, bareboneFilter, switchFilter, keycapFilter, SortType.LATEST);
+    public ProductListResponse getProductListByQuery(
+            String keyword,
+            String cursor,
+            int size
+    ) {
+        int[] cursorInfo = separateCursor(cursor);
+        int hitC = cursorInfo[0];
+        int idC = cursorInfo[1];
+        List<Product> products = productRepository.searchByNameWithCursor(keyword, hitC, idC, size);
+        Map<ProductType, List<Long>> productIds = new HashMap<>();
+        products.forEach(p ->
+                productIds
+                        .computeIfAbsent(p.getProductType(), k -> new ArrayList<>())
+                        .add(p.getProductId())
+        );
+        Map<Long, Document> documents = new HashMap<>();
+
+        productIds.forEach((productType, ids) -> {
+            Query query = new Query(Criteria.where("product_id").in(ids));
+            List<Document> docs = productRepositoryCustom.find(query, Document.class, productType);
+            docs.forEach(doc -> documents.put(doc.getInteger("product_id").longValue(), doc));
+        });
+
+        List<ProductSimpleDto> result = new ArrayList<>();
+        products.forEach(
+                p -> {
+                    ProductType type = p.getProductType();
+                    Long productId = p.getProductId();
+                    Document doc = documents.get(productId);
+                    result.add(
+                                ProductSimpleDto.builder()
+                                .productId(productId)
+                                .name(p.getProductName())
+                                .minPrice(doc.getInteger("min_price"))
+                                .hits(doc.getInteger("hit"))
+                                .thumbnail(doc.getString("thumbnail"))
+                                .type(type)
+                                .cursor(String.format("%d_%d", doc.getInteger("hit"), productId))
+                                .build()
+                    );
+                }
+            );
+
+        return ProductListResponse.of(result, size);
     }
 
     @Transactional(readOnly = true)
-    public ProductListResponse getPopularList(ProductType type, int page, int size,
-                                              BareboneListRequest bareboneFilter,
-                                              SwitchListRequest switchFilter,
-                                              KeycapListRequest keycapFilter) {
-        return getProductList(type, page, size, bareboneFilter, switchFilter, keycapFilter, SortType.POPULAR);
-    }
-
-    private ProductListResponse getProductList(ProductType type, int page, int size,
-                                              BareboneListRequest bareboneFilter,
-                                              SwitchListRequest switchFilter,
-                                              KeycapListRequest keycapFilter,
-                                              SortType sortType) {
-
+    public ProductListResponse getProductList(
+            ProductType type,
+            String cursor,
+            int size,
+            SortType sort,
+            BareboneListRequest bareboneFilter,
+            SwitchListRequest switchFilter,
+            KeycapListRequest keycapFilter
+    ) {
         ProductListRequest filterRequest = switch (type) {
             case BAREBONE -> bareboneFilter;
             case SWITCH -> switchFilter;
             case KEYCAP -> keycapFilter;
         };
+        ProductsCursorRequest cursorRequest = new ProductsCursorRequest(cursor, size, sort);
 
         Map<String, List<String>> filters = FieldNameMapper.convertKeysToSnakeCase(filterRequest.toMap());
 
-        Sort sort = switch (sortType) {
-            case LATEST -> Sort.by(Sort.Direction.DESC, "releaseYear", "releaseMonth");
-            case POPULAR -> Sort.by(Sort.Direction.DESC, "hits");
-        };
-
-        Pageable pageable = PageRequest.of(page - 1, size, sort);
-
-        Page<Product> pageResult = productRepositoryCustom.findFilteredProducts(
+        List<Map<String, Object>> results = productRepositoryCustom.findFilteredProductsByCursor(
                 type,
                 filters,
                 filterRequest.minPriceMin(),
                 filterRequest.minPriceMax(),
-                pageable,
-                sortType
+                cursorRequest.cursor(),
+                cursorRequest.size(),
+                cursorRequest.sort()
         );
 
-        List<ProductSimpleDto> dtoList = pageResult.getContent().stream()
-                .map(productUtil::getSimpleSummary)
+        List<ProductSimpleDto> dtoList = results.stream()
+                .map(spec -> ProductSimpleDto.from(spec, type, cursorRequest.sort()))
                 .toList();
 
-        return new ProductListResponse(dtoList);
+        return ProductListResponse.of(dtoList, cursorRequest.size());
+    }
+
+    private int[] separateCursor(String cursor) {
+        String[] split = cursor.split("_");
+        return new int[]{Integer.parseInt(split[0]), Integer.parseInt(split[1])};
     }
 }

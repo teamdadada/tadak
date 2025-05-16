@@ -1,11 +1,17 @@
 package com.ssafy.tadak.spring.product.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.ssafy.tadak.spring.auth.dto.UserInfo;
+import com.ssafy.tadak.spring.common.annotation.AuthUser;
+import com.ssafy.tadak.spring.common.enums.SortType;
+import com.ssafy.tadak.spring.product.dto.request.ProductsCursorRequest;
 import com.ssafy.tadak.spring.product.dto.request.list.BareboneListRequest;
 import com.ssafy.tadak.spring.product.dto.request.list.KeycapListRequest;
 import com.ssafy.tadak.spring.product.dto.request.list.SwitchListRequest;
 import com.ssafy.tadak.spring.product.dto.response.filter.ProductFilterResponse;
 import com.ssafy.tadak.spring.product.dto.response.list.ProductListResponse;
 import com.ssafy.tadak.spring.product.service.ProductService;
+import lombok.Getter;
 import org.springframework.http.ResponseEntity;
 
 import com.ssafy.tadak.spring.product.dto.response.detail.ProductDetailResponse;
@@ -22,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/product")
+@RequestMapping("/product")
 public class ProductController {
 
     private final ProductService productService;
@@ -55,30 +61,38 @@ public class ProductController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/{product_type}/latest")
-    public ResponseEntity<ProductListResponse> getLatest(
-            @PathVariable("product_type") ProductType type,
-            @RequestParam(name = "page", defaultValue = "1") int page,
-            @RequestParam(name = "size", defaultValue = "5") int size,
-            @ModelAttribute BareboneListRequest bareboneFilter,
-            @ModelAttribute SwitchListRequest switchFilter,
-            @ModelAttribute KeycapListRequest keycapFilter) {
-        ProductListResponse response = productService.getLatestList(
-                type, page, size, bareboneFilter, switchFilter, keycapFilter);
-        return ResponseEntity.ok(response);
-    }
-
-    @GetMapping("/{product_type}/popular")
-    public ResponseEntity<ProductListResponse> getPopularList(
-            @PathVariable("product_type") ProductType productType,
-            @RequestParam(value = "page", defaultValue = "1") int page,
-            @RequestParam(value = "size", defaultValue = "5") int size,
+    @GetMapping(value = "/list", params = "!query")
+    public ResponseEntity<ProductListResponse> getProductList(
+            @RequestParam(name = "query", required = false) String keyword,
+            @RequestParam(name = "type") ProductType type,
+            @RequestParam(name = "cursor", required = false) String cursor,
+            @RequestParam(name = "size",  defaultValue = "10") int size,
+            @RequestParam(name = "sort",  defaultValue = "LATEST") SortType sort,
             @ModelAttribute BareboneListRequest bareboneFilter,
             @ModelAttribute SwitchListRequest switchFilter,
             @ModelAttribute KeycapListRequest keycapFilter
     ) {
-        ProductListResponse response = productService.getPopularList(
-                productType, page, size, bareboneFilter, switchFilter, keycapFilter);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(productService.getProductList(
+                type,
+                cursor,
+                size,
+                sort,
+                bareboneFilter,
+                switchFilter,
+                keycapFilter
+        ));
+    }
+
+    @GetMapping(value = "/list", params = "query")
+    public ResponseEntity<ProductListResponse> getProductList(
+            @RequestParam(name = "query", required = false) String keyword,
+            @RequestParam(name = "cursor", defaultValue = "2147483647_2147483647") String cursor,
+            @RequestParam(name = "size", defaultValue = "10") int size
+    ) {
+        return ResponseEntity.ok(productService.getProductListByQuery(
+                keyword,
+                cursor,
+                size
+        ));
     }
 }
