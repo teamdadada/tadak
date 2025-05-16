@@ -54,7 +54,11 @@ const SearchPage = () => {
       ) : (
         <div className="flex flex-col gap-2">
           {products.map((product) => (
-            <ProductPreviewCard key={product.productId} product={product} />
+            <ProductPreviewCard
+              key={product.productId}
+              product={product}
+              linkable={true}
+            />
           ))}
 
           <div ref={observerRef} className="h-10" />
