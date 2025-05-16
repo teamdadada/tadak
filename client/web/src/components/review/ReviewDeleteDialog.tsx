@@ -12,6 +12,8 @@ import { deleteReview } from '@/services/reviewService'
 import { toast } from 'sonner'
 import { useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
+import { Button } from '../ui/button'
+import { Trash2 } from 'lucide-react'
 
 const ReviewDeleteDialog = ({
   reviewId,
@@ -37,9 +39,10 @@ const ReviewDeleteDialog = ({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <button className="px-2 py-1 text-xs transition border rounded text-tadak-secondary border-tadak-secondary hover:bg-tadak-secondary hover:text-tadak-white">
+        <Button className="text-xs text-tadak-gray bg-transparent hover:bg-transparent hover:underline shadow-none flex items-center gap-1 p-1">
           삭제
-        </button>
+          <Trash2 />
+        </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
