@@ -2,6 +2,8 @@ package com.ssafy.tadak.spring.review.service;
 
 import com.ssafy.tadak.spring.auth.dto.UserInfo;
 import com.ssafy.tadak.spring.common.enums.SortType;
+import com.ssafy.tadak.spring.product.domain.repository.ProductRepositoryCustom;
+import com.ssafy.tadak.spring.product.util.enums.ProductType;
 import com.ssafy.tadak.spring.review.dto.ReviewSummary;
 import com.ssafy.tadak.spring.review.dto.request.PostReviewRequest;
 import com.ssafy.tadak.spring.review.dto.response.PostReviewResponse;
@@ -18,10 +20,15 @@ import com.ssafy.tadak.spring.review.domain.entity.Review;
 import com.ssafy.tadak.spring.user.domain.UserRepository;
 import com.ssafy.tadak.spring.user.domain.entity.User;
 import lombok.RequiredArgsConstructor;
+import org.bson.Document;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +36,7 @@ public class ReviewService {
 
     private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
+    private final ProductRepositoryCustom productRepositoryCustom;
 
     @Transactional(readOnly = true)
     public ReviewDetailResponse getReviewById(long reviewId) {
@@ -42,13 +50,38 @@ public class ReviewService {
     public ReviewListResponse getMyReviews(UserInfo userInfo) {
         List<Review> reviews = reviewRepository.findByAuthorIdOrderByReviewIdDesc(userInfo.id().longValue());
 
+        List<Long> productIds = reviews.stream()
+                        .map(Review::getProductId).toList();
+
+        Query query = new Query(Criteria.where("product_id").in(productIds));
+
+        Map<Long, Document> specs = new HashMap<>();
+        List<Document> docs = productRepositoryCustom.find(query, Document.class, ProductType.BAREBONE);
+        docs.forEach(doc -> {
+            doc.put("type", ProductType.BAREBONE);
+            specs.put(doc.getInteger("product_id").longValue(), doc);
+        });
+        docs = productRepositoryCustom.find(query, Document.class, ProductType.KEYCAP);
+        docs.forEach(doc -> {
+            doc.put("type", ProductType.KEYCAP);
+            specs.put(doc.getInteger("product_id").longValue(), doc);
+        });
+        docs = productRepositoryCustom.find(query, Document.class, ProductType.SWITCH);
+        docs.forEach(doc -> {
+            doc.put("type", ProductType.SWITCH);
+            specs.put(doc.getInteger("product_id").longValue(), doc);
+        });
+
         List<ReviewDetailResponse> reviewsResponseList = reviews.stream()
                 .map(review -> ReviewDetailResponse.from(
                         review,
                         userRepository.findById(review.getAuthorId())
                                 .orElse(null
-                                )))
+                                ),
+                        specs.get(review.getProductId())
+                ))
                 .toList();
+
         return ReviewListResponse.from(
                 reviewsResponseList
         );
@@ -86,7 +119,9 @@ public class ReviewService {
                         review,
                         userRepository.findById(review.getAuthorId())
                                 .orElse(null
-                        )))
+                        ),
+                        null
+                ))
                 .toList();
         return ReviewListResponse.from(
                 reviewsResponseList
@@ -123,7 +158,7 @@ public class ReviewService {
     }
 
     private ReviewDetailResponse mapReviewAndUserInfo(Review review, User user) {
-        return ReviewDetailResponse.from(review, user);
+        return ReviewDetailResponse.from(review, user, null);
     }
 
     private Review findByProductIdAndUserId(Long productId, long userId) {
