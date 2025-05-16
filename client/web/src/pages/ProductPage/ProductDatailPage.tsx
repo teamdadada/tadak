@@ -41,17 +41,23 @@ const ProductDetailPage = () => {
 
   return (
     <div className="flex flex-col max-w-6xl gap-8 p-6 mx-auto">
-      <div className="flex flex-col gap-6 md:flex-row">
-        <img
-          src={data.thumbnail}
-          alt={data.name}
-          className="w-full mx-auto rounded-lg md:max-w-[500px]"
-        />
-        <div className="flex flex-col items-center justify-around gap-6">
+      <div className="flex flex-col gap-16 md:flex-row">
+        <div className="md:w-2/5 overflow-hidden">
+          <img
+            src={data.thumbnail}
+            alt={data.name}
+            className="w-full mx-auto rounded-lg object-cover"
+          />
+        </div>
+        <div className="flex flex-col items-center justify-center gap-8 flex-1 md:pr-8">
           {renderProductInfo()}
-          <div className="flex flex-row gap-6">
-            <FavoriteButton />
-            <PayLinkButton href={data.url} />
+          <div className="w-full flex flex-row gap-6 p-4">
+            <div className="w-1/2">
+              <FavoriteButton productId={productId} />
+            </div>
+            <div className="w-1/2">
+              <PayLinkButton href={data.url} />
+            </div>
           </div>
         </div>
       </div>

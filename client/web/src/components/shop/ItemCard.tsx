@@ -117,7 +117,7 @@ const ItemCard = ({
 
         {/* 찜 버튼 */}
         <div
-          className="absolute p-1 rounded-lg top-2 right-2 cursor-pointer z-10"
+          className="absolute p-1 rounded-lg top-2 right-2 cursor-pointer z-2"
           onClick={handleZzimClick}
         >
           {isLiked ? (
