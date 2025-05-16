@@ -12,6 +12,7 @@ const ProductInfoBarebone = ({ data }: ProductInfoBareboneProps) => {
       <h2 className="text-right font-bold text-tadak-warning text-3xl">
         {data.minPrice ? `${Number(data.minPrice).toLocaleString()}원` : '-'}
       </h2>
+
       <ul className="mt-8 space-y-2">
         <InfoItem title="제조사" value={data.manufacturer || '-'} />
         <InfoItem title="키 레이아웃" value={data.keyLayout || '-'} />
