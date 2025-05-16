@@ -64,8 +64,11 @@ public class KeyboardService {
     private final ProductConverter productConverter;
     private final KeyboardMapper keyboardMapper;
 
+    //todo: 중복 썸네일, 모델,  에러처리
     /** 커스텀 키보드를 생성하는 메소드입니다.
      * 유저가 선택한 옵션에 따른 키보드를 생성합니다.
+     * 모델과 썸네일은 One to One 관계이므로 같은 id로 요청할 경우
+     * 에러를 발생시킵니다.
      * **/
     @Transactional
     public KeyboardCreateResponse createKeyboard(

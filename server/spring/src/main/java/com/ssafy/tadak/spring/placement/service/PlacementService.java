@@ -4,15 +4,12 @@ import com.ssafy.tadak.spring.minio.domain.entity.Image;
 import com.ssafy.tadak.spring.minio.domain.repository.ImageJpaRepository;
 import com.ssafy.tadak.spring.minio.exception.ImageException;
 import com.ssafy.tadak.spring.minio.util.MinioUtil;
-import com.ssafy.tadak.spring.placement.dto.response.CreateBackgroundResponse;
 import com.ssafy.tadak.spring.placement.domain.entity.Placement;
 import com.ssafy.tadak.spring.placement.domain.repository.PlacementJpaRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 import static com.ssafy.tadak.spring.minio.exception.ImageErrorCode.IMAGE_NOTFOUND;
 
@@ -47,9 +44,10 @@ public class PlacementService {
     /** 키보드 배치 초기 이미지 저장
      * 키보드 배치 시뮬레이션을 위한 배경을 저장합니다.
      * 키보드를 배치하기 이전에 등록이 필요하기 때문에
-     * 키보드와 배치 정보는 default 값으로 설정됩니다.
+     * 배치 정보는 default 값으로 설정됩니다.
      * **/
-    public CreateBackgroundResponse CreateBackground(
+    @Transactional
+    public void createBackground(
             Long userId,
             Long imageId
     ) throws Exception {
@@ -61,6 +59,7 @@ public class PlacementService {
         Placement newBackground = backgroundJpaRepository.save(Placement.builder()
                                             .userId(userId)
                                             .image(image)
+                                            .canDelete(true)
                                             .locationX(0D)
                                             .locationY(0D)
                                             .rotationX(0D)
@@ -68,15 +67,6 @@ public class PlacementService {
                                             .rotationZ(0D)
                                             //todo: scale value setting
                                     .build());
-        return CreateBackgroundResponse.builder()
-                .id(newBackground.getId())
-                .imageUrl(imageUrl)
-                .locationX(newBackground.getLocationX())
-                .locationY(newBackground.getLocationY())
-                .rotationX(newBackground.getRotationX())
-                .rotationY(newBackground.getRotationY())
-                .rotationZ(newBackground.getRotationZ())
-                .build();
     }
 
     /** 배치 정보 업데이트

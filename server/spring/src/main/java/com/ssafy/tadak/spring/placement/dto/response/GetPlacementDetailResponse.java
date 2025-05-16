@@ -1,6 +1,6 @@
 package com.ssafy.tadak.spring.placement.dto.response;
 
-public record GetBackgroundDetailResponse (
+public record GetPlacementDetailResponse(
         Long backgroundId,
         Long keyboardId,
         Vector2 position,

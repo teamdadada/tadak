@@ -3,10 +3,13 @@ package com.ssafy.tadak.spring.placement.domain.entity;
 import com.ssafy.tadak.spring.minio.domain.entity.Image;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
@@ -20,7 +23,7 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "background_images")
+@Table(name = "placements")
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -33,7 +36,7 @@ public class Placement {
     @Column(name = "user_id")
     private Long userId;
 
-    @OneToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "image_id")
     Image image;
 
@@ -78,6 +81,7 @@ public class Placement {
     public Placement(
             Long userId,
             Image image,
+            Boolean canDelete,
             Double locationX,
             Double locationY,
             Double rotationX,
@@ -86,6 +90,7 @@ public class Placement {
     ) {
         this.userId = userId;
         this.image = image;
+        this.canDelete = canDelete;
         this.locationX = locationX;
         this.locationY = locationY;
         this.rotationX = rotationX;
