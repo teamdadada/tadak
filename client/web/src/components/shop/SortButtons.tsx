@@ -5,7 +5,7 @@ interface SortButtonsProps {
 
 const SortButtons = ({ sortOrder, onChange }: SortButtonsProps) => {
   return (
-    <div className="flex justify-end mb-2">
+    <div className="flex justify-end mb-2 text-sm" >
       <button
         className={`${sortOrder === 'LATEST' ? 'font-bold' : 'text-tadak-gray'}`}
         onClick={() => onChange('LATEST')}

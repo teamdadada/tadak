@@ -70,7 +70,7 @@ const ItemGrid = ({ category, filters, sortOrder }: ItemGridProps) => {
     )
 
   return (
-    <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-4">
+    <div className="grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-4">
       {data?.pages.flatMap((page) =>
         page.list.map((item) => <ItemCard key={item.productId} {...item} />),
       )}
