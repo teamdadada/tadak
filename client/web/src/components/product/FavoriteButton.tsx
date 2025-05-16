@@ -40,7 +40,7 @@ const FavoriteButton = ({ productId, onZzimChange }: FavoriteButtonProps) => {
 
   return (
     <Button
-      className="w-full px-10 py-5 bg-tadak-white border-tadak-gray text-tadak-black border rounded-none hover:bg-tadak-white hover:border-tadak-black"
+      className="w-full px-10 py-5 shadow-none bg-tadak-white border-tadak-gray text-tadak-black border rounded-none hover:bg-tadak-white hover:border-tadak-black"
       onClick={handleZzimClick}
     >
       {isLiked ? (
