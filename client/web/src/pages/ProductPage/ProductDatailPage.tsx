@@ -40,7 +40,7 @@ const ProductDetailPage = () => {
   }
 
   return (
-    <div className="flex flex-col max-w-6xl gap-8 p-6 mx-auto">
+    <div className="flex flex-col max-w-6xl gap-8 p-6 mx-auto mb-12">
       <div className="flex flex-col gap-16 md:flex-row">
         <div className="md:w-2/5 overflow-hidden">
           <img

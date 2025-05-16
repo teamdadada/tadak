@@ -1,3 +1,5 @@
+import { ImageOff } from 'lucide-react'
+
 interface ProductDetailTabsProps {
   imageUrl: string | null
 }
@@ -18,8 +20,13 @@ const ProductDetailTabs = ({ imageUrl }: ProductDetailTabsProps) => {
           </div>
         ) : (
           // 이미지가 없을 경우 안내 문구
-          <div className="flex w-full m-4 text-sm text-center text-tadak-dark-gray">
-            상세 이미지가 없습니다.
+          <div className="flex flex-col items-center justify-center w-full py-16 my-4 bg-tadak-light-gray/20 rounded-lg border border-dashed border-tadak-gray/30">
+            <ImageOff className="w-16 h-16 text-tadak-gray/50 mb-4" />
+            <p className="text-center text-tadak-dark-gray">
+              <span className="block font-medium mb-1">
+                상세 이미지가 없습니다
+              </span>
+            </p>
           </div>
         )}
       </div>
