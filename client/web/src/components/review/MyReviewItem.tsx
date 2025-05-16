@@ -79,15 +79,12 @@ const ReviewItem = ({ review, productId }: ReviewItemProps) => {
 
   return (
     <div className="flex flex-col gap-2 min-h-[120px]">
-      {/* 상단: 프로필 및 정보 */}
+      {/* 상단: 별점 및 삭제 버튼 */}
       <div className="flex items-start justify-between">
         <div className="flex items-start">
-          <div className="flex flex-col pr-3">
-            <div className="flex items-center mt-1">{renderStars(score)}</div>
-          </div>
+          <div className="flex items-center mt-1">{renderStars(score)}</div>
         </div>
 
-        {/* 오른쪽: 수정/삭제 버튼 */}
         <div className="flex items-center">
           <ReviewDeleteDialog reviewId={reviewId} productId={productId} />
         </div>
