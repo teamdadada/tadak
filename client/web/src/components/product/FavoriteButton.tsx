@@ -40,15 +40,13 @@ const FavoriteButton = ({ productId, onZzimChange }: FavoriteButtonProps) => {
 
   return (
     <Button
-      variant="outline"
-      size="lg"
-      className="border-tadak-primary text-tadak-black hover:bg-tadak-primary/10"
+      className="w-full px-10 py-5 bg-tadak-white border-tadak-gray text-tadak-black border rounded-none hover:bg-tadak-white hover:border-tadak-black"
       onClick={handleZzimClick}
     >
       {isLiked ? (
-        <FaHeart className="w-5 h-5 text-tadak-warning drop-shadow-md" />
+        <FaHeart className="w-5 h-5 text-tadak-warning" />
       ) : (
-        <FaRegHeart className="w-5 h-5 text-tadak-white drop-shadow-md" />
+        <FaRegHeart className="w-5 h-5 text-tadak-black" />
       )}
       찜하기
     </Button>
