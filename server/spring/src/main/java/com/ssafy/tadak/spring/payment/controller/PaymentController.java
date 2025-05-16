@@ -22,13 +22,13 @@ public class PaymentController {
     //아이템 임시 객체
     private static final Map<String, Item> items = Map.of("shoes", new Item("shoes", "신발", 1000, Currency.Krw.INSTANCE.getValue()));
 
-    private final PortOneSecret secret;
-    private final PaymentService paymentService;
-
-    private PaymentClient paymentClient = new PaymentClient(
-            secret.apiKey(), "https://api.portone.io", null
-    );
-    private WebhookVerifier webhookVerifier = new WebhookVerifier(secret.webhookKey());
+//    private final PortOneSecret secret;
+//    private final PaymentService paymentService;
+//
+//    private PaymentClient paymentClient = new PaymentClient(
+//            secret.apiKey(), "https://api.portone.io", null
+//    );
+//    private WebhookVerifier webhookVerifier = new WebhookVerifier(secret.webhookKey());
 
     /**아이템 가져오기 (임시 엔드포인트)
      * 결제 테스트를 위한 임시 아이템을 가져옵니다.
