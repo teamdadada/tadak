@@ -24,7 +24,7 @@ import javax.sql.DataSource;
                 "com.ssafy.tadak.spring.review",
                 "com.ssafy.tadak.spring.zzim",
                 "com.ssafy.tadak.spring.minio",
-                "com.ssafy.tadak.spring.keyboard",
+                "com.ssafy.tadak.spring.keyboard"
         },
         entityManagerFactoryRef = "defaultEntityManagerFactory",
         transactionManagerRef = "defaultTransactionManager"

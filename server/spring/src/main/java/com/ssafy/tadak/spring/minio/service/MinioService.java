@@ -6,6 +6,7 @@ import com.ssafy.tadak.spring.minio.domain.repository.BucketJpaRepository;
 import com.ssafy.tadak.spring.minio.domain.repository.ImageJpaRepository;
 import com.ssafy.tadak.spring.minio.dto.response.UploadResponse;
 import com.ssafy.tadak.spring.minio.exception.ImageException;
+import com.ssafy.tadak.spring.minio.exception.MinioException;
 import com.ssafy.tadak.spring.minio.util.MinioUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,9 +15,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 
+import java.util.List;
 import java.util.UUID;
 
 import static com.ssafy.tadak.spring.minio.exception.ImageErrorCode.IMAGE_NOTFOUND;
+import static com.ssafy.tadak.spring.minio.exception.MinioErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +27,17 @@ import static com.ssafy.tadak.spring.minio.exception.ImageErrorCode.IMAGE_NOTFOU
 @Transactional(readOnly = true)
 public class MinioService {
     private final int URL_EXPIRE = 600;
+    private static final List<String> ALLOWED_CONTENT_TYPES = List.of(
+            "image/jpeg",
+            "image/png",
+            "image/gif",
+            "image/webp",
+            "image/svg+xml",
+            "model/gltf+json",   // glTF
+            "model/gltf-binary", // .glb
+            "model/obj",         // .obj
+            "model/fbx"         // .fbx (일부 브라우저에서 octet-stream으로 올라올 수도 있음)
+    );
 
     private final MinioUtil minioUtil;
     private final BucketJpaRepository bucketJpaRepository;
@@ -47,11 +61,16 @@ public class MinioService {
     public UploadResponse uploadFile(
             MultipartFile file,
             String bucketName
-    ) throws Exception {
-        Bucket bucket = bucketJpaRepository.findByName(bucketName)
-                .orElseThrow(() -> new RuntimeException("버킷을 찾을 수 없습니다."));
-
+    ) {
+        String contentType = file.getContentType();
         String fileName = "uploads/" + UUID.randomUUID() + "_" + file.getOriginalFilename();
+
+        if(!isAllowedFile(contentType, fileName)) {
+            throw new MinioException.MinioBadRequestException(NOT_ALLOWED_TYPE);
+        }
+
+        Bucket bucket = bucketJpaRepository.findByName(bucketName)
+                .orElseThrow(() -> new MinioException.MinioNotFoundException(BUCKET_NOTFOUND));
 
         try {
             String imageUrl = minioUtil.uploadFile(fileName, file, bucket);
@@ -60,7 +79,7 @@ public class MinioService {
                         );
             return new UploadResponse(newImage.getId(), imageUrl);
         } catch (Exception e) {
-            throw new RuntimeException("업로드 실패: "+e.getMessage());
+            throw new MinioException.MinioBadRequestException(UPLOAD_FAILED);
         }
     }
 
@@ -92,5 +111,18 @@ public class MinioService {
         } catch (Exception e) {
             throw new RuntimeException("URL 생성 실패: " + e.getMessage());
         }
+    }
+
+private boolean isAllowedFile(String contentType, String fileName){
+    if(ALLOWED_CONTENT_TYPES.contains(contentType)) {
+        return true;
+    }
+
+    if (contentType.equals("application/octet-stream") && fileName != null) {
+        String lower = fileName.toLowerCase();
+        return lower.endsWith(".glb") || lower.endsWith(".obj") || lower.endsWith(".fbx");
+    }
+
+    return false;
     }
 }
