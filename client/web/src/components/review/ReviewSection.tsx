@@ -10,6 +10,9 @@ import {
   ChevronRight,
 } from 'lucide-react'
 import { renderStars } from '@/utils/renderStarts'
+import { useQueryClient } from '@tanstack/react-query'
+import { getMyReviews } from '@/services/reviewService'
+import { toast } from 'sonner'
 
 interface ReviewSectionProps {
   product: ProductDetailBase
@@ -20,6 +23,26 @@ const ReviewSection = ({ product }: ReviewSectionProps) => {
 
   const { data: reviewList } = useReviewList(product.productId)
   const { data: reviewScore } = useReviewScore(product.productId)
+
+  const queryClient = useQueryClient()
+  const handleWriteClick = async () => {
+    const { reviews } = await queryClient.fetchQuery({
+      queryKey: ['myReviews'],
+      queryFn: getMyReviews,
+    })
+
+    const hasReviewed = reviews.some(
+      (review) => review.product.productId === product.productId,
+    )
+
+    if (hasReviewed) {
+      toast.warning('이미 리뷰를 작성한 제품입니다.')
+      return
+    }
+
+    sessionStorage.setItem('reviewProduct', JSON.stringify(product))
+    navigate(`/product/${product.productId}/review/write`)
+  }
 
   const reviewCount = reviewList?.count ?? 0
   const averageScore =
@@ -35,11 +58,8 @@ const ReviewSection = ({ product }: ReviewSectionProps) => {
         </h2>
 
         <Button
-          className="ml-auto text-sm font-medium transition bg-tadak-white hover:bg-tadak-white shadow-none text-tadak-black px-4 gap-1 flex items-center hover:font-bold"
-          onClick={() => {
-            sessionStorage.setItem('reviewProduct', JSON.stringify(product))
-            navigate(`/product/${product.productId}/review/write`)
-          }}
+          className="flex items-center gap-1 px-4 ml-auto text-sm font-medium transition shadow-none bg-tadak-white hover:bg-tadak-white text-tadak-black hover:font-bold"
+          onClick={handleWriteClick}
         >
           <PencilLine className="w-4 h-4" />
           작성하기
@@ -50,9 +70,9 @@ const ReviewSection = ({ product }: ReviewSectionProps) => {
 
       <div className="px-8 py-2">
         {reviewCount > 0 && (
-          <div className="flex flex-col sm:flex-row gap-4 mt-4 mb-6 bg-tadak-light-gray/50 p-4 rounded-lg">
+          <div className="flex flex-col gap-4 p-4 mt-4 mb-6 rounded-lg sm:flex-row bg-tadak-light-gray/50">
             <div className="flex flex-col items-center text-center sm:w-1/2">
-              <span className="text-xs font-medium text-tadak-dark-gray mb-1">
+              <span className="mb-1 text-xs font-medium text-tadak-dark-gray">
                 평균 평점
               </span>
               {renderStars(averageScore)}
@@ -64,10 +84,10 @@ const ReviewSection = ({ product }: ReviewSectionProps) => {
               </div>
             </div>
 
-            <div className="hidden sm:block h-20 w-px bg-tadak-gray/30 self-center"></div>
+            <div className="self-center hidden w-px h-20 sm:block bg-tadak-gray/30"></div>
 
             <div className="flex flex-col items-center text-center sm:w-1/2">
-              <span className="text-xs font-medium text-tadak-dark-gray mb-1">
+              <span className="mb-1 text-xs font-medium text-tadak-dark-gray">
                 전체 리뷰 수
               </span>
               <MessagesSquare className="w-8 h-8 text-tadak-gray" />
@@ -83,9 +103,9 @@ const ReviewSection = ({ product }: ReviewSectionProps) => {
 
         <div className="mt-4 space-y-6">
           {reviewCount === 0 ? (
-            <div className="py-12 flex flex-col items-center justify-center text-center">
-              <MessageSquarePlus className="w-12 h-12 text-tadak-gray mb-2" />
-              <p className="text-sm text-tadak-dark-gray mb-4">
+            <div className="flex flex-col items-center justify-center py-12 text-center">
+              <MessageSquarePlus className="w-12 h-12 mb-2 text-tadak-gray" />
+              <p className="mb-4 text-sm text-tadak-dark-gray">
                 아직 작성된 리뷰가 없어요
               </p>
             </div>
@@ -106,7 +126,7 @@ const ReviewSection = ({ product }: ReviewSectionProps) => {
         {reviewCount > 3 && (
           <div className="flex justify-end">
             <Button
-              className="text-sm text-tadak-black font-bold bg-tadak-white hover:bg-tadak-white hover:underline shadow-none"
+              className="text-sm font-bold shadow-none text-tadak-black bg-tadak-white hover:bg-tadak-white hover:underline"
               onClick={() =>
                 navigate(`/product/${product.productId}/reviews`, {
                   state: { product },

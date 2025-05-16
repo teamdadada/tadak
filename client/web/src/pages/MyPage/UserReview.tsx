@@ -1,13 +1,9 @@
 import ProductSummaryItem from '@/components/product/ProductSummaryItem'
 import MyReviewItem from '@/components/review/MyReviewItem'
-import { getMyReviews } from '@/services/reviewService'
-import { useQuery } from '@tanstack/react-query'
+import { useMyReviews } from '@/hooks/useReview'
 
 const UserReview = () => {
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ['myReviews'],
-    queryFn: getMyReviews,
-  })
+  const { data, isLoading, isError } = useMyReviews()
 
   if (isLoading) return <div>로딩 중...</div>
   if (isError || !data) return <p>에러 발생</p>
