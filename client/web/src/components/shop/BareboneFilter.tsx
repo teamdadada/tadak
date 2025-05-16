@@ -23,7 +23,7 @@ const BearboneFilter = ({ selected, onChange }: BearboneFilterProps) => {
     )
 
   return (
-    <div className="px-2 space-y-4">
+    <div className="border ">
       {data?.manufacturer && (
         <CheckboxGroup
           title="제조사별"

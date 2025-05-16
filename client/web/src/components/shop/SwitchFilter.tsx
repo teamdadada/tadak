@@ -23,7 +23,7 @@ const SwitchFilter = ({ selected, onChange }: SwitchFilterProps) => {
     )
 
   return (
-    <div className="px-2 space-y-4">
+    <div className="border">
       {/* {data.switchType && (
         <CheckboxGroup
           title="스위치 방식"

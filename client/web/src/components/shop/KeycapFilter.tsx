@@ -23,7 +23,7 @@ const KeycapFilter = ({ selected, onChange }: KeycapFilterProps) => {
     )
 
   return (
-    <div className="px-2 space-y-4">
+    <div className="border">
       {data.keycapMaterial && (
         <CheckboxGroup
           title="재질"
