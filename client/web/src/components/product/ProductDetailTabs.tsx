@@ -15,8 +15,12 @@ const ProductDetailTabs = ({ imageUrl }: ProductDetailTabsProps) => {
       </div>
       <div className="px-8 py-2">
         {imageUrl ? (
-          <div className="px-24">
-            <img src={imageUrl} alt="상세 이미지" className="w-full mt-4" />
+          <div className="flex justify-center">
+            <img
+              src={imageUrl}
+              alt="상세 이미지"
+              className="w-full mt-4 max-w-[800px] "
+            />
           </div>
         ) : (
           // 이미지가 없을 경우 안내 문구
