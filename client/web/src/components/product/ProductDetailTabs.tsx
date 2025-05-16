@@ -20,12 +20,10 @@ const ProductDetailTabs = ({ imageUrl }: ProductDetailTabsProps) => {
           </div>
         ) : (
           // 이미지가 없을 경우 안내 문구
-          <div className="flex flex-col items-center justify-center w-full py-16 my-4 bg-tadak-light-gray/20 rounded-lg border border-dashed border-tadak-gray/30">
+          <div className="flex flex-col items-center justify-center w-full py-16 my-4">
             <ImageOff className="w-16 h-16 text-tadak-gray/50 mb-4" />
-            <p className="text-center text-tadak-dark-gray">
-              <span className="block font-medium mb-1">
-                상세 이미지가 없습니다
-              </span>
+            <p className="text-sm text-tadak-dark-gray mb-4">
+              상세 이미지가 없습니다
             </p>
           </div>
         )}

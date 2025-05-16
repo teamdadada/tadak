@@ -84,9 +84,9 @@ const ReviewSection = ({ product }: ReviewSectionProps) => {
         <div className="mt-4 space-y-6">
           {reviewCount === 0 ? (
             <div className="py-12 flex flex-col items-center justify-center text-center">
-              <MessageSquarePlus className="w-12 h-12 text-tadak-gray mb-2" />
+              <MessageSquarePlus className="w-16 h-16 text-tadak-gray/50 mb-4" />
               <p className="text-sm text-tadak-dark-gray mb-4">
-                아직 작성된 리뷰가 없어요
+                아직 작성된 리뷰가 없습니다
               </p>
             </div>
           ) : (
