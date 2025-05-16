@@ -98,6 +98,8 @@ const ReviewWritePage = () => {
         toast.error('로그인이 필요한 기능입니다.')
       } else if (res?.status === 409 && res.data?.code === 'R4090') {
         toast.error('이미 작성한 리뷰가 존재합니다.')
+      } else if (res?.status === 413 && res.data?.code === 'R4130') {
+        toast.error('업로드 가능한 파일 크기를 초과했습니다. (최대 5MB)')
       } else if (res?.status === 500 && res.data?.code === 'S5000') {
         toast.error(res.data.message || '서버 오류가 발생했습니다.')
       } else {
