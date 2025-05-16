@@ -1,15 +1,12 @@
 package com.ssafy.tadak.spring.placement.domain.entity;
 
-import com.ssafy.tadak.spring.keyboard.domain.entity.Keyboard;
 import com.ssafy.tadak.spring.minio.domain.entity.Image;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
@@ -27,7 +24,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Background {
+public class Placement {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "background_id")
@@ -36,16 +33,12 @@ public class Background {
     @Column(name = "user_id")
     private Long userId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "keyboard_id")
-    private Keyboard keyboard;
-
     @OneToOne
-    @Column(name = "image_id")
+    @JoinColumn(name = "image_id")
     Image image;
 
-    @Column(name = "is_default")
-    Boolean isDefault;
+    @Column(name = "can_delete", updatable = false)
+    Boolean canDelete;
 
     @Column(name = "locatioin_x")
     Double locationX;
@@ -82,10 +75,9 @@ public class Background {
     }
 
     @Builder
-    public Background(
+    public Placement(
             Long userId,
             Image image,
-            Boolean isDefault,
             Double locationX,
             Double locationY,
             Double rotationX,
@@ -94,7 +86,6 @@ public class Background {
     ) {
         this.userId = userId;
         this.image = image;
-        this.isDefault = isDefault;
         this.locationX = locationX;
         this.locationY = locationY;
         this.rotationX = rotationX;

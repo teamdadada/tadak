@@ -1,4 +1,4 @@
-package com.ssafy.tadak.spring.placement.domain.dto.response;
+package com.ssafy.tadak.spring.placement.dto.response;
 
 import lombok.Builder;
 
