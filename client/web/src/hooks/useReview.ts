@@ -1,4 +1,8 @@
-import { getReviewList, getReviewScore } from '@/services/reviewService'
+import {
+  getMyReviews,
+  getReviewList,
+  getReviewScore,
+} from '@/services/reviewService'
 import { ReviewListResponse, ReviewScoreResponse } from '@/types/review'
 import { useQuery } from '@tanstack/react-query'
 
@@ -18,5 +22,12 @@ export const useReviewScore = (productId: number | string) => {
     queryKey: ['reviewScore', productId],
     queryFn: () => getReviewScore(productId),
     enabled: !!productId,
+  })
+}
+
+export const useMyReviews = () => {
+  return useQuery({
+    queryKey: ['myReviews'],
+    queryFn: getMyReviews,
   })
 }

@@ -30,6 +30,7 @@ const ReviewDeleteDialog = ({
       await deleteReview(reviewId)
       toast.success('리뷰가 삭제되었습니다.')
       queryClient.invalidateQueries({ queryKey: ['reviewList', productId] })
+      queryClient.invalidateQueries({ queryKey: ['myReviews'] })
       setOpen(false)
     } catch {
       toast.error('삭제에 실패했습니다.')
@@ -39,7 +40,7 @@ const ReviewDeleteDialog = ({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="text-xs text-tadak-gray bg-transparent hover:bg-transparent hover:underline shadow-none flex items-center gap-1 p-1">
+        <Button className="flex items-center gap-1 p-1 text-xs bg-transparent shadow-none text-tadak-gray hover:bg-transparent hover:underline">
           삭제
           <Trash2 />
         </Button>
