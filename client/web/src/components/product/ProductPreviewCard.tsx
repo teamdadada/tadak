@@ -1,7 +1,7 @@
-import { ProductDetailBase } from '@/types/product'
+import { Product } from '@/types/shop'
 
 interface ProductPreviewCardProps {
-  product: ProductDetailBase
+  product: Product
 }
 
 const ProductPreviewCard = ({ product }: ProductPreviewCardProps) => {

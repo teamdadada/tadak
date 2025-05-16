@@ -1,11 +1,20 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { FiSearch } from 'react-icons/fi'
 import { useNavigate } from 'react-router-dom'
 import { Button } from '../ui/button'
 
-const SearchBar = ({ isMobile = false }: { isMobile?: boolean }) => {
+interface SearchBarProps {
+  isMobile?: boolean
+  initialQuery?: string
+}
+
+const SearchBar = ({ isMobile = false, initialQuery = '' }: SearchBarProps) => {
   const [query, setQuery] = useState('')
   const navigate = useNavigate()
+
+  useEffect(() => {
+    setQuery(initialQuery) // query 바뀔 때 반영되게 (뒤로가기 등 대비)
+  }, [initialQuery])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
