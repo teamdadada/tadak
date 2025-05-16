@@ -78,7 +78,7 @@ const ItemCard = ({
       <div className="flex flex-col justify-center w-full h-16 mt-4 text-left">
         <div className="text-[15px] ">{name}</div>
         <div className="mt-1 text-[15px] font-semibold">
-          {minPrice !== undefined
+          {minPrice !== undefined && minPrice !== null
             ? `${minPrice.toLocaleString()}원`
             : '가격 정보 없음'}
         </div>
