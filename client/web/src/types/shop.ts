@@ -85,3 +85,9 @@ export type FilterByType<T extends string> = T extends 'BAREBONE'
 //   minPriceMin?: number
 //   minPriceMax?: number
 // }
+
+export interface SearchProductParams {
+  query: string
+  cursor?: string | null
+  size?: number
+}
