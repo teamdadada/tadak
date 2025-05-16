@@ -50,7 +50,7 @@ const ProductDetailPage = () => {
         <div className="flex flex-col items-center justify-around gap-6">
           {renderProductInfo()}
           <div className="flex flex-row gap-6">
-            <FavoriteButton />
+            <FavoriteButton productId={productId} />
             <PayLinkButton href={data.url} />
           </div>
         </div>
