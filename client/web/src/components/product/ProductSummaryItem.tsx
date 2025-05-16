@@ -7,13 +7,13 @@ interface ProductSummaryItemProps {
 
 const ProductSummaryItem = ({ name, thumbnail }: ProductSummaryItemProps) => {
   return (
-    <div className="flex items-center gap-4 mx-4">
+    <div className="flex items-center gap-4">
       <img
         src={thumbnail || defaultImage}
         alt={name}
         className="object-cover w-10 h-10 rounded"
       />
-      <span className="text-sm font=medium truncate max-w-[160px]">{name}</span>
+      <span className="text-sm font=medium truncate">{name}</span>
     </div>
   )
 }
