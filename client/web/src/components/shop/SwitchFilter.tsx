@@ -15,12 +15,8 @@ const SwitchFilter = ({ selected, onChange }: SwitchFilterProps) => {
     queryFn: getSwitchFilters,
   })
 
-  if (isLoading)
-    return <p className="text-sm text-tadak-dark-gray">로딩 중...</p>
-  if (isError || !data)
-    return (
-      <p className="text-sm text-tadak-warning">필터를 불러오지 못했습니다.</p>
-    )
+  if (isLoading) return
+  if (isError || !data) return
 
   return (
     <div className="border">
