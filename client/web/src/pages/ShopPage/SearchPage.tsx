@@ -39,7 +39,7 @@ const SearchPage = () => {
 
   return (
     <div className="max-w-6xl p-6 mx-auto">
-      <div className="max-w-2xl mb-4">
+      <div className="flex-1 min-[1200px]:hidden mb-4">
         <SearchBar isMobile={true} initialQuery={query} />
       </div>
 
