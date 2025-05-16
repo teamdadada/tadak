@@ -21,7 +21,7 @@ const ProductDetailSkeleton = () => {
         </div>
 
         {/* 상품 정보 스켈레톤 */}
-        <div className="flex flex-col gap-6 flex-1 md:pr-8">
+        <div className="flex flex-col justify-center gap-6 flex-1 md:pr-8">
           {/* 제품명 */}
           <div className="w-3/4 h-8 bg-tadak-light-gray/70 rounded-md"></div>
 
@@ -29,21 +29,21 @@ const ProductDetailSkeleton = () => {
           <div className="w-1/2 h-6 bg-tadak-light-gray/70 rounded-md"></div>
 
           {/* 속성 그룹 1 */}
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-row gap-1">
             <div className="w-1/4 h-4 bg-tadak-light-gray/70 rounded-md"></div>
-            <div className="w-full h-12 bg-tadak-light-gray/70 rounded-md"></div>
+            <div className="w-3/4 h-4 bg-tadak-light-gray/70 rounded-md"></div>
           </div>
 
           {/* 속성 그룹 2 */}
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-row gap-1">
             <div className="w-1/4 h-4 bg-tadak-light-gray/70 rounded-md"></div>
-            <div className="w-full h-12 bg-tadak-light-gray/70 rounded-md"></div>
+            <div className="w-3/4 h-4 bg-tadak-light-gray/70 rounded-md"></div>
           </div>
 
           {/* 속성 그룹 3 */}
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-row gap-1">
             <div className="w-1/4 h-4 bg-tadak-light-gray/70 rounded-md"></div>
-            <div className="w-full h-12 bg-tadak-light-gray/70 rounded-md"></div>
+            <div className="w-3/4 h-4 bg-tadak-light-gray/70 rounded-md"></div>
           </div>
 
           {/* 버튼 그룹 */}
