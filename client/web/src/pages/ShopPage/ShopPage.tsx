@@ -136,7 +136,7 @@ const ShopPage = () => {
             width="100%"
             tabWidth={tabWidth}
             indicatorHeight={3}
-            className="w-full mb-6"
+            className="w-full"
           />
         </div>
         <div className="flex-1">
