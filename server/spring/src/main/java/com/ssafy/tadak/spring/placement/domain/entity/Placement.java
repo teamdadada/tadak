@@ -58,7 +58,14 @@ public class Placement {
     @Column(name = "rotation_Z")
     Double rotationZ;
 
-    // todo: 크기
+    @Column(name = "scale_x")
+    Double scaleX;
+
+    @Column(name = "scale_Y")
+    Double scaleY;
+
+    @Column(name = "scale_Z")
+    Double scaleZ;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -86,7 +93,10 @@ public class Placement {
             Double locationY,
             Double rotationX,
             Double rotationY,
-            Double rotationZ
+            Double rotationZ,
+            Double scaleX,
+            Double scaleY,
+            Double scaleZ
     ) {
         this.userId = userId;
         this.image = image;
@@ -96,5 +106,8 @@ public class Placement {
         this.rotationX = rotationX;
         this.rotationY = rotationY;
         this.rotationZ = rotationZ;
+        this.scaleX = scaleX;
+        this.scaleY = scaleY;
+        this.scaleZ = scaleZ;
     }
 }
