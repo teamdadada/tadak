@@ -1,6 +1,8 @@
 package com.ssafy.tadak.spring.placement.service;
 
 import com.ssafy.tadak.spring.keyboard.domain.entity.Keyboard;
+import com.ssafy.tadak.spring.keyboard.domain.repository.KeyboardJpaRepository;
+import com.ssafy.tadak.spring.keyboard.exception.KeyboardException;
 import com.ssafy.tadak.spring.minio.domain.entity.Image;
 import com.ssafy.tadak.spring.minio.domain.repository.ImageJpaRepository;
 import com.ssafy.tadak.spring.minio.exception.ImageException;
@@ -13,6 +15,7 @@ import com.ssafy.tadak.spring.placement.domain.repository.PlacementJpaRepository
 import com.ssafy.tadak.spring.placement.dto.VectorDto;
 import com.ssafy.tadak.spring.placement.dto.response.GetPlacementListResponse;
 import com.ssafy.tadak.spring.placement.dto.response.GetUserDefaultResponse;
+import com.ssafy.tadak.spring.placement.exception.PlacementException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -21,8 +24,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.ssafy.tadak.spring.keyboard.exception.KeyboardErrorCode.KEYBOARD_NOTFOUND;
 import static com.ssafy.tadak.spring.minio.exception.ImageErrorCode.IMAGE_NOTFOUND;
 import static com.ssafy.tadak.spring.minio.exception.MinioErrorCode.FILE_NOTFOUND;
+import static com.ssafy.tadak.spring.placement.exception.PlacementErrorCode.PLACEMENT_NOTFOUND;
 
 @Service
 @Slf4j
@@ -35,6 +40,7 @@ public class PlacementService {
     private final MinioUtil minioUtil;
     private final MainPlacementJpaRepository mainPlacementJpaRepository;
     private final PlacementJpaRepository placementJpaRepository;
+    private final KeyboardJpaRepository keyboardJpaRepository;
 
     /** 유저 기본 배치 불러오기
      * 키보드 배치 시뮬레이션 페이지로 redirection 될 때 호출되는 메소드입니다.
@@ -127,8 +133,30 @@ public class PlacementService {
      * 유저가 기존 배치 정보를 업데이트합니다.
      * 마지막으로 저정된 배치가 대표 배치가 되므로 MainPlacement 를 함께 업데이트 합니다.
      * **/
-    public void updateBackground(){
+    @Transactional
+    public void updatePlacement(
+            Long userId,
+            Long placementId,
+            Long keyboardId,
+            VectorDto.Vector2 position,
+            VectorDto.Vector3 rotation,
+            VectorDto.Vector3 scale
+    ){
+        Placement placement = placementJpaRepository
+                .findById(placementId)
+                .orElseThrow(()-> new PlacementException.PlacementNotFoundException(PLACEMENT_NOTFOUND));
 
+        placement.updatePlacement(position, rotation, scale);
+
+        Keyboard keyboard = null;
+        if (keyboardId != null) {
+            keyboard = keyboardJpaRepository.findById(keyboardId)
+                    .orElseThrow(() -> new KeyboardException.KeyboardNotFoundException(KEYBOARD_NOTFOUND));
+        }
+
+        MainPlacement userDefault = mainPlacementJpaRepository.findByUserId(userId);
+        userDefault.setKeyboard(keyboard);
+        userDefault.setPlacement(placement);
     }
 
     //fixme: 리스트를 조회하는 메서드에서 초기 배치를 생성하는 로직이 포함되는 게
