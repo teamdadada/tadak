@@ -1,21 +1,13 @@
 package com.ssafy.tadak.spring.placement.dto.response;
 
+import com.ssafy.tadak.spring.placement.dto.VectorDto;
+
 public record GetPlacementDetailResponse(
         Long backgroundId,
         Long keyboardId,
-        Vector2 position,
-        Vector3 rotation,
-        Vector3 scale,
+        VectorDto.Vector2 position,
+        VectorDto.Vector3 rotation,
+        VectorDto.Vector3 scale,
         Boolean isDefault
 ){
-    public record Vector2(
-            Double x,
-            Double y
-    ){}
-
-    public record Vector3(
-            Double x,
-            Double y,
-            Double z
-    ){}
 }

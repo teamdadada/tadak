@@ -139,8 +139,8 @@ public class KeyboardService {
                     if(thumbnail != null){
                         try {
                             imageUrl = minioUtil.getImageUrl(thumbnail.getBucket(), thumbnail.getFilePath());
-                        } catch (Exception e) {
-                            throw new RuntimeException(e);
+                        } catch (Exception e){
+                            throw new MinioException.MinioNotFoundException(FILE_NOTFOUND);
                         }
                     }
                      return new GetKeyboardListResponse(
@@ -158,21 +158,26 @@ public class KeyboardService {
     public GetKeyboardDetailResponse getKeyboardDetail(
             Long userId,
             Long keyboardId
-    ) throws Exception {
+    ) {
         Keyboard keyboard = getKeyboard(userId, keyboardId);
 
         //썸네일 불러오기
         Image thumbnail = keyboard.getThumbnail();
         String thumbnailUrl=null;
-        if(thumbnail!=null) {
-            thumbnailUrl = minioUtil.getImageUrl(thumbnail.getBucket(), thumbnail.getFilePath());
-        }
 
         //모델 불러오기
         Image model = keyboard.getModel();
         String model3dUrl=null;
-        if(model!=null) {
-            model3dUrl = minioUtil.getImageUrl(model.getBucket(), model.getFilePath());
+
+        try{
+            if(thumbnail!=null) {
+                thumbnailUrl = minioUtil.getImageUrl(thumbnail.getBucket(), thumbnail.getFilePath());
+            }
+            if(model!=null) {
+                model3dUrl = minioUtil.getImageUrl(model.getBucket(), model.getFilePath());
+            }
+        }catch (Exception e){
+            throw new MinioException.MinioNotFoundException(FILE_NOTFOUND);
         }
 
         //키보드 <옵션, id>를 저장하는 리스트
@@ -447,15 +452,19 @@ public class KeyboardService {
             BareboneOption bareboneOption,
             SwitchOption switchOption,
             KeycapOption keycapOption
-    ) throws Exception {
+    ) {
         Map<String, GetKeyboardDetailResponse.SelectedProduct> result = new HashMap<>();
 
         if(bareboneOption != null) {
             //배어본 옵션 상세
             Image bareboneImage = bareboneOption.getImage();
             String bareboneImageUrl = null;
-            if(bareboneImage != null) {
-                bareboneImageUrl = minioUtil.getImageUrl(bareboneImage.getBucket(), bareboneImage.getFilePath());
+            try{
+                if(bareboneImage != null) {
+                    bareboneImageUrl = minioUtil.getImageUrl(bareboneImage.getBucket(), bareboneImage.getFilePath());
+                }
+            }catch (Exception e){
+                throw new MinioException.MinioNotFoundException(FILE_NOTFOUND);
             }
 
             GetKeyboardDetailResponse.SelectedProduct selectedBarebone = new GetKeyboardDetailResponse.SelectedProduct(
@@ -473,8 +482,13 @@ public class KeyboardService {
             //스위치 옵션 상세
             Image switchImage = switchOption.getImage();
             String switchImageUrl = null;
-            if(switchImage != null) {
-                switchImageUrl = minioUtil.getImageUrl(switchImage.getBucket(), switchImage.getFilePath());
+
+            try{
+                if(switchImage != null) {
+                    switchImageUrl = minioUtil.getImageUrl(switchImage.getBucket(), switchImage.getFilePath());
+                }
+            }catch (Exception e){
+                throw new MinioException.MinioNotFoundException(FILE_NOTFOUND);
             }
 
             GetKeyboardDetailResponse.SelectedProduct selectedSwitch = new GetKeyboardDetailResponse.SelectedProduct(
@@ -492,8 +506,13 @@ public class KeyboardService {
             //키캡 옵션 상세
             Image keycapImage = keycapOption.getImage();
             String keycapImageUrl = null;
-            if(keycapImage != null) {
-                keycapImageUrl =  minioUtil.getImageUrl(keycapImage.getBucket(), keycapImage.getFilePath());
+
+            try{
+                if(keycapImage != null) {
+                    keycapImageUrl =  minioUtil.getImageUrl(keycapImage.getBucket(), keycapImage.getFilePath());
+                }
+            }catch (Exception e){
+                throw new MinioException.MinioNotFoundException(FILE_NOTFOUND);
             }
 
             GetKeyboardDetailResponse.SelectedProduct selectedKeycap = new GetKeyboardDetailResponse.SelectedProduct(
