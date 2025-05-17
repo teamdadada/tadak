@@ -11,8 +11,10 @@ import com.ssafy.tadak.spring.placement.service.PlacementService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -66,6 +68,15 @@ public class PlacementController {
                 request.rotation(),
                 request.scale()
         );
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/{placement-id}")
+    public ResponseEntity<Void> deletePlacement(
+            @AuthUser UserInfo userInfo,
+            @PathVariable(name = "placement-id") Long placementId
+    ){
+        placementService.deletePlacement(userInfo.id(), placementId);
         return ResponseEntity.noContent().build();
     }
 }

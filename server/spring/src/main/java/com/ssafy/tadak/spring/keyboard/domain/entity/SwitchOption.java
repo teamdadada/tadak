@@ -20,7 +20,7 @@ import org.checkerframework.checker.units.qual.C;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "switch_optioins")
+@Table(name = "switch_options")
 @Getter
 public class SwitchOption implements ProductOption {
     @Id
