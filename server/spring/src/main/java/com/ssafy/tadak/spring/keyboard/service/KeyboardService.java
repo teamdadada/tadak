@@ -112,7 +112,6 @@ public class KeyboardService {
                                             .bareboneOption(bareboneOption)
                                             .keycapOption(keycapOption)
                                             .switchOption(switchOption)
-                                            .cartId(null)
                                             .build()
                                     );
 

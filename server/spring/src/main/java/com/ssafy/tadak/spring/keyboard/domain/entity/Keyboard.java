@@ -41,10 +41,6 @@ public class Keyboard {
     @Column(nullable = false, name = "user_id")
     private Long userId;
 
-    //todo: 장바구니로 매핑
-    @Column(name = "cart_id")
-    private Long cartId;
-
     @Column(nullable = false, name = "keyboard_name")
     private String name;
 
@@ -99,7 +95,6 @@ public class Keyboard {
     @Builder
     public Keyboard(
             Long userId,
-            Long cartId,
             String name,
             Image thumbnail,
             Image model,
@@ -110,7 +105,6 @@ public class Keyboard {
             SwitchOption switchOption
     ) {
         this.userId = userId;
-        this.cartId = cartId;
         this.name = name;
         this.thumbnail = thumbnail;
         this.model = model;
