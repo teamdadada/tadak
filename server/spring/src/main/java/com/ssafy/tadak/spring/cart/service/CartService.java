@@ -83,6 +83,7 @@ public class CartService {
 
                     return GetCartListResponse.builder()
                             .itemId(item.getId())
+                            .keyboardId(keyboard.getId())
                             .keyboardName(keyboard.getName())
                             .thumbnailUrl(thumbnailUrl)
                             .totalPrice(keyboard.getPrice())
