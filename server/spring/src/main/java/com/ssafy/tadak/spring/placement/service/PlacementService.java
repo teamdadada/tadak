@@ -39,7 +39,6 @@ import static com.ssafy.tadak.spring.placement.exception.PlacementErrorCode.PLAC
 public class PlacementService {
 
     private final ImageJpaRepository imageJpaRepository;
-    private final PlacementJpaRepository backgroundJpaRepository;
     private final MinioUtil minioUtil;
     private final MainPlacementJpaRepository mainPlacementJpaRepository;
     private final PlacementJpaRepository placementJpaRepository;
@@ -117,7 +116,7 @@ public class PlacementService {
 
         String imageUrl = minioUtil.getImageUrl(image.getBucket(), image.getFilePath());
 
-        Placement newBackground = backgroundJpaRepository.save(Placement.builder()
+        Placement newBackground = placementJpaRepository.save(Placement.builder()
                                             .userId(userId)
                                             .image(image)
                                             .canDelete(true)
@@ -291,7 +290,7 @@ public class PlacementService {
      * 생성된 배치 정보 중 하나가 유저 default 배치로 저장됩니다.
      * **/
     private void createDefaultPlacement(Long userId) {
-        List<Placement> servicePlacementList = backgroundJpaRepository
+        List<Placement> servicePlacementList = placementJpaRepository
                 .findAllByUserIdAndCanDeleteOrderById(null, false);
 
         for(Placement servicePlacement : servicePlacementList){
