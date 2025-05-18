@@ -1,6 +1,6 @@
 export interface MessageRequest {
-  userId: string
   query: string
+  user_id: string
 }
 
 export interface MessageResponse {
@@ -8,8 +8,8 @@ export interface MessageResponse {
 }
 
 export interface ChatHistory {
-  content: string
   type: 'human' | 'ai'
+  content: string
 }
 
 export type HistoryResponse = ChatHistory[]

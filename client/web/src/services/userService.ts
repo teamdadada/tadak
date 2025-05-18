@@ -6,6 +6,7 @@ import {
   SignUpRequest,
   UpdateNicknameRequest,
   UpdateProfileImgRequest,
+  UpdatePasswordRequest,
 } from '@/types/user'
 
 export const signUp = async (data: SignUpRequest) => {
@@ -32,5 +33,10 @@ export const updateProfileImg = async (data: UpdateProfileImgRequest) => {
       'Content-Type': 'multipart/form-data',
     },
   })
+  return response
+}
+
+export const updatePassword = async (data: UpdatePasswordRequest) => {
+  const response = await http.patch(USER_END_POINT.PASSWORD, data)
   return response
 }

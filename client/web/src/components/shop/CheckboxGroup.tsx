@@ -1,3 +1,5 @@
+import { Checkbox } from '@/components/ui/checkbox'
+
 interface CheckboxGroupProps {
   title: string
   options: string[]
@@ -11,36 +13,45 @@ const CheckboxGroup = ({
   selected = [],
   onChange,
 }: CheckboxGroupProps) => {
-  const handleToggle = (value: string) => {
-    if (selected.includes(value)) {
-      onChange(selected.filter((v) => v !== value))
-    } else {
+  const handleToggle = (value: string, checked: boolean) => {
+    if (checked) {
       onChange([...selected, value])
+    } else {
+      onChange(selected.filter((v) => v !== value))
     }
   }
 
   return (
-    <div className="flex flex-col md:flex-row md:items-start md:gap-4">
-      <h3 className="mb-1 font-medium min-w-[80px] md:mb-0">{title}</h3>
-      <div className="flex flex-wrap">
+    <div className="flex flex-col md:flex-row md:items-stretch bg-tadak-light-gray border-b">
+      <div className="p-2 px-3 md:flex md:items-center md:h-full md:min-h-full md:self-stretch">
+        <h3 className="font-medium text-[15px] min-w-[80px]">{title}</h3>
+      </div>
+
+      <div className="w-full h-[1px] md:hidden"></div>
+
+      <div className="hidden md:block md:w-[1px] md:h-auto md:self-stretch"></div>
+
+      <div className="flex flex-wrap flex-1 px-1 bg-tadak-white">
         {options.map((option) => (
-          <label
+          <div
             key={option}
-            className="flex items-center gap-1"
-            style={{
-              flexBasis: option.length >= 5 ? '150px' : '75px',
-              minWidth: '75px',
-              maxWidth: '150px',
-            }}
+            className="flex items-center space-x-2 p-2 w-1/2 md:w-1/3 lg:w-1/5"
           >
-            <input
-              type="checkbox"
-              value={option}
+            <Checkbox
+              id={`checkbox-${option}`}
               checked={selected.includes(option)}
-              onChange={() => handleToggle(option)}
+              onCheckedChange={(checked) =>
+                handleToggle(option, checked === true)
+              }
+              className="rounded-none data-[state=checked]:bg-tadak-secondary data-[state=checked]:border-tadak-secondary shadow-none border-tadak-gray "
             />
-            <span>{option}</span>
-          </label>
+            <label
+              htmlFor={`checkbox-${option}`}
+              className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            >
+              {option}
+            </label>
+          </div>
         ))}
       </div>
     </div>

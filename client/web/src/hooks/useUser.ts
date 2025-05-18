@@ -3,22 +3,30 @@ import {
   getUserInfo,
   signUp,
   updateNickname,
+  updatePassword,
   updateProfileImg,
 } from '@/services/userService'
+import { getZzimList } from '@/services/zzimService'
 import { useUserStore } from '@/store/userStore'
 import {
   ErrorResponse,
   SignUpRequest,
   UpdateNicknameRequest,
+  UpdatePasswordRequest,
   UpdateProfileImgRequest,
   User,
 } from '@/types/user'
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { ZzimListResponse } from '@/types/zzim'
+import { logoutUtil } from '@/utils/auth'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { AxiosError } from 'axios'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 
 export const useSignUp = () => {
+  const setUser = useUserStore((state) => state.setUser)
+  const setZzimList = useUserStore((state) => state.setZzimList)
+
   const { mutateAsync } = useMutation({
     mutationFn: async (data: SignUpRequest) => {
       // 회원가입
@@ -26,6 +34,12 @@ export const useSignUp = () => {
 
       // 자동 로그인
       await signIn({ userId: data.userId, password: data.password })
+
+      const userInfo: User = await getUserInfo()
+      setUser(userInfo)
+
+      const userZzimList: ZzimListResponse = await getZzimList()
+      setZzimList(userZzimList)
 
       return signUpResponse
     },
@@ -48,6 +62,18 @@ export const useSignUp = () => {
   return mutateAsync
 }
 
+export const useLogout = () => {
+  const queryClient = useQueryClient()
+
+  const logout = () => {
+    queryClient.clear()
+
+    logoutUtil(undefined, '/main')
+  }
+
+  return logout
+}
+
 export const useGetUserInfo = () => {
   return useQuery<User>({
     queryKey: ['user', 'me'],
@@ -59,15 +85,13 @@ export const useUpdateNickname = () => {
   // const queryClient = useQueryClient()
   const navigate = useNavigate()
 
-  const user = useUserStore((state) => state.user) 
-  const setUser = useUserStore((state) => state.setUser) 
+  const user = useUserStore((state) => state.user)
+  const setUser = useUserStore((state) => state.setUser)
 
   const { mutateAsync } = useMutation({
     mutationFn: (data: UpdateNicknameRequest) => updateNickname(data),
 
     onSuccess: (_, variables) => {
-      // queryClient.invalidateQueries({ queryKey: ['user', 'me'] })
-
       if (user) {
         setUser({
           ...user,
@@ -75,7 +99,7 @@ export const useUpdateNickname = () => {
         })
       }
 
-      toast.success('닉네임이 수정되었습니다!')
+      toast.success('닉네임이 변경되었습니다!')
     },
 
     onError: (error: AxiosError<ErrorResponse>) => {
@@ -96,14 +120,12 @@ export const useUpdateNickname = () => {
 }
 
 export const useUpdateProfileImg = () => {
-  // const queryClient = useQueryClient()
   const navigate = useNavigate()
 
   const user = useUserStore((state) => state.user)
   const setUser = useUserStore((state) => state.setUser)
 
   const { mutateAsync } = useMutation({
-
     mutationFn: async (data: UpdateProfileImgRequest) => {
       const response = await updateProfileImg(data)
       const profileImgURL = response.headers.location
@@ -111,14 +133,13 @@ export const useUpdateProfileImg = () => {
     },
 
     onSuccess: (result) => {
-      // queryClient.invalidateQueries({ queryKey: ['user', 'me'] })
-
       if (user && result.profileImgURL) {
         setUser({
           ...user,
           profileImg: result.profileImgURL,
         })
       }
+
       toast.success('프로필 이미지가 변경되었습니다!')
     },
 
@@ -138,5 +159,33 @@ export const useUpdateProfileImg = () => {
       }
     },
   })
+  return mutateAsync
+}
+
+export const useUpdatePassword = () => {
+  const navigate = useNavigate()
+
+  const { mutateAsync } = useMutation({
+    mutationFn: (data: UpdatePasswordRequest) => updatePassword(data),
+    onSuccess: () => {
+      toast.success('비밀번호가 성공적으로 변경되었습니다!')
+    },
+    onError: (error: AxiosError<ErrorResponse>) => {
+      const status = error.response?.status
+      const code = error.response?.data?.code
+      const message = error.response?.data?.message
+
+      if (status === 401 && code === 'U4010') {
+        toast.error(message)
+      } else if (
+        (status == 401 && code === 'B4011') ||
+        (status == 404 && code === 'U4040')
+      ) {
+        navigate('/account/login', { replace: true })
+        toast.error(message)
+      }
+    },
+  })
+
   return mutateAsync
 }

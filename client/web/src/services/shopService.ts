@@ -16,6 +16,7 @@ import {
   KeycapFilter,
   ProductType,
   SwitchFilter,
+  SearchProductParams,
 } from '@/types/shop'
 
 export const getBearboneFilters = async (): Promise<BareboneFilter> => {
@@ -71,6 +72,22 @@ export const getProducts = async ({
     list: data.list, // 서버에서 list로 받아온 데이터를 그대로 사용
     hasNext: data.hasNext, // 서버의 hasNext 값을 그대로 사용
     lastCursor: data.lastCursor, // 서버의 lastCursor를 그대로 사용
+  }
+}
+
+export const getSearchedProducts = async ({
+  query,
+  cursor = null,
+  size = 10,
+}: SearchProductParams): Promise<ProductListResponse> => {
+  const { data } = await http.get(SHOP_END_POINT.PRODUCT.LIST, {
+    params: { query, cursor, size },
+  })
+
+  return {
+    list: data.list,
+    hasNext: data.hasNext,
+    lastCursor: data.lastCursor,
   }
 }
 

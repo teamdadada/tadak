@@ -1,28 +1,29 @@
 import { useState } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { FiMenu, FiX } from 'react-icons/fi'
 import logo from '@/assets/images/logo.png'
 import { useAuthStore } from '@/store/authStore'
-import { toast } from 'sonner'
+import { useLogout } from '@/hooks/useUser'
+import SearchBar from '../common/SearchBar'
 
 const Header = () => {
   const location = useLocation()
-  const navigate = useNavigate()
 
   const isOnboarding = location.pathname === '/'
 
-  const { isAuthenticated, clearAccessToken } = useAuthStore()
+  const { isAuthenticated } = useAuthStore()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
+  const logout = useLogout()
+
   const handleLogout = () => {
-    clearAccessToken()
-    toast.success('로그아웃 되었습니다.')
-    navigate('/main') // 메인 페이지로 이동
+    logout()
     setIsMenuOpen(false) // 모바일 메뉴 닫기
   }
+
   return (
     <header className="sticky top-0 z-10 w-full bg-white border-b border-gray-200">
-      <div className="flex items-center justify-between h-16 max-w-screen-2xl mx-auto px-6 relative">
+      <div className="relative flex items-center justify-between h-16 px-6 mx-auto max-w-screen-2xl">
         {/* 로고 */}
         <Link
           to="/main"
@@ -36,14 +37,14 @@ const Header = () => {
           isAuthenticated ? (
             <button
               onClick={handleLogout}
-              className="w-20 py-1 text-sm font-semibold text-tadak-white text-center rounded-full bg-tadak-primary hover:bg-tadak-primary whitespace-nowrap"
+              className="w-20 py-1 text-sm font-semibold text-center rounded-full text-tadak-white bg-tadak-primary hover:bg-tadak-primary whitespace-nowrap"
             >
               Logout
             </button>
           ) : (
             <Link
               to="/account/login"
-              className="w-20 py-1 text-sm font-semibold text-tadak-white text-center rounded-full bg-tadak-primary hover:bg-tadak-primary whitespace-nowrap"
+              className="w-20 py-1 text-sm font-semibold text-center rounded-full text-tadak-white bg-tadak-primary hover:bg-tadak-primary whitespace-nowrap"
             >
               Login
             </Link>
@@ -52,11 +53,7 @@ const Header = () => {
           <>
             {/* 검색창 */}
             <div className="flex-1 mx-20 hidden min-[1200px]:block">
-              <input
-                type="text"
-                placeholder="검색어를 입력하세요"
-                className="w-full max-w-[32rem] min-w-[12rem] h-9 px-4 border rounded-md focus:outline-none focus:ring-1 focus:ring-orange-400"
-              />
+              <SearchBar />
             </div>
 
             {/* 네비게이션 */}
@@ -94,21 +91,21 @@ const Header = () => {
               {isAuthenticated ? (
                 <button
                   onClick={handleLogout}
-                  className="w-20 py-1 text-sm font-semibold text-tadak-white text-center rounded-full bg-tadak-primary hover:bg-tadak-primary whitespace-nowrap"
+                  className="w-20 py-1 text-sm font-semibold text-center rounded-full text-tadak-white bg-tadak-primary hover:bg-tadak-primary whitespace-nowrap"
                 >
                   Logout
                 </button>
               ) : (
                 <Link
                   to="/account/login"
-                  className="w-20 py-1 text-sm font-semibold text-tadak-white text-center rounded-full bg-tadak-primary hover:bg-tadak-primary whitespace-nowrap"
+                  className="w-20 py-1 text-sm font-semibold text-center rounded-full text-tadak-white bg-tadak-primary hover:bg-tadak-primary whitespace-nowrap"
                 >
                   Login
                 </Link>
               )}
             </div>
 
-            {/* 모바일 햄버거 버튼 */}
+            {/* 모바일 햄버거 버튼'/ */}
             <div className="flex min-[1200px]:hidden ml-auto">
               <button onClick={() => setIsMenuOpen(!isMenuOpen)}>
                 {isMenuOpen ? <FiX size={28} /> : <FiMenu size={28} />}
@@ -117,52 +114,48 @@ const Header = () => {
 
             {/* 모바일 메뉴 오버레이 */}
             {isMenuOpen && (
-              <div className="fixed top-0 right-0 w-3/5 h-screen bg-white shadow-lg border-l flex flex-col p-6 space-y-6 z-50">
+              <div className="fixed top-0 right-0 z-50 flex flex-col w-3/5 h-screen p-6 space-y-6 bg-white border-l shadow-lg">
                 <div className="flex items-center justify-end mb-1">
                   <button onClick={() => setIsMenuOpen(false)}>
                     <FiX size={28} />
                   </button>
                 </div>
                 <div>
-                  <input
-                    type="text"
-                    placeholder="검색어를 입력하세요"
-                    className="w-full h-10 px-4 border rounded-md focus:outline-none focus:ring-1 focus:ring-orange-400"
-                  />
+                  <SearchBar isMobile={true} />
                 </div>
                 <nav className="flex flex-col space-y-6 text-lg font-medium text-[#242424]">
                   <Link
                     to="/shop"
                     onClick={() => setIsMenuOpen(false)}
-                    className="hover:bg-gray-100 rounded-md px-2 py-1"
+                    className="px-2 py-1 rounded-md hover:bg-gray-100"
                   >
                     쇼핑
                   </Link>
                   <Link
                     to="/customkeyboard"
                     onClick={() => setIsMenuOpen(false)}
-                    className="hover:bg-gray-100 rounded-md px-2 py-1"
+                    className="px-2 py-1 rounded-md hover:bg-gray-100"
                   >
                     타닥 키보드 만들기
                   </Link>
                   <Link
                     to="/soundtest"
                     onClick={() => setIsMenuOpen(false)}
-                    className="hover:bg-gray-100 rounded-md px-2 py-1"
+                    className="px-2 py-1 rounded-md hover:bg-gray-100"
                   >
                     타닥 타건샵
                   </Link>
                   <Link
                     to="/kbti"
                     onClick={() => setIsMenuOpen(false)}
-                    className="hover:bg-gray-100 rounded-md px-2 py-1"
+                    className="px-2 py-1 rounded-md hover:bg-gray-100"
                   >
                     KBTI
                   </Link>
                   <Link
                     to="/mypage"
                     onClick={() => setIsMenuOpen(false)}
-                    className="hover:bg-gray-100 rounded-md px-2 py-1"
+                    className="px-2 py-1 rounded-md hover:bg-gray-100"
                   >
                     마이페이지
                   </Link>
@@ -170,7 +163,7 @@ const Header = () => {
                   {isAuthenticated ? (
                     <button
                       onClick={handleLogout}
-                      className="block w-full text-left hover:bg-gray-100 rounded-md px-2 py-1"
+                      className="block w-full px-2 py-1 text-left rounded-md hover:bg-gray-100"
                     >
                       Logout
                     </button>
@@ -178,7 +171,7 @@ const Header = () => {
                     <Link
                       to="/account/login"
                       onClick={() => setIsMenuOpen(false)}
-                      className="hover:bg-gray-100 rounded-md px-2 py-1"
+                      className="px-2 py-1 rounded-md hover:bg-gray-100"
                     >
                       Login
                     </Link>
