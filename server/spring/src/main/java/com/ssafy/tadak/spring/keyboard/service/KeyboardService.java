@@ -21,6 +21,7 @@ import com.ssafy.tadak.spring.keyboard.dto.KeyboardUpdateDto;
 import com.ssafy.tadak.spring.keyboard.dto.OptionDto;
 import com.ssafy.tadak.spring.keyboard.dto.request.Colors;
 import com.ssafy.tadak.spring.keyboard.dto.response.GetKeyboardListResponse;
+import com.ssafy.tadak.spring.keyboard.dto.response.GetKeyboardModelResponse;
 import com.ssafy.tadak.spring.keyboard.dto.response.GetOptionsResponse;
 import com.ssafy.tadak.spring.keyboard.dto.response.GetProductListResponse;
 import com.ssafy.tadak.spring.keyboard.dto.response.KeyboardCreateResponse;
@@ -199,6 +200,29 @@ public class KeyboardService {
                 thumbnailUrl,
                 model3dUrl
         );
+    }
+
+    /** 키보드 모델 조회
+     * 키보드 3D 모델 경로를 반환합니다.
+     * **/
+    public GetKeyboardModelResponse getKeyboardModel(
+            Long userId,
+            Long keyboardId
+    ) {
+        Keyboard keyboard = getKeyboard(userId, keyboardId);
+
+        Image model = keyboard.getModel();
+        String model3dUrl=null;
+        try{
+            model3dUrl = minioUtil.getImageUrl(model.getBucket(), model.getFilePath());
+        }catch (Exception e){
+            throw new MinioException.MinioNotFoundException(FILE_NOTFOUND);
+        }
+
+        return GetKeyboardModelResponse.builder()
+                .keyboardId(keyboardId)
+                .model3dUrl(model3dUrl)
+                .build();
     }
 
     /** 키보드 옵션 수정

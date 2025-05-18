@@ -5,6 +5,7 @@ import com.ssafy.tadak.spring.common.annotation.AuthUser;
 import com.ssafy.tadak.spring.keyboard.dto.request.CreateKeyboardRequest;
 import com.ssafy.tadak.spring.keyboard.dto.request.UpdateKeyboardRequest;
 import com.ssafy.tadak.spring.keyboard.dto.response.GetKeyboardListResponse;
+import com.ssafy.tadak.spring.keyboard.dto.response.GetKeyboardModelResponse;
 import com.ssafy.tadak.spring.keyboard.dto.response.GetOptionsResponse;
 import com.ssafy.tadak.spring.keyboard.dto.response.GetProductListResponse;
 import com.ssafy.tadak.spring.keyboard.dto.response.KeyboardCreateResponse;
@@ -68,6 +69,16 @@ public class KeyboardController {
     ) throws Exception {
         return ResponseEntity.ok(
                 keyboardService.getKeyboardDetail(userInfo.id(), keboardId)
+        );
+    }
+
+    @GetMapping("/{keyboard-id}/model")
+    public ResponseEntity<GetKeyboardModelResponse> getKeyboardModel(
+            @AuthUser UserInfo userInfo,
+            @PathVariable(name = "keyboard-id") Long keboardId
+    ){
+        return ResponseEntity.ok(
+                keyboardService.getKeyboardModel(userInfo.id(), keboardId)
         );
     }
 
