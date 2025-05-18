@@ -19,7 +19,7 @@ module.exports = {
         'tadak-primary': '#FCA41C',
         'tadak-light-primary': '#FFE4BB',
         'tadak-secondary': '#A4D232',
-        'tadak-light-secondary': '#E3FAA8',
+        'tadak-light-secondary': '#E7FFE0',
         'tadak-warning': '#F16363',
         'tadak-light-gray': '#F4F4F4',
         'tadak-gray': '#BDBDBD',
