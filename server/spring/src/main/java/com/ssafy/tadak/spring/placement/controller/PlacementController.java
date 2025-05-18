@@ -5,6 +5,7 @@ import com.ssafy.tadak.spring.common.annotation.AuthUser;
 import com.ssafy.tadak.spring.placement.dto.VectorDto;
 import com.ssafy.tadak.spring.placement.dto.request.CreatePlacementRequest;
 import com.ssafy.tadak.spring.placement.dto.request.UpdatePlacementRequest;
+import com.ssafy.tadak.spring.placement.dto.response.GetPlacementDetailResponse;
 import com.ssafy.tadak.spring.placement.dto.response.GetPlacementListResponse;
 import com.ssafy.tadak.spring.placement.dto.response.GetUserDefaultResponse;
 import com.ssafy.tadak.spring.placement.service.PlacementService;
@@ -52,6 +53,16 @@ public class PlacementController {
     ){
         return ResponseEntity.ok(
                 placementService.getPlacementList(userInfo.id())
+        );
+    }
+
+    @GetMapping("/{placement-id}")
+    public ResponseEntity<GetPlacementDetailResponse> getPlacementDetail(
+        @AuthUser UserInfo userInfo,
+        @PathVariable(name = "placement-id") Long placementId
+    ){
+        return ResponseEntity.ok(
+                placementService.getPlacementDetail(userInfo.id(), placementId)
         );
     }
 

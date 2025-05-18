@@ -14,6 +14,7 @@ import com.ssafy.tadak.spring.placement.domain.entity.Placement;
 import com.ssafy.tadak.spring.placement.domain.repository.MainPlacementJpaRepository;
 import com.ssafy.tadak.spring.placement.domain.repository.PlacementJpaRepository;
 import com.ssafy.tadak.spring.placement.dto.VectorDto;
+import com.ssafy.tadak.spring.placement.dto.response.GetPlacementDetailResponse;
 import com.ssafy.tadak.spring.placement.dto.response.GetPlacementListResponse;
 import com.ssafy.tadak.spring.placement.dto.response.GetUserDefaultResponse;
 import com.ssafy.tadak.spring.placement.exception.PlacementException;
@@ -233,6 +234,55 @@ public class PlacementService {
                             .build();
                 })
                 .toList();
+    }
+
+    /** 배치 상세 조회
+     * 사용자 배치 정보를 조회합니다.
+     * position 값과 배경 이미지를 반환합니다.
+     * **/
+    public GetPlacementDetailResponse getPlacementDetail(
+            Long userId,
+            Long placementId
+    ){
+        Placement placement = placementJpaRepository.findById(placementId)
+                .orElseThrow(()->new PlacementException.PlacementNotFoundException(PLACEMENT_NOTFOUND));
+
+        if(!placement.getUserId().equals(userId)){
+            throw new PlacementException.PlacementForbiddenException(PLACEMENT_FORBIDDEN);
+        }
+
+        Image image = placement.getImage();
+        String imageUrl = null;
+        try{
+            imageUrl = minioUtil.getImageUrl(image.getBucket(), image.getFilePath());
+        }catch (Exception e){
+            throw new MinioException.MinioNotFoundException(FILE_NOTFOUND);
+        }
+
+        VectorDto.Vector2 position = VectorDto.Vector2.builder()
+                .x(placement.getLocationX())
+                .y(placement.getLocationY())
+                .build();
+
+        VectorDto.Vector3 rotation = VectorDto.Vector3.builder()
+                .x(placement.getRotationX())
+                .y(placement.getRotationY())
+                .z(placement.getRotationZ())
+                .build();
+
+        VectorDto.Vector3 scale = VectorDto.Vector3.builder()
+                .x(placement.getScaleX())
+                .y(placement.getScaleY())
+                .z(placement.getScaleZ())
+                .build();
+
+        return GetPlacementDetailResponse.builder()
+                .placementId(placement.getId())
+                .position(position)
+                .rotation(rotation)
+                .scale(scale)
+                .imageUrl(imageUrl)
+                .build();
     }
 
     /** 기본 배치 생성
