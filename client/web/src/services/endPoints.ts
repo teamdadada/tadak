@@ -59,12 +59,14 @@ export const KEYBOARD_END_POINT = {
   UPDATE: (keyboardId: number) => `/keyboard/${keyboardId}`,
   DELETE: (keyboardId: number) => `/keyboard/${keyboardId}`,
   OPTION: '/keyboard/option',
-  PRODUCT_BY_CATEGORY: (categoryName: string) =>
-    `/keyboard/product?category=${categoryName}`,
+  KEYCAP_PRODUCTS: '/keyboard/keycap',
+  BAREBONE_PRODUCTS: (layoutId: number, materialId: number) =>
+    `/keyboard/barebone?layout=${layoutId}&material=${materialId}`,
+  SWITCH_PRODUCTS: (typeId: number) =>
+    `/keyboard/switch?type=${typeId}`,
   SELECTED_PRODUCTS: (keyboardId: number) => `/keyboard/${keyboardId}/products`,
   UPDATE_PRODUCTS: (keyboardId: number) => `/keyboards/${keyboardId}/products`,
   MODEL_3D: (keyboardId: number) => `/keyboard/${keyboardId}/model`,
-  SAVE_ARRANGEMENT: '/keyboard/arrangements',
 }
 
 // backgroundService
@@ -72,6 +74,15 @@ export const BACKGROUND_END_POINT = {
   LIST: '/background',
   CREATE: '/background',
   DELETE: (backgroundId: number) => `/background/${backgroundId}`,
+}
+
+export const PLACEMENT_END_POINT = {
+  DEFAULT: '/placement/default', // 디폴트 배치 정보 조회
+  LIST: '/placement', // 배치 리스트 조회
+  DETAIL: (placementId: number) => `/placement/${placementId}`, // 배치 상세 조회
+  CREATE: '/placement', // 배치 저장 (POST)
+  UPDATE: '/placement', // 배치 수정 (PATCH)
+  DELETE: (placementId: number) => `/placement/${placementId}`, // 배치 삭제
 }
 
 // cartService
