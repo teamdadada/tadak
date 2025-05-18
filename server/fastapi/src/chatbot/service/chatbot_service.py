@@ -1,4 +1,5 @@
 import os
+import random
 from typing import List
 from fastapi import UploadFile
 
@@ -117,10 +118,16 @@ def get_response(user_id: int, query: str):
         gemini.model,
         prompt
     )
+
     retriever= create_history_aware_retriever(
         llm=gemini.model,
         prompt=retriever_prompt,
-        retriever=qdrant.as_retriever()
+        retriever=qdrant.as_retriever(
+        search_kwargs={
+            "k": 5,
+            # "score_threshold": 0.2
+            }
+        )
     )
     chain = create_retrieval_chain(
         retriever=retriever,
@@ -131,13 +138,37 @@ def get_response(user_id: int, query: str):
         "chat_history": memory.chat_memory.messages,
         "input": query
     })
+
     answer = result["answer"] if "answer" in result else result
 
+    recommendations = []
+
+    if "추천" in query:
+        retrieved_docs = retriever.invoke({
+            "chat_history": memory.chat_memory.messages,
+            "input": query
+        })
+
+        recommendations = extract_recommendations(retrieved_docs)
+
+    recommendation_text = ""
+    if recommendations:
+        recommendation_text = "\n\n[추천 리스트]\n" + "\n".join(
+            f"- {item['name']} (₩{item['price']}) → {item['url']}"
+            for item in recommendations
+        )
+
+    # 전체 답변 텍스트
+    final_answer = answer + recommendation_text
+
     memory.chat_memory.add_user_message(query)
-    memory.chat_memory.add_ai_message(answer)
+    memory.chat_memory.add_ai_message(final_answer)
     trim_chat_history(str(user_id), 40)
 
-    return {"response" :answer}
+    return {
+        "response" :answer,
+        "recommendations": recommendations
+    }
 
 
 def get_memory(user_id: str, window_size=30):
@@ -194,7 +225,27 @@ async def is_duplicated_file(file_name: str) -> bool:
     return len(result) > 0
 
 def format_history(messages):
-    return [
-        {"type": message.type, "content": message.content}
-        for message in messages
-    ]
+    formatted = []
+    for message in messages:
+        base = {
+            "type": message["type"] if isinstance(message, dict) else message.type,
+            "content": message["content"] if isinstance(message, dict) else message.content
+        }
+        # recommendations가 있을 경우 포함
+        if isinstance(message, dict) and message.get("type") == "ai" and "recommendations" in message:
+            base["recommendations"] = message["recommendations"]
+        formatted.append(base)
+    return formatted
+
+def extract_recommendations(documents):
+    results = []
+    for doc in documents:
+        meta = doc.metadata
+        if all(k in meta for k in ("name", "thumbnail", "url", "min_price")):
+            results.append({
+                "name": meta["name"],
+                "price": meta["min_price"],
+                "thumbnail": meta["thumbnail"],
+                "url": meta["url"]
+            })
+    return results
