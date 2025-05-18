@@ -1,12 +1,17 @@
 import { Product } from '@/types/shop'
 import defaultImage from '@/assets/images/logo.png'
+import { Link } from 'react-router-dom'
 
 interface ProductPreviewCardProps {
   product: Product
+  linkable?: boolean
 }
 
-const ProductPreviewCard = ({ product }: ProductPreviewCardProps) => {
-  return (
+const ProductPreviewCard = ({
+  product,
+  linkable = false,
+}: ProductPreviewCardProps) => {
+  const content = (
     <div className="flex items-center gap-4 p-4 border-b border-tadak-light-gray">
       <img
         src={product.thumbnail || defaultImage}
@@ -23,6 +28,16 @@ const ProductPreviewCard = ({ product }: ProductPreviewCardProps) => {
       </div>
     </div>
   )
+
+  if (linkable && product.type) {
+    return (
+      <Link to={`/product/${product.type}/${product.productId}`}>
+        {content}
+      </Link>
+    )
+  }
+
+  return content
 }
 
 export default ProductPreviewCard

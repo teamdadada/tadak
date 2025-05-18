@@ -42,6 +42,7 @@ export const REVIEW_END_POINT = {
   CREATE: (productId: number | string) => `/review/${productId}`,
   DELETE: (reviewId: number | string) => `/review/${reviewId}`,
   UPDATE: (productId: number | string) => `/review/${productId}`,
+  MY_LIST: '/review/list/me',
 }
 
 //chatbotService

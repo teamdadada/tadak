@@ -35,3 +35,8 @@ export const deleteReview = async (reviewId: number) => {
 export const postReview = async (productId: number, payload: ReviewPayload) => {
   return http.post(REVIEW_END_POINT.CREATE(productId), payload)
 }
+
+export const getMyReviews = async (): Promise<ReviewListResponse> => {
+  const { data } = await http.get<ReviewListResponse>(REVIEW_END_POINT.MY_LIST)
+  return data
+}
