@@ -73,17 +73,45 @@ retriever_prompt = ChatPromptTemplate.from_messages(
 )
 
 SECURITY_FILTER_KEYWORDS = [
-    "역할", "프롬프트", "명령어",
-    "prompt", "너는 지금부터", "지금부터 너는", "너는 이제", "이제 너는", "이제부터 너는"
+    "프롬프트", "명령어", "prompt"
+]
+OUT_OF_SCOPE_KEYWORDS = [
+    "역할", "너는 지금부터", "지금부터 너는", "너는 이제", "이제 너는", "이제부터 너는",
+    "잊어", "잊고"
+    "레시피", "존댓말", "말투", "아침", "점심", "저녁", "메뉴", "밥"
+]
+
+SECURITY_RESPONSES = [
+    "그건 알려줄 수 없는 비밀이야 덕!",
+    "그건 내가 도와줄 수 있는 부분이 아니야 덕!",
+    "그런 건 묻지 말아줘 덕!",
+    "프라이버시는 소중하니까~ 덕!",
+    "그건 우리끼리의 약속이라 못 말해 덕!",
+    "그건 보안상 이야기할 수 없어 덕!",
+    "그건 질문하지 않는 게 좋아 덕!",
+    "나도 모르는 걸로 할게 덕!"
+]
+
+OUT_OF_SCOPE_RESPONSES = [
+    "그런 건 내가 도와줄 수 있는 주제가 아니야 덕!",
+    "나는 키보드 전문가라서 그런 건 잘 몰라 덕!",
+    "그건 다른 친구한테 물어보는 게 좋을 것 같아 덕!",
+    "나는 키보드랑 관련된 이야기만 할 수 있어 덕!"
 ]
 
 def is_security_threat(query: str) -> bool:
     return any(keyword in query.lower() for keyword in SECURITY_FILTER_KEYWORDS)
 
+def is_out_of_scope(query: str) -> bool:
+    return any(keyword in query.lower() for keyword in OUT_OF_SCOPE_KEYWORDS)
+
 def get_response(user_id: int, query: str):
     if is_security_threat(query):
-        return {"response": "내가 도와줄 수 있는 부분이 아니야 덕!"}
-    
+        return {"response": random.choice(SECURITY_RESPONSES)}
+
+    if is_out_of_scope(query):
+        return {"response": random.choice(OUT_OF_SCOPE_RESPONSES)}
+
     memory = get_memory(str(user_id))
     combine_docs_chain = create_stuff_documents_chain(
         gemini.model,
