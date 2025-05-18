@@ -19,7 +19,7 @@ import lombok.Getter;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "barebone_optioins")
+@Table(name = "barebone_options")
 @Getter
 public class BareboneOption implements ProductOption {
     @Id

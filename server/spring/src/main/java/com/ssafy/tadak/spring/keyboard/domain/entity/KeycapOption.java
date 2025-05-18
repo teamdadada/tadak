@@ -18,7 +18,7 @@ import lombok.Getter;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "keycap_optioins")
+@Table(name = "keycap_options")
 @Getter
 public class KeycapOption implements ProductOption {
     @Id
