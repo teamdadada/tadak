@@ -56,10 +56,10 @@ export const fetchKeyboardOptions = async (): Promise<KeyboardOptionsResponse> =
 // }
 
 // TODO: 카테고리별 키보드 상품 목록 조회
-export const fetchProductsByCategory = async (categoryName: string) => {
-  const response = await http.get(KEYBOARD_END_POINT.PRODUCT_BY_CATEGORY(categoryName))
-  return response.data
-}
+// export const fetchProductsByCategory = async (categoryName: string) => {
+//   const response = await http.get(KEYBOARD_END_POINT.PRODUCT_BY_CATEGORY(categoryName))
+//   return response.data
+// }
 
 // TODO: 키보드별 설정(선택된) 상품 목록 조회
 export const fetchSelectedProducts = async (keyboardId: number) => {
@@ -80,7 +80,7 @@ export const fetchKeyboardModel3D = async (keyboardId: number) => {
 }
 
 // TODO: 키보드 배치 정보 저장
-export const saveKeyboardArrangement = async (payload: any) => {
-  const response = await http.post(KEYBOARD_END_POINT.SAVE_ARRANGEMENT, payload)
-  return response.data
-}
+// export const saveKeyboardArrangement = async (payload: any) => {
+//   const response = await http.post(KEYBOARD_END_POINT.SAVE_ARRANGEMENT, payload)
+//   return response.data
+// }
