@@ -86,7 +86,7 @@ const ChatbotToggleButton = ({ onClick, isOpen }: ChatbotToggleButtonProps) => {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      <img src={TaduckFace} alt="타덕" className="p-2" />
+      <img src={TaduckFace} alt="타덕" className="p-1" />
 
       {/* 사용자에게 챗봇 기능 알리는 말풍선 (챗봇이 닫혀있을 때만 표시) */}
       {!isOpen && (
