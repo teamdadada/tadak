@@ -7,8 +7,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-05-17T17:03:47+0900",
-    comments = "version: 1.6.3, compiler: javac, environment: Java 17.0.13 (BellSoft)"
+    date = "2025-05-19T13:47:12+0900",
+    comments = "version: 1.6.3, compiler: javac, environment: Java 17.0.12 (Oracle Corporation)"
 )
 @Component
 public class KeyboardMapperImpl implements KeyboardMapper {

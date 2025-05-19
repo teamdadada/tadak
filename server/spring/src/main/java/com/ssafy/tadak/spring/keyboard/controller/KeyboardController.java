@@ -3,8 +3,10 @@ package com.ssafy.tadak.spring.keyboard.controller;
 import com.ssafy.tadak.spring.auth.dto.UserInfo;
 import com.ssafy.tadak.spring.common.annotation.AuthUser;
 import com.ssafy.tadak.spring.keyboard.dto.request.CreateKeyboardRequest;
+import com.ssafy.tadak.spring.keyboard.dto.request.UpdateKeyboardProductRequest;
 import com.ssafy.tadak.spring.keyboard.dto.request.UpdateKeyboardRequest;
 import com.ssafy.tadak.spring.keyboard.dto.response.GetKeyboardListResponse;
+import com.ssafy.tadak.spring.keyboard.dto.response.GetKeyboardModelResponse;
 import com.ssafy.tadak.spring.keyboard.dto.response.GetOptionsResponse;
 import com.ssafy.tadak.spring.keyboard.dto.response.GetProductListResponse;
 import com.ssafy.tadak.spring.keyboard.dto.response.KeyboardCreateResponse;
@@ -71,13 +73,23 @@ public class KeyboardController {
         );
     }
 
+    @GetMapping("/{keyboard-id}/model")
+    public ResponseEntity<GetKeyboardModelResponse> getKeyboardModel(
+            @AuthUser UserInfo userInfo,
+            @PathVariable(name = "keyboard-id") Long keboardId
+    ){
+        return ResponseEntity.ok(
+                keyboardService.getKeyboardModel(userInfo.id(), keboardId)
+        );
+    }
+
     @GetMapping("/option")
     public ResponseEntity<GetOptionsResponse> getKeyboardOption(){
         return ResponseEntity.ok(keyboardService.getAllOptions());
     }
 
     @GetMapping("/keycap")
-    public ResponseEntity<GetProductListResponse> getKeycap(){
+    public ResponseEntity<List<GetProductListResponse>> getKeycap(){
         return ResponseEntity.ok(
                 keyboardService.getKeycapList()
         );
@@ -85,7 +97,7 @@ public class KeyboardController {
 
     //옵션 null인 경우 없음
     @GetMapping("/barebone")
-    public ResponseEntity<GetProductListResponse> getBarebone(
+    public ResponseEntity<List<GetProductListResponse>> getBarebone(
             @RequestParam(name = "layout") Long layout,
             @RequestParam(name = "material") Long material
     ){
@@ -95,7 +107,7 @@ public class KeyboardController {
     }
 
     @GetMapping("/switch")
-    public ResponseEntity<GetProductListResponse> getSwitch(
+    public ResponseEntity<List<GetProductListResponse>> getSwitch(
             @RequestParam(name = "type") Long type
     ){
         return ResponseEntity.ok(
@@ -123,6 +135,22 @@ public class KeyboardController {
                 request.keycapId()
         );
         return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping("/{keyboard-id}/product")
+    public ResponseEntity<Void> updateKeyboardProduct(
+            @AuthUser UserInfo userInfo,
+            @PathVariable(name = "keyboard-id") Long keyboardId,
+            @RequestBody UpdateKeyboardProductRequest request
+    ){
+       keyboardService.updateKeyboardProduct(
+               userInfo.id(),
+               keyboardId,
+               request.bareboneId(),
+               request.keycapId(),
+               request.switchId()
+       );
+       return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{keyboard-id}")
