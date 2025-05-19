@@ -19,6 +19,7 @@ from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 import src.chatbot.util.gemini_util as gemini
 from redis import Redis
 from urllib.parse import quote
+from langchain_core.messages import AIMessage
 
 load_dotenv()
 
@@ -114,42 +115,58 @@ def get_response(user_id: int, query: str):
         return {"response": random.choice(OUT_OF_SCOPE_RESPONSES)}
 
     memory = get_memory(str(user_id))
-    combine_docs_chain = create_stuff_documents_chain(
-        gemini.model,
-        prompt
-    )
 
-    retriever= create_history_aware_retriever(
-        llm=gemini.model,
-        prompt=retriever_prompt,
-        retriever=qdrant.as_retriever(
-        search_kwargs={
-            "k": 5,
-            # "score_threshold": 0.2
-            }
-        )
-    )
-    chain = create_retrieval_chain(
-        retriever=retriever,
-        combine_docs_chain=combine_docs_chain
-    )
-
-    result = chain.invoke({
-        "chat_history": memory.chat_memory.messages,
-        "input": query
-    })
-
-    answer = result["answer"] if "answer" in result else result
+    answer = ""
 
     recommendations = []
 
     if "추천" in query:
+        combine_docs_chain = create_stuff_documents_chain(
+            gemini.model,
+            prompt
+        )
+
+        retriever = create_history_aware_retriever(
+            llm=gemini.model,
+            prompt=retriever_prompt,
+            retriever=qdrant.as_retriever(
+                search_kwargs={
+                    "k": 5,
+                    # "score_threshold": 0.2
+                }
+            )
+        )
+        chain = create_retrieval_chain(
+            retriever=retriever,
+            combine_docs_chain=combine_docs_chain
+        )
+
+        result = chain.invoke({
+            "chat_history": memory.chat_memory.messages,
+            "input": query
+        })
+
+        answer = result["answer"] if "answer" in result else result
+
         retrieved_docs = retriever.invoke({
             "chat_history": memory.chat_memory.messages,
             "input": query
         })
 
         recommendations = extract_recommendations(retrieved_docs)
+    else:
+        formatted = prompt.format_messages(
+            chat_history=memory.chat_memory.messages,
+            input=query,
+            context=""
+        )
+        result = gemini.model.invoke(formatted)
+
+        # 만약 result가 BaseMessage 혹은 기타 객체일 경우 content 추출
+        if hasattr(result, "content"):
+            answer = result.content
+        else:
+            answer = str(result)
 
     recommendation_text = ""
     if recommendations:
