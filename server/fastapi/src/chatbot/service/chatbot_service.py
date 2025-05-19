@@ -176,6 +176,8 @@ def get_response(user_id: int, query: str):
             ((item["name"], item["url"]), item) for item in recommendations
         ).values())
 
+    if len(recommendations) > 0:
+        answer += "\n\n 타닥샵에 있는 이런 상품은 어때 덕?\n"
 
     memory.chat_memory.add_user_message(query)
     memory.chat_memory.add_ai_message(
