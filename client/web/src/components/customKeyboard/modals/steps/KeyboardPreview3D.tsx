@@ -90,7 +90,7 @@ const KeyboardModel = ({
       ref={groupRef}
       scale={[13, 13, 13]}
       position={[0, 0.1, 0]}
-      rotation={[0.8, 0, 0]}
+      rotation={[0.75, 0, 0]}
       onPointerDown={handlePointerDown}
     >
       <primitive object={scene} />
@@ -110,7 +110,7 @@ const KeyboardPreview3D = (props: KeyboardPreview3DProps) => {
             if (pointOption === 'custom') setFocusedKey(null)
           }}
         >
-          <ambientLight intensity={2} />
+          <ambientLight intensity={1} />
           <directionalLight position={[-4, 2, 8]} intensity={2} />
           <KeyboardModel {...props} />
           <OrbitControls makeDefault enablePan enableZoom enableRotate />

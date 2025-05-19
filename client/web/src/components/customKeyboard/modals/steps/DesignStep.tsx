@@ -6,13 +6,15 @@ import StepNavigation from './StepNavigation'
 import StepBarebone from './StepBarebone'
 import StepSwitch from './StepSwitch'
 import StepKeycap from './StepKeycap'
+import { KeyboardOptionsResponse } from '@/types/keyboard'
 
 interface DesignStepProps {
   step: number
   setStep: (step: number) => void
+  keyboardOptions: KeyboardOptionsResponse
 }
 
-const DesignStep = ({ step, setStep }: DesignStepProps) => {
+const DesignStep = ({ step, setStep, keyboardOptions }: DesignStepProps) => {
   const [layout, setLayout] = useState<'풀배열' | '텐키리스'>('풀배열')
   const [material, setMaterial] = useState<'금속' | '플라스틱'>('금속')
   const [outerColor, setOuterColor] = useState('#ffffff')
@@ -58,6 +60,8 @@ const DesignStep = ({ step, setStep }: DesignStepProps) => {
                 setMaterial={setMaterial}
                 outerColor={outerColor}
                 setOuterColor={setOuterColor}
+                layoutOptions={keyboardOptions.barebone.layout}
+                materialOptions={keyboardOptions.barebone.material}
               />
             )}
             {step === 2 && <StepSwitch />}

@@ -1,4 +1,5 @@
 // src/components/customKeyboard/modals/KeyboardModal.tsx
+import { useKeyboardOptions } from '@/hooks/useKeyboard'
 import { X } from 'lucide-react'
 import DesignStep from './steps/DesignStep'
 import FinalStep from './final/FinalStep'
@@ -10,6 +11,9 @@ interface KeyboardModalProps {
 
 const KeyboardModal = ({ onClose }: KeyboardModalProps) => {
   const [step, setStep] = useState(1)
+  const { data: keyboardOptions, isLoading } = useKeyboardOptions()
+
+  if (isLoading || !keyboardOptions) return null
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
@@ -22,7 +26,7 @@ const KeyboardModal = ({ onClose }: KeyboardModalProps) => {
         </button>
 
         {step <= 3 ? (
-          <DesignStep step={step} setStep={setStep} />
+          <DesignStep step={step} setStep={setStep} keyboardOptions={keyboardOptions}/>
         ) : (
           <FinalStep setStep={setStep} />
         )}
