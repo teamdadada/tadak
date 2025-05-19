@@ -20,7 +20,14 @@ const Key = ({ keyCode, label, isActive, className, onClick }: KeyProps) => {
         className,
       )}
     >
-      {label || <span className="w-full h-full" />}{' '}
+      {label === 'Backspace' ? (
+        <>
+          <span className="sm:block hidden text-xs md:text-sm">{label}</span>
+          <span className="sm:hidden block text-xs md:text-sm">Back Space</span>
+        </>
+      ) : (
+        <span className="text-xs md:text-sm">{label}</span>
+      )}
     </button>
   )
 }
