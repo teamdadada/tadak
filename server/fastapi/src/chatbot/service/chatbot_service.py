@@ -170,10 +170,20 @@ def get_response(user_id: int, query: str):
 
     recommendation_text = ""
     if recommendations:
-        recommendation_text = "<br><br><strong>[추천 리스트]</strong><br>" + "<br>".join(
-            f"- <strong>{item['name']}</strong> (₩{item['price']}) → "
-            f"<a href='{item['url']}' target='_blank'>제품 링크</a>"
+        #중복 제거
+        recommendations = list(OrderedDict(
+            ((item["name"], item["url"]), item) for item in recommendations
+        ).values())
+
+        recommendation_text = ("<br><br><strong style='font-size:16px; color:#FFD400;'>[추천 리스트]</strong><br>"
+        + "<br><br>".join(
+            f"<div style='margin:4px 0;'>"
+            f"⌨️ <strong style='color:#333;'>{item['name']}</strong> "
+            f"<span style='color:#555;'>(₩{item['price']})</span> → "
+            f"<a href='{item['url']}' target='_blank' style='color:#007AFF; text-decoration:underline;'>제품 링크</a>"
+            f"</div>"
             for item in recommendations
+            )
         )
 
     # 전체 답변 텍스트
