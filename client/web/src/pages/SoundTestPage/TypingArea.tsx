@@ -147,6 +147,18 @@ const TypingArea = () => {
       if (!activeKeys.includes(e.code)) {
         setActiveKeys((prev) => [...prev, e.code])
       }
+
+      // Win 키/Alt 키가 눌렸을 경우 타이머로 자동 해제
+      if (
+        e.code === 'MetaLeft' ||
+        e.code === 'MetaRight' ||
+        e.code == 'AltLeft' ||
+        e.code == 'AltRight'
+      ) {
+        setTimeout(() => {
+          setActiveKeys((prev) => prev.filter((key) => key !== e.code))
+        }, 200)
+      }
     }
 
     const handleKeyUp = (e: KeyboardEvent) => {
