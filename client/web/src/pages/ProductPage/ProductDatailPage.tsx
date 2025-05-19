@@ -10,6 +10,7 @@ import ProductInfoKeycap from '@/components/product/ProductInfoKeycap'
 import FavoriteButton from '@/components/product/FavoriteButton'
 import PayLinkButton from '@/components/product/PayLinkButton'
 import TopButton from '@/components/common/TopButton'
+import Chatbot from '@/components/chatbot/Chatbot'
 
 // 스켈레톤 UI 컴포넌트
 const ProductDetailSkeleton = () => {
@@ -158,6 +159,7 @@ const ProductDetailPage = () => {
       <ProductDetailTabs imageUrl={data.detailImage} />
 
       <TopButton showBelow={1000} />
+      <Chatbot />
     </div>
   )
 }
