@@ -21,6 +21,7 @@ import com.ssafy.tadak.spring.keyboard.dto.KeyboardUpdateDto;
 import com.ssafy.tadak.spring.keyboard.dto.OptionDto;
 import com.ssafy.tadak.spring.keyboard.dto.request.Colors;
 import com.ssafy.tadak.spring.keyboard.dto.response.GetKeyboardListResponse;
+import com.ssafy.tadak.spring.keyboard.dto.response.GetKeyboardModelResponse;
 import com.ssafy.tadak.spring.keyboard.dto.response.GetOptionsResponse;
 import com.ssafy.tadak.spring.keyboard.dto.response.GetProductListResponse;
 import com.ssafy.tadak.spring.keyboard.dto.response.KeyboardCreateResponse;
@@ -55,7 +56,6 @@ public class KeyboardService {
     private final KeyboardOptionJpaRepository keyboardOptionJpaRepository;
     private final ImageJpaRepository imageJpaRepository;
     private final MinioUtil minioUtil;
-    private final BareboneOptionJpaRepository bareboneJpaRepository;
     private final SwitchOptionJpaRepository switchOptionJpaRepository;
     private final KeycapOptionJpaRepository keycapOptionJpaRepository;
     private final OptionJpaRepository optionJpaRepository;
@@ -83,7 +83,7 @@ public class KeyboardService {
             Long switchId,
             Long keycapId
     ) {
-        BareboneOption bareboneOption = bareboneJpaRepository.findById(bareboneId)
+        BareboneOption bareboneOption = bareboneOptionJpaRepository.findById(bareboneId)
                 .orElseThrow(()->new KeyboardException.KeyboardNotFoundException(PART_OPTION_NOTFOUND));
         SwitchOption switchOption = switchOptionJpaRepository.findById(switchId)
                 .orElseThrow(()->new KeyboardException.KeyboardNotFoundException(PART_OPTION_NOTFOUND));
@@ -201,6 +201,29 @@ public class KeyboardService {
         );
     }
 
+    /** 키보드 모델 조회
+     * 키보드 3D 모델 경로를 반환합니다.
+     * **/
+    public GetKeyboardModelResponse getKeyboardModel(
+            Long userId,
+            Long keyboardId
+    ) {
+        Keyboard keyboard = getKeyboard(userId, keyboardId);
+
+        Image model = keyboard.getModel();
+        String model3dUrl=null;
+        try{
+            model3dUrl = minioUtil.getImageUrl(model.getBucket(), model.getFilePath());
+        }catch (Exception e){
+            throw new MinioException.MinioNotFoundException(FILE_NOTFOUND);
+        }
+
+        return GetKeyboardModelResponse.builder()
+                .keyboardId(keyboardId)
+                .model3dUrl(model3dUrl)
+                .build();
+    }
+
     /** 키보드 옵션 수정
      * 커스텀 키보드 옵션을 업데이트하는 메소드입니다.
      * 기존 옵션들을 모두 지우고 옵션을 다시 저장합니다.
@@ -286,6 +309,38 @@ public class KeyboardService {
         );
     }
 
+    /** 키보드 제품 변경
+     * 커스텀 키보드에 선택한 제품을 변경합니다.
+     * **/
+    @Transactional
+    public void updateKeyboardProduct(
+            Long userId,
+            Long keyboardId,
+            Long bareboneId,
+            Long keycapId,
+            Long switchId
+    ){
+        Keyboard keyboard = getKeyboard(userId, keyboardId);
+
+        if(bareboneId != null){
+            BareboneOption bareboneOption = bareboneOptionJpaRepository.findById(bareboneId)
+                    .orElseThrow(()->new KeyboardException.KeyboardNotFoundException(PART_OPTION_NOTFOUND));
+            keyboard.setBareboneOption(bareboneOption);
+        }
+
+        if(keycapId != null){
+            KeycapOption keycapOption = keycapOptionJpaRepository.findById(keycapId)
+                    .orElseThrow(()->new KeyboardException.KeyboardNotFoundException(PART_OPTION_NOTFOUND));
+            keyboard.setKeycapOption(keycapOption);
+        }
+
+        if(switchId != null){
+            SwitchOption switchOption = switchOptionJpaRepository.findById(switchId)
+                    .orElseThrow(()->new KeyboardException.KeyboardNotFoundException(PART_OPTION_NOTFOUND));
+            keyboard.setSwitchOption(switchOption);
+        }
+    }
+
     @Transactional
     public void deleteKeyboard(Long userId, Long keyboardId) throws Exception {
         Keyboard keyboard = getKeyboard(userId, keyboardId);
@@ -335,31 +390,26 @@ public class KeyboardService {
     /** 제품을 검색하는 메소드입니다.
      * 선택한 옵션에 따라 제품을 조회합니다.
      * **/
-    public GetProductListResponse getSwitchList(
+    public List< GetProductListResponse> getSwitchList(
             Long typeId
     ) {
         List<SwitchOption> switchOptions = switchOptionJpaRepository.findAllByType(typeId);
-        List< GetProductListResponse.ProductInfo> result = productConverter.convertToProductInfoList(switchOptions);
+        return productConverter.convertToProductInfoList(switchOptions);
 
-        return new GetProductListResponse(result);
     }
 
-    public GetProductListResponse getBareboneList(
+    public List<GetProductListResponse> getBareboneList(
             Long layout,
             Long material
     ) {
         List<BareboneOption> bareboneOptions = bareboneOptionJpaRepository
                                                 .findAllByLayoutAndMaterial(layout,material);
-        List< GetProductListResponse.ProductInfo> result = productConverter.convertToProductInfoList(bareboneOptions);
-
-        return new GetProductListResponse(result);
+        return productConverter.convertToProductInfoList(bareboneOptions);
     }
 
-    public GetProductListResponse getKeycapList() {
+    public List<GetProductListResponse> getKeycapList() {
         List<KeycapOption> keyboardOptions = keycapOptionJpaRepository.findAll();
-        List< GetProductListResponse.ProductInfo> result = productConverter.convertToProductInfoList(keyboardOptions);
-
-        return new GetProductListResponse(result);
+        return productConverter.convertToProductInfoList(keyboardOptions);
     }
 
     /** 키보드 불러오기

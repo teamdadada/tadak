@@ -4,15 +4,12 @@ import lombok.Builder;
 
 import java.util.List;
 
+@Builder
 public record GetProductListResponse(
-        List<ProductInfo> products
+        Long productId,
+        String name,
+        Integer price,
+        Integer quantity,
+        String imageUrl
 ) {
-    @Builder
-    public record ProductInfo(
-            Long productId,
-            String name,
-            Integer price,
-            Integer quantity,
-            String imageUrl
-    ){}
 }
