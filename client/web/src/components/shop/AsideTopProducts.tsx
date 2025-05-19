@@ -24,7 +24,7 @@ const recommendedItems = [
 const AsideRecommendation = () => {
   return (
     <aside className="hidden p-4 text-sm rounded-md w-[180px] lg:block bg-tadak-light-gray text-tadak-dark-gray">
-      <h2 className="mb-2 font-semibold text-tadak-black">💡 추천</h2>
+      <h2 className="mb-2 font-semibold text-tadak-black">💡 인기상품품</h2>
       <ul className="space-y-2">
         {recommendedItems.map((item) => (
           <li key={item.productId} className="flex justify-center">

@@ -1,15 +1,12 @@
 import { useEffect, useState } from 'react'
 import CategoryTabs from '@/components/shop/CategoryTabs'
-// import BearboneFilter from '@/components/shop/BareboneFilter'
-// import ItemGrid from '@/components/shop/ItemGrid'
-// import SwitchFilter from '@/components/shop/SwitchFilter'
-// import KeycapFilter from '@/components/shop/KeycapFilter'
-import AsideRecommendation from '@/components/shop/AsideRecommendation'
+import AsideTopProducts from '@/components/shop/AsideTopProducts'
 import { FilterByType, ProductType } from '@/types/shop'
 import FilterPanel from '@/components/shop/FilterPanel'
 import PageIntroBanner from '@/components/common/PageIntroBanner'
 import TopButton from '@/components/common/TopButton'
 import Chatbot from '@/components/chatbot/Chatbot'
+import { useIsLgUp } from '@/hooks/useShop'
 
 const ShopPage = () => {
   const categories = ['베어본', '스위치', '키캡']
@@ -18,33 +15,17 @@ const ShopPage = () => {
 
   const [selectedBareboneFilters, setSelectedBareboneFilters] = useState<
     FilterByType<'BAREBONE'>
-  >({
-    // manufacturer: [] as string[],
-    // keyLayout: [] as string[],
-    // features: [] as string[],
-    // minPriceMin: undefined as number | undefined,
-    // minPriceMax: undefined as number | undefined,
-  })
+  >({})
 
   const [selectedSwitchFilters, setSelectedSwitchFilters] = useState<
     FilterByType<'SWITCH'>
-  >({
-    // switchType: [] as string[],
-    // keyForce: [] as string[],
-    // quantity: [] as string[],
-    // minPriceMin: undefined as number | undefined,
-    // minPriceMax: undefined as number | undefined,
-  })
+  >({})
 
   const [selectedKeycapFilters, setSelectedKeycapFilters] = useState<
     FilterByType<'KEYCAP'>
-  >({
-    // keycapMaterial: [] as string[],
-    // engravingPosition: [] as string[],
-    // keyCount: [] as string[],
-    // minPriceMin: undefined as number | undefined,
-    // minPriceMax: undefined as number | undefined,
-  })
+  >({})
+
+  const isLg = useIsLgUp()
 
   useEffect(() => {
     const updateIndicator = () => {
@@ -58,43 +39,6 @@ const ShopPage = () => {
     window.addEventListener('resize', updateIndicator)
     return () => window.removeEventListener('resize', updateIndicator)
   }, [])
-
-  // const handleBareboneFilterChange = useCallback(
-  //   (next: FilterByType<'BAREBONE'>) => {
-  //     setSelectedBareboneFilters((prev) => {
-  //       // 🚀 JSON.stringify로 깊은 비교하여 무한 렌더링 방지
-  //       if (JSON.stringify(prev) === JSON.stringify(next)) {
-  //         return prev // ✅ 동일하면 상태 변경 안함
-  //       }
-  //       return next
-  //     })
-  //   },
-  //   [],
-  // )
-
-  // const handleSwitchFilterChange = useCallback(
-  //   (next: FilterByType<'SWITCH'>) => {
-  //     setSelectedSwitchFilters((prev) => {
-  //       if (JSON.stringify(prev) === JSON.stringify(next)) {
-  //         return prev
-  //       }
-  //       return next
-  //     })
-  //   },
-  //   [],
-  // )
-
-  // const handleKeycapFilterChange = useCallback(
-  //   (next: FilterByType<'KEYCAP'>) => {
-  //     setSelectedKeycapFilters((prev) => {
-  //       if (JSON.stringify(prev) === JSON.stringify(next)) {
-  //         return prev
-  //       }
-  //       return next
-  //     })
-  //   },
-  //   [],
-  // )
 
   const panels = [
     <FilterPanel
@@ -140,9 +84,11 @@ const ShopPage = () => {
             className="w-full"
           />
         </div>
-        <div className="flex-1">
-          <AsideRecommendation />
-        </div>
+        {isLg && (
+          <div className="flex-1">
+            <AsideTopProducts />
+          </div>
+        )}
       </div>
       <Chatbot />
       <TopButton showBelow={400} />
