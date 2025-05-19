@@ -3,6 +3,7 @@ package com.ssafy.tadak.spring.keyboard.controller;
 import com.ssafy.tadak.spring.auth.dto.UserInfo;
 import com.ssafy.tadak.spring.common.annotation.AuthUser;
 import com.ssafy.tadak.spring.keyboard.dto.request.CreateKeyboardRequest;
+import com.ssafy.tadak.spring.keyboard.dto.request.UpdateKeyboardProductRequest;
 import com.ssafy.tadak.spring.keyboard.dto.request.UpdateKeyboardRequest;
 import com.ssafy.tadak.spring.keyboard.dto.response.GetKeyboardListResponse;
 import com.ssafy.tadak.spring.keyboard.dto.response.GetKeyboardModelResponse;
@@ -134,6 +135,22 @@ public class KeyboardController {
                 request.keycapId()
         );
         return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping("/{keyboard-id}/product")
+    public ResponseEntity<Void> updateKeyboardProduct(
+            @AuthUser UserInfo userInfo,
+            @PathVariable(name = "keyboard-id") Long keyboardId,
+            @RequestBody UpdateKeyboardProductRequest request
+    ){
+       keyboardService.updateKeyboardProduct(
+               userInfo.id(),
+               keyboardId,
+               request.bareboneId(),
+               request.keycapId(),
+               request.switchId()
+       );
+       return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{keyboard-id}")

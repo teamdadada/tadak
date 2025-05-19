@@ -56,7 +56,6 @@ public class KeyboardService {
     private final KeyboardOptionJpaRepository keyboardOptionJpaRepository;
     private final ImageJpaRepository imageJpaRepository;
     private final MinioUtil minioUtil;
-    private final BareboneOptionJpaRepository bareboneJpaRepository;
     private final SwitchOptionJpaRepository switchOptionJpaRepository;
     private final KeycapOptionJpaRepository keycapOptionJpaRepository;
     private final OptionJpaRepository optionJpaRepository;
@@ -84,7 +83,7 @@ public class KeyboardService {
             Long switchId,
             Long keycapId
     ) {
-        BareboneOption bareboneOption = bareboneJpaRepository.findById(bareboneId)
+        BareboneOption bareboneOption = bareboneOptionJpaRepository.findById(bareboneId)
                 .orElseThrow(()->new KeyboardException.KeyboardNotFoundException(PART_OPTION_NOTFOUND));
         SwitchOption switchOption = switchOptionJpaRepository.findById(switchId)
                 .orElseThrow(()->new KeyboardException.KeyboardNotFoundException(PART_OPTION_NOTFOUND));
@@ -308,6 +307,38 @@ public class KeyboardService {
                         .build(),
                 keyboard
         );
+    }
+
+    /** 키보드 제품 변경 
+     * 커스텀 키보드에 선택한 제품을 변경합니다.
+     * **/
+    @Transactional
+    public void updateKeyboardProduct(
+            Long userId,
+            Long keyboardId,
+            Long bareboneId,
+            Long keycapId,
+            Long switchId
+    ){
+        Keyboard keyboard = getKeyboard(userId, keyboardId);
+
+        if(bareboneId != null){
+            BareboneOption bareboneOption = bareboneOptionJpaRepository.findById(bareboneId)
+                    .orElseThrow(()->new KeyboardException.KeyboardNotFoundException(PART_OPTION_NOTFOUND));
+            keyboard.setBareboneOption(bareboneOption);
+        }
+
+        if(keycapId != null){
+            KeycapOption keycapOption = keycapOptionJpaRepository.findById(keycapId)
+                    .orElseThrow(()->new KeyboardException.KeyboardNotFoundException(PART_OPTION_NOTFOUND));
+            keyboard.setKeycapOption(keycapOption);
+        }
+
+        if(switchId != null){
+            SwitchOption switchOption = switchOptionJpaRepository.findById(switchId)
+                    .orElseThrow(()->new KeyboardException.KeyboardNotFoundException(PART_OPTION_NOTFOUND));
+            keyboard.setSwitchOption(switchOption);
+        }
     }
 
     @Transactional
