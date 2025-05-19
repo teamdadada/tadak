@@ -6,7 +6,9 @@ import { toast } from 'sonner'
 export const useSendMessage = () => {
   const { mutateAsync, isPending } = useMutation({
     mutationFn: sendMessage,
-    onSuccess: () => {},
+    onSuccess: (response) => {
+      console.log(response)
+    },
     onError: () => {
       toast.error('메시지 전송에 실패했습니다.')
     },

@@ -1,5 +1,5 @@
-import { Bot } from 'lucide-react'
 import { useState, useEffect } from 'react'
+import TaduckFace from '@/assets/images/taduck_face.png'
 
 interface ChatbotToggleButtonProps {
   onClick: () => void
@@ -80,14 +80,13 @@ const ChatbotToggleButton = ({ onClick, isOpen }: ChatbotToggleButtonProps) => {
                   ${isBouncing ? 'animate-bounce' : ''}`}
       style={{
         boxShadow: '0px 3px 8px 0px rgba(0, 0, 0, 0.32)',
-        position: 'relative',
         zIndex: 60,
       }}
       aria-label={isOpen ? '채팅 도우미 닫기' : '채팅 도우미 열기'}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      <Bot size={40} className="text-tadak-white" />
+      <img src={TaduckFace} alt="타덕" className="p-2" />
 
       {/* 사용자에게 챗봇 기능 알리는 말풍선 (챗봇이 닫혀있을 때만 표시) */}
       {!isOpen && (
