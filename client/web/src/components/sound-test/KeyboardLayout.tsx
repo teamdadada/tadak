@@ -8,12 +8,9 @@ interface KeyboardLayoutProps {
 
 const KeyboardLayout = ({ activeKeys }: KeyboardLayoutProps) => {
   return (
-    <div className="flex flex-col items-center gap-2">
+    <div className="flex flex-col items-center justify-center gap-2 min-w-[320px] ">
       {keyboardLayout.map((row, rowIndex) => (
-        <div
-          key={`row-${rowIndex}`}
-          className="grid grid-cols-60 gap-1 w-full max-w-5xl"
-        >
+        <div key={`row-${rowIndex}`} className="grid grid-cols-60 gap-1 w-full">
           {row.map((key) => (
             <Key
               key={key.code}
