@@ -5,6 +5,7 @@ import { useAddZzim, useDeleteZzim } from '@/hooks/useZzim'
 import { useUserStore } from '@/store/userStore'
 import { useEffect, useState } from 'react'
 import { Loader2 } from 'lucide-react'
+import { motion } from 'framer-motion'
 
 interface ItemCardProps extends Product {
   size?: 'sm' | 'md' | 'lg'
@@ -21,24 +22,31 @@ const ItemCard = ({
 }: ItemCardProps) => {
   const navigate = useNavigate()
 
-  // 이미지 로딩 상태 관리
+  // 이미지 로딩 상태
   const [imageLoading, setImageLoading] = useState(true)
   const [imageError, setImageError] = useState(false)
 
-  // 찜 상태 관리
+  // 찜 상태
   const [isLiked, setIsLiked] = useState(false)
   const zzimList = useUserStore((state) => state.zzimList)
+
+  // 하트 애니메이션 상태
+  const [isAnimating, setIsAnimating] = useState(false)
 
   useEffect(() => {
     const liked = zzimList.some((item) => item.item.productId === productId)
     setIsLiked(liked)
-  }, [zzimList, productId, isLiked])
+  }, [zzimList, productId])
 
   const addZzim = useAddZzim()
   const deleteZzim = useDeleteZzim()
 
   const handleZzimClick = async (e: React.MouseEvent) => {
     e.stopPropagation()
+
+    // 하트 애니메이션 트리거
+    setIsAnimating(true)
+    setTimeout(() => setIsAnimating(false), 300)
 
     try {
       if (isLiked) {
@@ -69,19 +77,19 @@ const ItemCard = ({
       onClick={() => {
         if (type) navigate(`/product/${type}/${productId}`)
       }}
-      className="w-full rounded-lg p-5 flex flex-col justify-between items-center relative bg-tadak-white cursor-pointer "
+      className="w-full rounded-lg p-5 flex flex-col justify-between items-center relative bg-tadak-white cursor-pointer"
     >
       <div className="relative w-full aspect-square overflow-hidden rounded-md">
-        {/* 이미지 로딩 플레이스홀더 */}
+        {/* 이미지 로딩 스켈레톤 */}
         {imageLoading && (
-          <div className="absolute inset-0 flex items-center justify-center  animate-pulse">
+          <div className="absolute inset-0 flex items-center justify-center animate-pulse">
             <Loader2 className="w-8 h-8 text-tadak-gray animate-spin" />
           </div>
         )}
 
-        {/* 이미지 로드 에러 플레이스홀더 */}
+        {/* 이미지 로드 실패 시 */}
         {imageError && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center ">
+          <div className="absolute inset-0 flex flex-col items-center justify-center">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="32"
@@ -104,7 +112,7 @@ const ItemCard = ({
           </div>
         )}
 
-        {/* 실제 이미지 */}
+        {/* 상품 이미지 */}
         <img
           src={thumbnail}
           alt={name}
@@ -115,17 +123,19 @@ const ItemCard = ({
           onError={handleImageError}
         />
 
-        {/* 찜 버튼 */}
-        <div
+        {/* 하트 버튼 (애니메이션 적용) */}
+        <motion.div
           className="absolute p-1 rounded-lg top-2 right-2 cursor-pointer z-2"
           onClick={handleZzimClick}
+          animate={isAnimating ? { scale: [1, 1.5, 1] } : {}}
+          transition={{ duration: 0.3 }}
         >
           {isLiked ? (
             <FaHeart className="w-5 h-5 text-tadak-warning drop-shadow-md" />
           ) : (
             <FaRegHeart className="w-5 h-5 text-tadak-white drop-shadow-md" />
           )}
-        </div>
+        </motion.div>
       </div>
 
       <div className="flex flex-col justify-center w-full h-16 mt-4 text-left">
