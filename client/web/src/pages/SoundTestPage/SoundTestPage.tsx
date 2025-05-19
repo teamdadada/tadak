@@ -4,7 +4,7 @@ import TypingArea from './TypingArea'
 
 const SoundTestPage = () => {
   return (
-    <div className="container mx-auto">
+    <div className="container mx-auto max-w-7xl">
       <PageIntroBanner
         title="🎵 타닥 타건샵"
         description="실제로 키보드를 눌러보며, 축마다 다른 소리를 직접 타이핑으로 체험해보세요!"
