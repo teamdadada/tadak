@@ -1,6 +1,7 @@
 package com.ssafy.tadak.spring.placement.domain.entity;
 
 import com.ssafy.tadak.spring.minio.domain.entity.Image;
+import com.ssafy.tadak.spring.placement.dto.VectorDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -109,5 +110,16 @@ public class Placement {
         this.scaleX = scaleX;
         this.scaleY = scaleY;
         this.scaleZ = scaleZ;
+    }
+
+    public void updatePlacement(VectorDto.Vector2 position, VectorDto.Vector3 rotation, VectorDto.Vector3 scale) {
+        this.locationX = position.x();
+        this.locationY = position.y();
+        this.rotationX = rotation.x();
+        this.rotationY = rotation.y();
+        this.rotationZ = rotation.z();
+        this.scaleX = scale.x();
+        this.scaleY = scale.y();
+        this.scaleZ = scale.z();
     }
 }

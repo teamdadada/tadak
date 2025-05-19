@@ -2,14 +2,20 @@ package com.ssafy.tadak.spring.placement.controller;
 
 import com.ssafy.tadak.spring.auth.dto.UserInfo;
 import com.ssafy.tadak.spring.common.annotation.AuthUser;
+import com.ssafy.tadak.spring.placement.dto.VectorDto;
 import com.ssafy.tadak.spring.placement.dto.request.CreatePlacementRequest;
+import com.ssafy.tadak.spring.placement.dto.request.UpdatePlacementRequest;
+import com.ssafy.tadak.spring.placement.dto.response.GetPlacementDetailResponse;
 import com.ssafy.tadak.spring.placement.dto.response.GetPlacementListResponse;
 import com.ssafy.tadak.spring.placement.dto.response.GetUserDefaultResponse;
 import com.ssafy.tadak.spring.placement.service.PlacementService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -48,5 +54,40 @@ public class PlacementController {
         return ResponseEntity.ok(
                 placementService.getPlacementList(userInfo.id())
         );
+    }
+
+    @GetMapping("/{placement-id}")
+    public ResponseEntity<GetPlacementDetailResponse> getPlacementDetail(
+        @AuthUser UserInfo userInfo,
+        @PathVariable(name = "placement-id") Long placementId
+    ){
+        return ResponseEntity.ok(
+                placementService.getPlacementDetail(userInfo.id(), placementId)
+        );
+    }
+
+    @PatchMapping
+    public ResponseEntity<Void> updatePlacement(
+            @AuthUser UserInfo userInfo,
+            @RequestBody UpdatePlacementRequest request
+    ){
+        placementService.updatePlacement(
+                userInfo.id(),
+                request.placementId(),
+                request.keyboardId(),
+                request.position(),
+                request.rotation(),
+                request.scale()
+        );
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/{placement-id}")
+    public ResponseEntity<Void> deletePlacement(
+            @AuthUser UserInfo userInfo,
+            @PathVariable(name = "placement-id") Long placementId
+    ){
+        placementService.deletePlacement(userInfo.id(), placementId);
+        return ResponseEntity.noContent().build();
     }
 }
