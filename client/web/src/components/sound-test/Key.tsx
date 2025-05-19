@@ -14,7 +14,7 @@ const Key = ({ keyCode, label, isActive, className, onClick }: KeyProps) => {
       onClick={onClick}
       data-key-code={keyCode}
       className={cn(
-        'hover:cursor-default h-14 text-sm font-medium rounded-md shadow transition-all duration-150 flex pt-1 justify-center bg-white text-black',
+        'focus:outline-none focus:ring-0 focus:ring-offset-0 focus:shadow-none focus:border-none hover:cursor-default h-10 sm:h-14 text-sm font-medium rounded-md shadow transition-all duration-150 flex pt-1 justify-center bg-white text-black',
         isActive && 'bg-tadak-primary text-white',
         'shadow-[4px_4px_22.3px_0px_rgba(0,0,0,0.1)]',
         className,
