@@ -7,6 +7,7 @@ interface Item {
   id: number
   name: string
   imageUrl: string
+  canDelete?: boolean
 }
 
 interface ItemCardProps {
@@ -40,6 +41,7 @@ const ItemCard = ({ item, itemType, isOpen, onOpenChange }: ItemCardProps) => {
           itemType={itemType}
           open={isOpen}
           onOpenChange={onOpenChange}
+          canDelete={item.canDelete}
         >
           {isOpen ? (
             <DropupIcon className="w-4 h-4 text-gray-500 cursor-pointer" />

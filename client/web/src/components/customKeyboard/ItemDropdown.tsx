@@ -1,4 +1,10 @@
-// src/components/customKeyboard/ItemDropdown.tsx
+import { useState } from 'react'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { toast } from 'sonner'
+
+import { deletePlacement } from '@/services/placementService'
+import DeskDeleteModal from './modals/DeskDeleteModal'
+
 import { ReactNode } from 'react'
 import { ReactComponent as DeskIcon } from '@/assets/icons/desk.svg'
 import { ReactComponent as CartIcon } from '@/assets/icons/cart.svg'
@@ -11,6 +17,7 @@ interface ItemDropdownProps {
   children: ReactNode
   open: boolean
   onOpenChange: (value: boolean) => void
+  canDelete?: boolean
 }
 
 const ItemDropdown = ({
@@ -19,12 +26,38 @@ const ItemDropdown = ({
   children,
   open,
   onOpenChange,
+  canDelete = true,
 }: ItemDropdownProps) => {
+  const [showConfirmModal, setShowConfirmModal] = useState(false)
+  const queryClient = useQueryClient()
+
+  const { mutate: mutateDelete } = useMutation({
+    mutationFn: deletePlacement,
+    onSuccess: () => {
+      toast.success('삭제가 완료되었어요.')
+      queryClient.invalidateQueries({ queryKey: ['placementList'] }) // 리스트 새로고침
+    },
+    onError: () => {
+      toast.error('삭제 중 오류가 발생했어요.')
+    },
+  })
+
   const toggleDropdown = () => onOpenChange(!open)
 
   const handleAction = (action: string) => {
-    console.log(`Action "${action}" on item #${itemId}`)
+    if (action === 'delete' && itemType === 'desk') {
+      setShowConfirmModal(true)
+    } else if (action === 'set' && itemType === 'desk') {
+      toast.info('곧 서비스가 오픈될 예정이에요 🙌') // 안내 메시지
+    } else {
+      console.log(`Action "${action}" on item #${itemId}`)
+    }
     onOpenChange(false)
+  }
+
+  const handleDeleteConfirm = () => {
+    mutateDelete(itemId)
+    setShowConfirmModal(false)
   }
 
   return (
@@ -37,42 +70,28 @@ const ItemDropdown = ({
         <div className="absolute z-50 mt-2 right-[-9px] w-[181px] rounded-md bg-white shadow border p-2 space-y-2">
           {itemType === 'keyboard' ? (
             <>
-              <DropdownItem
-                icon={<DeskIcon />}
-                text="내 데스크에 배치"
-                onClick={() => handleAction('place')}
-              />
-              <DropdownItem
-                icon={<CartIcon />}
-                text="장바구니 담기"
-                onClick={() => handleAction('cart')}
-              />
-              <DropdownItem
-                icon={<EditIcon />}
-                text="수정"
-                onClick={() => handleAction('edit')}
-              />
-              <DropdownItem
-                icon={<DeleteIcon />}
-                text="삭제"
-                onClick={() => handleAction('delete')}
-              />
+              <DropdownItem icon={<DeskIcon />} text="내 데스크에 배치" onClick={() => handleAction('place')} />
+              <DropdownItem icon={<CartIcon />} text="장바구니 담기" onClick={() => handleAction('cart')} />
+              <DropdownItem icon={<EditIcon />} text="수정" onClick={() => handleAction('edit')} />
+              <DropdownItem icon={<DeleteIcon />} text="삭제" onClick={() => handleAction('delete')} />
             </>
           ) : (
             <>
-              <DropdownItem
-                icon={<DeskIcon />}
-                text="내 데스크에 설정"
-                onClick={() => handleAction('set')}
-              />
-              <DropdownItem
-                icon={<DeleteIcon />}
-                text="삭제"
-                onClick={() => handleAction('delete')}
-              />
+              <DropdownItem icon={<DeskIcon />} text="내 데스크에 설정" onClick={() => handleAction('set')} />
+              {canDelete && (
+                <DropdownItem icon={<DeleteIcon />} text="삭제" onClick={() => handleAction('delete')} />
+              )}
             </>
           )}
         </div>
+      )}
+
+      {/* 삭제 확인 모달 */}
+      {showConfirmModal && (
+        <DeskDeleteModal
+          onConfirm={handleDeleteConfirm}
+          onCancel={() => setShowConfirmModal(false)}
+        />
       )}
     </div>
   )
