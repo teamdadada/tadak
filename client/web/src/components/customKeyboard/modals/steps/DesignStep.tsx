@@ -7,6 +7,7 @@ import StepBarebone from './StepBarebone'
 import StepSwitch from './StepSwitch'
 import StepKeycap from './StepKeycap'
 import { KeyboardOptionsResponse } from '@/types/keyboard'
+import { Product } from '@/types/product'
 
 interface DesignStepProps {
   step: number
@@ -24,6 +25,8 @@ const DesignStep = ({ step, setStep, keyboardOptions }: DesignStepProps) => {
   const [pointOption, setPointOption] = useState<'none' | 'set' | 'custom'>('none')
   const [focusedKey, setFocusedKey] = useState<string | null>(null)
   const [customKeyMap, setCustomKeyMap] = useState<Record<string, string>>({})
+
+  const [bareboneProduct, setBareboneProduct] = useState<Product | null>(null)
 
   return (
     <>
@@ -45,8 +48,13 @@ const DesignStep = ({ step, setStep, keyboardOptions }: DesignStepProps) => {
               setFocusedKey={setFocusedKey}
             />
           </div>
-          <div className="mt-6 h-60 items-center justify-center">
-            <ProductSummary />
+          <div className="mt-6 h-48 items-center justify-center">
+            <ProductSummary
+              product={bareboneProduct}
+              layout={layout}
+              material={material}
+              outerColor={outerColor}
+            />
           </div>
         </div>
 
@@ -62,6 +70,7 @@ const DesignStep = ({ step, setStep, keyboardOptions }: DesignStepProps) => {
                 setOuterColor={setOuterColor}
                 layoutOptions={keyboardOptions.barebone.layout}
                 materialOptions={keyboardOptions.barebone.material}
+                onProductChange={setBareboneProduct}
               />
             )}
             {step === 2 && <StepSwitch />}

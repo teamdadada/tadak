@@ -1,6 +1,8 @@
 // components/customKeyboard/modals/steps/StepBarebone.tsx
 import { HexColorPicker } from 'react-colorful'
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
+import { fetchBareboneProducts } from '@/services/keyboardService'
+import { Product } from '@/types/product'
 
 interface StepBareboneProps {
   layout: '풀배열' | '텐키리스'
@@ -11,6 +13,7 @@ interface StepBareboneProps {
   setOuterColor: (color: string) => void
   layoutOptions: { id: number; name: string }[]
   materialOptions: { id: number; name: string }[]
+  onProductChange: (product: Product | null) => void
 }
 
 const StepBarebone = ({
@@ -22,12 +25,27 @@ const StepBarebone = ({
   setOuterColor,
   layoutOptions,
   materialOptions,
+  onProductChange,
 }: StepBareboneProps) => {
   const [inputValue, setInputValue] = useState(outerColor.replace('#', '').toUpperCase())
 
   useEffect(() => {
     setInputValue(outerColor.replace('#', '').toUpperCase())
   }, [outerColor])
+
+  // 초기값 또는 옵션 변경 시 상품 호출
+  useEffect(() => {
+    const layoutId = layoutOptions.find((o) => o.name === layout)?.id
+    const materialId = materialOptions.find((o) => o.name === material)?.id
+
+    if (layoutId && materialId) {
+      fetchBareboneProducts(layoutId, materialId)
+        .then((products) => {
+          onProductChange(products?.[0] ?? null)
+        })
+        .catch(() => onProductChange(null))
+    }
+  }, [layout, material, layoutOptions, materialOptions])
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.toUpperCase()
