@@ -18,55 +18,51 @@ import ItemCard from '@/components/shop/ItemCard'
 import { fetchItems } from '@/services/mainService'
 import { Product } from '@/types/shop'
 import Chatbot from '@/components/chatbot/Chatbot'
-import ThanksImage from '@/assets/images/thanks.png'
-
-// 스켈레톤 UI 컴포넌트
-const ItemCardSkeleton = () => (
-  <div className="w-full rounded-lg p-5 flex flex-col justify-between items-center relative bg-tadak-white">
-    {/* 이미지 스켈레톤 */}
-    <div className="relative w-full aspect-square overflow-hidden bg-tadak-light-gray rounded-md animate-pulse"></div>
-
-    {/* 텍스트 영역 스켈레톤 */}
-    <div className="flex flex-col justify-center w-full h-16 mt-4 text-left">
-      <div className="h-4 bg-tadak-light-gray rounded-md w-2/3 animate-pulse"></div>
-      <div className="h-4 bg-tadak-light-gray rounded-md w-1/2 mt-3 animate-pulse"></div>
-    </div>
-  </div>
-)
+// import { getPopularItems, MockItem } from '@/mocks/mockPopularItems'
+// import { getNewItems } from '@/mocks/mockNewItems'
+// import ThanksImage from '@/assets/images/thanks.png'
+import Main1 from '@/assets/images/main1.png'
+import Main2 from '@/assets/images/main2.png'
+import Main3 from '@/assets/images/main3.png'
+import Main4 from '@/assets/images/main4.png'
 
 const bannerSlides = [
-  {
-    text: '스승의 날',
-    subText: '컨설턴트님 감사합니다!!  - A703 일동-',
-    route: null,
-    bgColor: '#FFE0E0', // 연한 빨강
-    imageUrl: ThanksImage,
-  },
+  // {
+  //   text: '스승의 날',
+  //   subText: '컨설턴트님 감사합니다!!  - A703 일동-',
+  //   route: null,
+  //   bgColor: '#FFE0E0', // 연한 빨강
+  //   imageUrl: ThanksImage,
+  // },
   {
     text: '타닥으로 시작하는 나만의 키보드 여정',
     subText: '처음이라도 괜찮아요. 타닥이 용어부터 조립까지 함께할게요.',
     route: null,
-    bgColor: '#FFF3E0', // 연한 오렌지
+    bgColor: '#FFEED1', // 연한 오렌지
+    imageUrl: Main1,
   },
   {
     text: '원하는 소리, 직접 들어보세요!',
     subText: '다양한 키보드 사운드를 체험하며 나만의 소리를 찾아보세요!',
     route: '/soundtest',
     bgColor: '#E9F5FF', // 연한 하늘색
+    imageUrl: Main2,
   },
   {
     text: '디자인하고, 책상 위에 배치해보세요!',
     subText:
       '원하는 스타일로 키보드를 커스텀하고, 실제 책상 위에 배치해보세요.',
     route: '/customkeyboard',
-    bgColor: '#F3F0FF', // 연한 보라색
+    bgColor: '#E6E1F5', // 연한 보라색
+    imageUrl: Main3,
   },
   {
     text: '당신의 키보드 성향은? KBTI로 확인해보세요!',
     subText:
       '간단한 테스트로 내 취향을 분석하고 딱 맞는 키보드를 추천받아보세요!',
     route: '/kbti',
-    bgColor: '#FFFBE6', // 연한 노란색
+    bgColor: '#FFF9DE', // 연한 노란색
+    imageUrl: Main4,
   },
 ]
 
@@ -75,7 +71,9 @@ const tabToCategory = ['BAREBONE', 'SWITCH', 'KEYCAP'] as const
 const MainPage = () => {
   const [activePopularTab, setActivePopularTab] = useState(1)
   const [activeNewTab, setActiveNewTab] = useState(1)
-  const [showHearts, setShowHearts] = useState(false)
+  // const [popularItems, setPopularItems] = useState<MockItem[]>([])
+  // const [newItems, setNewItems] = useState<MockItem[]>([])
+  const [showHearts] = useState(false)
   const navigate = useNavigate()
 
   const {
@@ -106,7 +104,21 @@ const MainPage = () => {
       }),
   })
 
-  // useState, useEffect 훅과 상태 관리
+  // // 탭 인덱스에 따른 카테고리 필터
+  // const tabToCategory = ['베어본', '스위치', '키캡']
+
+  // // 목업 데이터
+  // useEffect(() => {
+  //   const category = tabToCategory[activePopularTab]
+  //   const data = getPopularItems(category, { page: 1, size: 4 })
+  //   setPopularItems(data)
+  // }, [activePopularTab])
+
+  // useEffect(() => {
+  //   const category = tabToCategory[activeNewTab]
+  //   const data = getNewItems(category, { page: 1, size: 4 })
+  //   setNewItems(data)
+  // }, [activeNewTab])
 
   return (
     <div className="flex flex-col items-center w-full">
@@ -151,11 +163,12 @@ const MainPage = () => {
             />
           )
         })}
-      {/* 배너 섹션 */}
+
+      {/* 배너 캐러셀 */}
       <Swiper
         modules={[Autoplay, Pagination, Navigation]}
         autoplay={{
-          delay: 3000, // 3초마다 자동 전환
+          delay: 3000, // 2초마다 자동 전환
           disableOnInteraction: false, // 유저 조작 후에도 자동 재생 유지
         }}
         pagination={{
@@ -171,13 +184,11 @@ const MainPage = () => {
           <SwiperSlide key={idx}>
             <div
               onClick={() => {
-                if (idx === 0) {
-                  setShowHearts(true)
-                  setTimeout(() => setShowHearts(false), 3000)
-                }
-                if (slide.route) {
-                  navigate(slide.route)
-                }
+                // if (idx === 0) {
+                //   setShowHearts(true)
+                //   setTimeout(() => setShowHearts(false), 3000)
+                // }
+                slide.route && navigate(slide.route)
               }}
               style={{ backgroundColor: slide.bgColor }}
               className="flex flex-col min-[1060px]:flex-row justify-between items-center h-full cursor-pointer px-2 min-[1060px]:px-20 min-[1200px]:px-40"
@@ -195,7 +206,7 @@ const MainPage = () => {
                   <img
                     src={slide.imageUrl}
                     alt="배너 이미지"
-                    className="mb-6 w-40 h-52 object-contain rounded-md mr-20"
+                    className="mb-6 w-80 h-72 object-contain rounded-md"
                   />
                 ) : (
                   <div className="flex items-center justify-center mb-6 rounded-md min-w-96 min-h-52 text-tadak-gray">
@@ -207,6 +218,7 @@ const MainPage = () => {
           </SwiperSlide>
         ))}
       </Swiper>
+
       {/* Swiper 커스텀 스타일 */}
       <style>{`
         .swiper-pagination {
@@ -234,6 +246,7 @@ const MainPage = () => {
           font-weight: semibold;
         }
       `}</style>
+
       {/* 지금 인기 있는 타닥템 */}
       <section className="w-full max-w-[1100px] px-4 mb-20">
         <div className="flex items-end justify-between mb-3">
@@ -258,10 +271,9 @@ const MainPage = () => {
         <div className="relative min-h-[330px]">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mt-6">
             {isPopularLoading ? (
-              // 스켈레톤 UI 표시
-              Array.from({ length: 4 }).map((_, index) => (
-                <ItemCardSkeleton key={`popular-skeleton-${index}`} />
-              ))
+              <div className="mt-12 text-center text-gray-500 col-span-full">
+                로딩 중...
+              </div>
             ) : popularError ? (
               <div className="mt-12 text-center text-red-500 col-span-full">
                 지금은 불러올 수 없습니다.(오류 발생)
@@ -274,6 +286,7 @@ const MainPage = () => {
           </div>
         </div>
       </section>
+
       {/* 따끈따끈, 새로 들어온 타닥템 */}
       <section className="w-full max-w-[1100px] px-4 mb-24">
         <div className="flex items-end justify-between mb-3">
@@ -298,10 +311,9 @@ const MainPage = () => {
         <div className="relative min-h-[330px]">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mt-6">
             {isNewLoading ? (
-              // 스켈레톤 UI 표시
-              Array.from({ length: 4 }).map((_, index) => (
-                <ItemCardSkeleton key={`new-skeleton-${index}`} />
-              ))
+              <div className="mt-12 text-center text-gray-500 col-span-full">
+                로딩 중...
+              </div>
             ) : newError ? (
               <div className="mt-12 text-center text-red-500 col-span-full">
                 지금은 불러올 수 없습니다.(오류 발생)
