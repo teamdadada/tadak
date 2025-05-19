@@ -31,6 +31,7 @@ export const SHOP_END_POINT = {
   },
   PRODUCT: {
     LIST: '/product/list',
+    TOP_LIST: '/product/top/list',
     DETAIL: (type: string) => `/product/${type}`,
   },
 }
@@ -62,8 +63,7 @@ export const KEYBOARD_END_POINT = {
   KEYCAP_PRODUCTS: '/keyboard/keycap',
   BAREBONE_PRODUCTS: (layoutId: number, materialId: number) =>
     `/keyboard/barebone?layout=${layoutId}&material=${materialId}`,
-  SWITCH_PRODUCTS: (typeId: number) =>
-    `/keyboard/switch?type=${typeId}`,
+  SWITCH_PRODUCTS: (typeId: number) => `/keyboard/switch?type=${typeId}`,
   SELECTED_PRODUCTS: (keyboardId: number) => `/keyboard/${keyboardId}/products`,
   UPDATE_PRODUCTS: (keyboardId: number) => `/keyboards/${keyboardId}/products`,
   MODEL_3D: (keyboardId: number) => `/keyboard/${keyboardId}/model`,
