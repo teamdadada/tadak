@@ -90,8 +90,8 @@ public class MinioService {
 
         try {
             String fileName = image.getFilePath();
-            minioUtil.deleteFile(fileName, image.getBucket().getName());
             imageJpaRepository.delete(image);
+            minioUtil.deleteFile(fileName, image.getBucket().getName());
             return "삭제 완료: " + fileName;
         } catch (Exception e) {
             throw new RuntimeException("삭제 실패: "+e.getMessage());
