@@ -1,3 +1,5 @@
+import { Product } from './shop'
+
 export interface ReviewAuthor {
   id: number
   name: string
@@ -6,7 +8,7 @@ export interface ReviewAuthor {
 
 export interface Review {
   reviewId: number
-  productId: number
+  product: Product
   content: string
   score: number // 1, 2, 3, 4, 5
   images: string[]
@@ -15,5 +17,20 @@ export interface Review {
 
 export interface ReviewListResponse {
   count: number
-  rivews: Review[]
+  reviews: Review[]
+}
+
+export interface ReviewScoreResponse {
+  isExist: boolean
+  productId: number
+  totalScore: number
+  scoreCounts: {
+    [score: number]: number
+  }
+}
+
+export interface ReviewPayload {
+  reviewScore: number
+  reviewContent: string
+  imageList: string[]
 }

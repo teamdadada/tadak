@@ -6,6 +6,6 @@ interface SoundState {
 }
 
 export const useSoundStore = create<SoundState>((set) => ({
-  selectedSoundKey: '',
+  selectedSoundKey: 'G PRO 2.0 적축',
   setSelectedSoundKey: (key) => set({ selectedSoundKey: key }),
 }))

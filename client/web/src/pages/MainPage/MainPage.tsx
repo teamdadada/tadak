@@ -73,7 +73,7 @@ const MainPage = () => {
   const [activeNewTab, setActiveNewTab] = useState(1)
   // const [popularItems, setPopularItems] = useState<MockItem[]>([])
   // const [newItems, setNewItems] = useState<MockItem[]>([])
-  const [showHearts, setShowHearts] = useState(false)
+  const [showHearts] = useState(false)
   const navigate = useNavigate()
 
   const {

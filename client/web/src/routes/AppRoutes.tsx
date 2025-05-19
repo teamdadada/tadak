@@ -24,6 +24,7 @@ import KbtiStartPage from '@/pages/KbtiPage/KbtiStartPage'
 import ProtectedRoute from '@/components/common/ProtectedRoute'
 import ProductReviewPage from '@/pages/ProductPage/ProductReviewPage'
 import ReviewWritePage from '@/pages/ProductPage/ReviewWritePage'
+import SearchPage from '@/pages/ShopPage/SearchPage'
 
 const router = createBrowserRouter([
   {
@@ -54,7 +55,15 @@ const router = createBrowserRouter([
       }, // KBTI 페이지
       { path: 'product/:type/:id', element: <ProductDetailPage /> }, // 제품 상세 페이지
       { path: 'product/:id/reviews', element: <ProductReviewPage /> }, // 제품 리뷰 페이지
-      { path: 'product/:id/review/write', element: <ReviewWritePage /> }, // 리뷰 작성 페이지
+      {
+        path: 'product/:id/review/write',
+        element: (
+          <ProtectedRoute>
+            <ReviewWritePage />
+          </ProtectedRoute>
+        ),
+      }, // 리뷰 작성 페이지
+      { path: '/search', element: <SearchPage /> }, // 검색 결과 페이지
     ],
   },
 

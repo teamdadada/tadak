@@ -10,20 +10,13 @@ interface BearboneFilterProps {
 }
 
 const BearboneFilter = ({ selected, onChange }: BearboneFilterProps) => {
-  const { data, isLoading, isError } = useQuery({
+  const { data } = useQuery({
     queryKey: ['filters', 'bearbone'],
     queryFn: getBearboneFilters,
   })
 
-  if (isLoading)
-    return <p className="text-sm text-tadak-dark-gray">로딩 중...</p>
-  if (isError || !data)
-    return (
-      <p className="text-sm text-tadak-warning">필터를 불러오지 못했습니다.</p>
-    )
-
   return (
-    <div className="px-2 space-y-4">
+    <div className="border ">
       {data?.manufacturer && (
         <CheckboxGroup
           title="제조사별"
