@@ -80,7 +80,6 @@ const ChatbotToggleButton = ({ onClick, isOpen }: ChatbotToggleButtonProps) => {
                   ${isBouncing ? 'animate-bounce' : ''}`}
       style={{
         boxShadow: '0px 3px 8px 0px rgba(0, 0, 0, 0.32)',
-        position: 'relative',
         zIndex: 60,
       }}
       aria-label={isOpen ? '채팅 도우미 닫기' : '채팅 도우미 열기'}
