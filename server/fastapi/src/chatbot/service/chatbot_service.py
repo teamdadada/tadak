@@ -19,7 +19,9 @@ from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 import src.chatbot.util.gemini_util as gemini
 from redis import Redis
 from urllib.parse import quote
+from collections import OrderedDict
 from langchain_core.messages import AIMessage
+
 
 load_dotenv()
 
@@ -168,29 +170,20 @@ def get_response(user_id: int, query: str):
         else:
             answer = str(result)
 
-    recommendation_text = ""
     if recommendations:
         #중복 제거
         recommendations = list(OrderedDict(
             ((item["name"], item["url"]), item) for item in recommendations
         ).values())
 
-        recommendation_text = ("<br><br><strong style='font-size:16px; color:#FFD400;'>[추천 리스트]</strong><br>"
-        + "<br><br>".join(
-            f"<div style='margin:4px 0;'>"
-            f"⌨️ <strong style='color:#333;'>{item['name']}</strong> "
-            f"<span style='color:#555;'>(₩{item['price']})</span> → "
-            f"<a href='{item['url']}' target='_blank' style='color:#007AFF; text-decoration:underline;'>제품 링크</a>"
-            f"</div>"
-            for item in recommendations
-            )
-        )
-
-    # 전체 답변 텍스트
-    final_answer = answer + recommendation_text
 
     memory.chat_memory.add_user_message(query)
-    memory.chat_memory.add_ai_message(final_answer)
+    memory.chat_memory.add_ai_message(
+        AIMessage(
+        content=answer,
+        additional_kwargs={"recommendations": recommendations}
+    )
+    )
     trim_chat_history(str(user_id), 40)
 
     return {
@@ -254,15 +247,36 @@ async def is_duplicated_file(file_name: str) -> bool:
 
 def format_history(messages):
     formatted = []
+
     for message in messages:
-        base = {
-            "type": message["type"] if isinstance(message, dict) else message.type,
-            "content": message["content"] if isinstance(message, dict) else message.content
-        }
-        # recommendations가 있을 경우 포함
-        if isinstance(message, dict) and message.get("type") == "ai" and "recommendations" in message:
-            base["recommendations"] = message["recommendations"]
+        # message가 dict인 경우
+        if isinstance(message, dict):
+            base = {
+                "type": message.get("type"),
+                "content": message.get("content")
+            }
+            if message.get("type") == "ai" and "recommendations" in message:
+                base["recommendations"] = message["recommendations"]
+
+        # message가 AIMessage인 경우
+        elif isinstance(message, AIMessage):
+            base = {
+                "type": "ai",
+                "content": message.content
+            }
+            # 추가 키워드에 recommendations가 있다면 추가
+            if "recommendations" in message.additional_kwargs:
+                base["recommendations"] = message.additional_kwargs["recommendations"]
+
+        # 기타 message 객체 (HumanMessage 등)
+        else:
+            base = {
+                "type": "human",
+                "content": message.content
+            }
+
         formatted.append(base)
+
     return formatted
 
 def extract_recommendations(documents):
