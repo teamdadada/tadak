@@ -184,10 +184,10 @@ const MainPage = () => {
           <SwiperSlide key={idx}>
             <div
               onClick={() => {
-                if (idx === 0) {
-                  setShowHearts(true)
-                  setTimeout(() => setShowHearts(false), 3000)
-                }
+                // if (idx === 0) {
+                //   setShowHearts(true)
+                //   setTimeout(() => setShowHearts(false), 3000)
+                // }
                 slide.route && navigate(slide.route)
               }}
               style={{ backgroundColor: slide.bgColor }}
