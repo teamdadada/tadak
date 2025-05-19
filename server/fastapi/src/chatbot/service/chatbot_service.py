@@ -170,8 +170,9 @@ def get_response(user_id: int, query: str):
 
     recommendation_text = ""
     if recommendations:
-        recommendation_text = "\n\n[추천 리스트]\n" + "\n".join(
-            f"- {item['name']} (₩{item['price']}) → {item['url']}"
+        recommendation_text = "<br><br><strong>[추천 리스트]</strong><br>" + "<br>".join(
+            f"- <strong>{item['name']}</strong> (₩{item['price']}) → "
+            f"<a href='{item['url']}' target='_blank'>제품 링크</a>"
             for item in recommendations
         )
 
