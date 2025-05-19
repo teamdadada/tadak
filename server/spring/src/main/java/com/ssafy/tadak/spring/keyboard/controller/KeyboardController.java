@@ -89,7 +89,7 @@ public class KeyboardController {
     }
 
     @GetMapping("/keycap")
-    public ResponseEntity<GetProductListResponse> getKeycap(){
+    public ResponseEntity<List<GetProductListResponse>> getKeycap(){
         return ResponseEntity.ok(
                 keyboardService.getKeycapList()
         );
@@ -97,7 +97,7 @@ public class KeyboardController {
 
     //옵션 null인 경우 없음
     @GetMapping("/barebone")
-    public ResponseEntity<GetProductListResponse> getBarebone(
+    public ResponseEntity<List<GetProductListResponse>> getBarebone(
             @RequestParam(name = "layout") Long layout,
             @RequestParam(name = "material") Long material
     ){
@@ -107,7 +107,7 @@ public class KeyboardController {
     }
 
     @GetMapping("/switch")
-    public ResponseEntity<GetProductListResponse> getSwitch(
+    public ResponseEntity<List<GetProductListResponse>> getSwitch(
             @RequestParam(name = "type") Long type
     ){
         return ResponseEntity.ok(

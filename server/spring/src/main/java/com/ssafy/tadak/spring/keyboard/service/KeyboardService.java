@@ -309,7 +309,7 @@ public class KeyboardService {
         );
     }
 
-    /** 키보드 제품 변경 
+    /** 키보드 제품 변경
      * 커스텀 키보드에 선택한 제품을 변경합니다.
      * **/
     @Transactional
@@ -390,31 +390,26 @@ public class KeyboardService {
     /** 제품을 검색하는 메소드입니다.
      * 선택한 옵션에 따라 제품을 조회합니다.
      * **/
-    public GetProductListResponse getSwitchList(
+    public List< GetProductListResponse> getSwitchList(
             Long typeId
     ) {
         List<SwitchOption> switchOptions = switchOptionJpaRepository.findAllByType(typeId);
-        List< GetProductListResponse.ProductInfo> result = productConverter.convertToProductInfoList(switchOptions);
+        return productConverter.convertToProductInfoList(switchOptions);
 
-        return new GetProductListResponse(result);
     }
 
-    public GetProductListResponse getBareboneList(
+    public List<GetProductListResponse> getBareboneList(
             Long layout,
             Long material
     ) {
         List<BareboneOption> bareboneOptions = bareboneOptionJpaRepository
                                                 .findAllByLayoutAndMaterial(layout,material);
-        List< GetProductListResponse.ProductInfo> result = productConverter.convertToProductInfoList(bareboneOptions);
-
-        return new GetProductListResponse(result);
+        return productConverter.convertToProductInfoList(bareboneOptions);
     }
 
-    public GetProductListResponse getKeycapList() {
+    public List<GetProductListResponse> getKeycapList() {
         List<KeycapOption> keyboardOptions = keycapOptionJpaRepository.findAll();
-        List< GetProductListResponse.ProductInfo> result = productConverter.convertToProductInfoList(keyboardOptions);
-
-        return new GetProductListResponse(result);
+        return productConverter.convertToProductInfoList(keyboardOptions);
     }
 
     /** 키보드 불러오기
