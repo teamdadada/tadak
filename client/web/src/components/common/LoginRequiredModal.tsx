@@ -26,22 +26,20 @@ const LoginRequiredModal = ({ onClose }: LoginRequiredModalProps) => {
         </button>
 
         {/* 텍스트 안내 */}
-        <h2 className="text-lg font-semibold mt-4 mb-2 text-center">로그인이 필요해요</h2>
+        <h2 className="text-lg font-semibold mt-4 mb-2 text-center">
+          로그인이 필요해요
+        </h2>
         <p className="text-sm text-gray-600 text-center mb-6">
-            로그인해야 이 기능을 이용할 수 있어요.
+          로그인해야 이 기능을 이용할 수 있어요.
         </p>
-        
+
         {/* 오리 이미지 */}
-        <img
-          src={runDuck}
-          alt="로그인 안내 오리"
-          className="w-32 h-32 mb-4"
-        />
+        <img src={runDuck} alt="로그인 안내 오리" className="w-32 h-32 mb-4" />
 
         {/* 로그인하러 가기 버튼 */}
         <button
           onClick={handleGoToLogin}
-          className="w-full h-10 bg-tadak-primary text-white rounded-lg hover:bg-orange-500"
+          className="w-full h-10 bg-tadak-primary text-white rounded-lg hover:bg-orange-400 font-semibold text-[15px]"
         >
           로그인하러 가기
         </button>
