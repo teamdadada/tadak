@@ -126,7 +126,7 @@ public class PlacementService {
                                             .rotationY(0D)
                                             .rotationZ(0D)
                                             .scaleX(0D)
-                                            .scaleZ(0D)
+                                            .scaleY(0D)
                                             .scaleZ(0D)
                                     .build());
     }
@@ -170,6 +170,7 @@ public class PlacementService {
      * 사용자 배치 정보와 이미지를 삭제합니다.
      * 기본 생성 배치는 삭제할 수 없습니다.
      * **/
+    @Transactional
     public void deletePlacement(Long userId, Long placementId){
         Placement placement = placementJpaRepository.findById(placementId)
                 .orElseThrow(()-> new PlacementException.PlacementNotFoundException(PLACEMENT_NOTFOUND));
