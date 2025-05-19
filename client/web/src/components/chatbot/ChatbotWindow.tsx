@@ -78,10 +78,13 @@ const ChatbotWindow = () => {
       // 응답 메시지 추가
       setMessages((prev) => [
         ...prev,
-        { type: 'ai', content: response.response },
+        {
+          type: 'ai',
+          content: response.response,
+          recommendations: response.recommendations,
+        },
       ])
-    } catch (error) {
-      console.error('메시지 전송 오류:', error)
+    } catch {
       // 오류 발생 시 오류 메시지 추가
       setMessages((prev) => [
         ...prev,
@@ -102,7 +105,7 @@ const ChatbotWindow = () => {
       animate={{ opacity: 1, scale: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.8, y: 50 }}
       transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-      className="absolute bottom-20 right-4 w-[400px] md:w-[500px] lg:w-[600px] h-[500px] overflow-visible z-50"
+      className="absolute bottom-20 right-4 w-[85vw] md:w-[60vw] lg:w-[40vw] h-[75vh] overflow-visible z-50"
     >
       <div
         className="w-full h-full bg-white rounded-2xl flex flex-col overflow-hidden"
