@@ -20,41 +20,49 @@ import { Product } from '@/types/shop'
 import Chatbot from '@/components/chatbot/Chatbot'
 // import { getPopularItems, MockItem } from '@/mocks/mockPopularItems'
 // import { getNewItems } from '@/mocks/mockNewItems'
-import ThanksImage from '@/assets/images/thanks.png'
+// import ThanksImage from '@/assets/images/thanks.png'
+import Main1 from '@/assets/images/main1.png'
+import Main2 from '@/assets/images/main2.png'
+import Main3 from '@/assets/images/main3.png'
+import Main4 from '@/assets/images/main4.png'
 
 const bannerSlides = [
-  {
-    text: '스승의 날',
-    subText: '컨설턴트님 감사합니다!!  - A703 일동-',
-    route: null,
-    bgColor: '#FFE0E0', // 연한 빨강
-    imageUrl: ThanksImage,
-  },
+  // {
+  //   text: '스승의 날',
+  //   subText: '컨설턴트님 감사합니다!!  - A703 일동-',
+  //   route: null,
+  //   bgColor: '#FFE0E0', // 연한 빨강
+  //   imageUrl: ThanksImage,
+  // },
   {
     text: '타닥으로 시작하는 나만의 키보드 여정',
     subText: '처음이라도 괜찮아요. 타닥이 용어부터 조립까지 함께할게요.',
     route: null,
-    bgColor: '#FFF3E0', // 연한 오렌지
+    bgColor: '#FFEED1', // 연한 오렌지
+    imageUrl: Main1,
   },
   {
     text: '원하는 소리, 직접 들어보세요!',
     subText: '다양한 키보드 사운드를 체험하며 나만의 소리를 찾아보세요!',
     route: '/soundtest',
     bgColor: '#E9F5FF', // 연한 하늘색
+    imageUrl: Main2,
   },
   {
     text: '디자인하고, 책상 위에 배치해보세요!',
     subText:
       '원하는 스타일로 키보드를 커스텀하고, 실제 책상 위에 배치해보세요.',
     route: '/customkeyboard',
-    bgColor: '#F3F0FF', // 연한 보라색
+    bgColor: '#E6E1F5', // 연한 보라색
+    imageUrl: Main3,
   },
   {
     text: '당신의 키보드 성향은? KBTI로 확인해보세요!',
     subText:
       '간단한 테스트로 내 취향을 분석하고 딱 맞는 키보드를 추천받아보세요!',
     route: '/kbti',
-    bgColor: '#FFFBE6', // 연한 노란색
+    bgColor: '#FFF9DE', // 연한 노란색
+    imageUrl: Main4,
   },
 ]
 
@@ -198,7 +206,7 @@ const MainPage = () => {
                   <img
                     src={slide.imageUrl}
                     alt="배너 이미지"
-                    className="mb-6 w-40 h-52 object-contain rounded-md mr-20"
+                    className="mb-6 w-80 h-72 object-contain rounded-md"
                   />
                 ) : (
                   <div className="flex items-center justify-center mb-6 rounded-md min-w-96 min-h-52 text-tadak-gray">
