@@ -6,8 +6,7 @@ interface BackToTopButtonProps {
 }
 
 /**
- * 간단한 CSS 인라인 스타일로 또잉또잉 애니메이션을 적용한 버전
- * tailwind.config.js나 추가 CSS 없이 바로 사용 가능
+ * 또잉또잉 애니메이션
  */
 const TopButton = ({
   showBelow = 300,
@@ -41,12 +40,10 @@ const TopButton = ({
     }
   }, [isVisible])
 
-  // 또잉또잉 애니메이션을 위한 인라인 스타일
   const boingBoingStyle = {
     animation: 'boingBoing 2s infinite',
   }
 
-  // 애니메이션 키프레임을 포함한 스타일 엘리먼트
   const animationStyle = `
     @keyframes boingBoing {
       0%, 100% {
@@ -70,7 +67,6 @@ const TopButton = ({
 
   return (
     <>
-      {/* 애니메이션 키프레임 정의 */}
       <style>{animationStyle}</style>
 
       {isVisible && (
@@ -92,7 +88,7 @@ const TopButton = ({
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
-              strokeWidth={2}
+              strokeWidth={3}
               d="M5 15l7-7 7 7"
             />
           </svg>
