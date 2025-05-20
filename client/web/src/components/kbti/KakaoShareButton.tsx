@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { Button } from '../ui/button'
+import { kbtiDescriptions } from '@/types/kbti'
 
 const { Kakao } = window
 
@@ -13,13 +14,16 @@ const KakaoShareButton = ({ kbtiType }: { kbtiType: string }) => {
 
   const handleShare = () => {
     const shareUrl = `${import.meta.env.VITE_SHARE_URL}/kbti/result?type=${kbtiType}`
+    const imageUrl =
+      kbtiDescriptions[kbtiType as keyof typeof kbtiDescriptions]?.image ??
+      `${import.meta.env.VITE_SHARE_URL}/images/default-kbti.jpg`
 
     Kakao.Share.sendDefault({
       objectType: 'feed',
       content: {
         title: `나의 KBTI 결과는 ${kbtiType}!`,
         description: '나만의 키보드 성향을 확인해보세요!',
-        imageUrl: `${import.meta.env.VITE_SHARE_URL}/images/kbti-${kbtiType}.jpg`,
+        imageUrl: imageUrl,
         link: {
           mobileWebUrl: shareUrl,
           webUrl: shareUrl,
