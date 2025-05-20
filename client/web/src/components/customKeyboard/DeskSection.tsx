@@ -2,10 +2,13 @@ import { useRef, useState } from 'react'
 import DeskCanvas from './DeskCanvas'
 import ActionButtons from './ActionButtons'
 import * as THREE from 'three'
+import { useDefaultPlacement } from '@/hooks/usePlacement'
 
 const DeskSection = () => {
   const [isDirty, setIsDirty] = useState(false)
   const modelRef = useRef<THREE.Object3D>(null)
+
+  const { data: placement, isLoading } = useDefaultPlacement()
 
   const handleSave = () => {
     const model = modelRef.current
@@ -27,7 +30,25 @@ const DeskSection = () => {
       <h2 className="text-lg font-semibold mb-3">나의 타닥 데스크</h2>
 
       <div className="relative border rounded-lg bg-white flex-1 h-[400px]">
-        <DeskCanvas ref={modelRef} setIsDirty={setIsDirty} />
+        {isLoading ? (
+          <p className="text-sm text-gray-400 text-center mt-32">로딩 중...</p>
+        ) : (
+          <DeskCanvas
+            ref={modelRef}
+            setIsDirty={setIsDirty}
+            model3dUrl={placement?.model3dUrl || null}
+            defaultTransform={
+              placement
+                ? {
+                    position: placement.position,
+                    rotation: placement.rotation,
+                    scale: placement.scale,
+                  }
+                : null
+            }
+            imageUrl={placement?.imageUrl}
+          />
+        )}
       </div>
 
       <div className="mt-4 flex justify-between items-center">
