@@ -118,7 +118,8 @@ export const kbtiDescriptions: Record<KbtiType, KbtiDescription> = {
     description:
       '성능과 실용성을 최우선으로 하며, 책상에 필요한 장비만 두고 깔끔하게 정리하시는군요!',
     expressions: [
-      '필요한 것만 책상에 올려두고 싶어요.',
+      '성능과 실용성이 최고죠.',
+      '필요한 것만 책상에 깔끔하게 올려두고 싶어요.',
       'RGB보다는 깔끔한 디자인이 좋아요.',
     ],
     image:
@@ -131,7 +132,7 @@ export const kbtiDescriptions: Record<KbtiType, KbtiDescription> = {
     description: '성능을 우선시하지만 정리는 뭐... 편하면 돼죠!',
     expressions: [
       '중요한 건 성능이지, 정리는 나중에 해도 돼요.',
-      '필요한 건 여기저기 두는 편이에요.',
+      '필요한 것들을 여기저기 두는 편이에요.',
     ],
     image:
       'https://minio.tadak.kr/kbti/uploads/2bc0849f-e0b9-44f9-a5aa-e6e702134d08_QTMP.png',
@@ -181,7 +182,10 @@ export const kbtiDescriptions: Record<KbtiType, KbtiDescription> = {
     nickname: '감성 무질서주의자',
     description:
       '감성적인 아이템을 좋아하지만, 정리는 뭐... 대충 놔도 감성이죠!',
-    expressions: ['예쁜 건 많을수록 좋아요.', '정리보다는 감성이 중요하죠.'],
+    expressions: [
+      '예쁜 게 좋지만, 필요한 것들로 채우는 게 좋아요.',
+      '정리보다는 감성이 중요하죠.',
+    ],
     image:
       'https://minio.tadak.kr/kbti/uploads/832e180c-c659-4421-bcfb-5e08db1d51ce_QAMP.png',
     shareImage:
@@ -192,6 +196,7 @@ export const kbtiDescriptions: Record<KbtiType, KbtiDescription> = {
     description:
       '다양한 감성적인 아이템을 갖추고 있으면서도, 깔끔하고 체계적으로 정리를 잘 하시네요!',
     expressions: [
+      '가득 꾸며 놓으면 기분이 좋아요.',
       '예쁘고 깔끔한 데스크가 제 취향이에요.',
       '디자인과 깔끔함 모두 놓칠 수 없어요.',
     ],
@@ -206,7 +211,7 @@ export const kbtiDescriptions: Record<KbtiType, KbtiDescription> = {
       '감성적이고 다양한 아이템을 좋아하여 책상에 많이 두지만, 정리는 뭐... 자연스러운 어수선함도 감성 아니겠어요?',
     expressions: [
       '책상에 감성적인 게 많아야 제 스타일이죠.',
-      '예쁜 것들이 많아도 어디에 있는지는 알아요.',
+      '예쁜 것들이 자연스럽게 놓여져 있어야 감성이죠.',
     ],
     image:
       'https://minio.tadak.kr/kbti/uploads/1aca16e1-f402-4232-8b94-3e87cdc23bae_QAFP.png',
@@ -218,7 +223,7 @@ export const kbtiDescriptions: Record<KbtiType, KbtiDescription> = {
     description:
       '성능도 중요하지만, 디자인적인 요소로 눈에 띄는 게 중요하죠! 화려하면 정리도 잘 되어야 예쁘겠죠?',
     expressions: [
-      '성능도 좋고 디자인도 눈에 띄어야죠.',
+      '성능도 좋지만 디자인도 눈에 띄어야죠.',
       '깔끔하지만 존재감 있는 게 좋아요.',
     ],
     image:
@@ -255,7 +260,10 @@ export const kbtiDescriptions: Record<KbtiType, KbtiDescription> = {
   ETFP: {
     nickname: '화려한 혼돈주의자',
     description: '성능도 좋고, 디자인도 화려하지만.. 정리? 그게 뭐죠?',
-    expressions: ['화려하고 성능 좋은 게 최고죠.', '정리는 나중에 할게요.'],
+    expressions: [
+      '화려하고 성능 좋은 게 최고죠.',
+      '정리는 뭐... 나중에 할게요.',
+    ],
     image:
       'https://minio.tadak.kr/kbti/uploads/bd668820-552b-4a82-b6c9-3a368082c726_ETFP.png',
     shareImage:
@@ -280,7 +288,7 @@ export const kbtiDescriptions: Record<KbtiType, KbtiDescription> = {
       '감성적이고 화려한 디자인을 좋아하고고, 다양한 아이템이 책상에 놓여 있어야 더 예쁘죠!',
     expressions: [
       '예쁜 것들은 많아야 기분이 좋아요.',
-      '정리보다는 감성적인 느낌이 중요해요.',
+      '정리보다는 자연스러운 게 감성적이지 않겠어요?',
     ],
     image:
       'https://minio.tadak.kr/kbti/uploads/c9c9bad9-adbb-4a4f-a29f-55e7dfae0525_EAMP.png',
@@ -304,7 +312,10 @@ export const kbtiDescriptions: Record<KbtiType, KbtiDescription> = {
     nickname: '감성 혼돈 마스터',
     description:
       '감성적이고 화려한 디자인을 사랑하며, 다양한 아이템이 가득한 책상이야말로 최고죠?',
-    expressions: ['예쁜 게 많아야 행복해요.', '어지러워도 감성적인 게 최고죠.'],
+    expressions: [
+      '예쁜 게 많아야 행복해요.',
+      '아무렇게나 뒀냐고요? 자연스러운 감성이죠.',
+    ],
     image:
       'https://minio.tadak.kr/kbti/uploads/83f6c72e-f02c-4ce8-a17b-ee9d7dab1674_EAFP.png',
     shareImage:
