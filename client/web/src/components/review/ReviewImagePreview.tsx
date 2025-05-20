@@ -6,7 +6,7 @@ interface ReviewImagePreviewProps {
 }
 
 const ReviewImagePreview = ({ file, onRemove }: ReviewImagePreviewProps) => {
-  const [imageUrl, setImageUrl] = useState('')
+  const [imageUrl, setImageUrl] = useState<string | null>(null)
 
   useEffect(() => {
     const url = URL.createObjectURL(file)
@@ -19,11 +19,13 @@ const ReviewImagePreview = ({ file, onRemove }: ReviewImagePreviewProps) => {
 
   return (
     <div className="relative w-24 h-24">
-      <img
-        src={imageUrl}
-        alt="리뷰 이미지 미리보기"
-        className="object-cover w-full h-full border rounded"
-      />
+      {imageUrl && (
+        <img
+          src={imageUrl}
+          alt="리뷰 이미지 미리보기"
+          className="object-cover w-full h-full border rounded"
+        />
+      )}
       <button
         type="button"
         onClick={onRemove}
