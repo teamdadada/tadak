@@ -8,7 +8,7 @@ export const fetchKeyboardList = async (): Promise<KeyboardSummary[]> => {
   return response.data
 }
 
-// TODO: 키보드 디자인 등록
+// 키보드 디자인 등록
 export const createKeyboard = async (payload: any) => {
   const response = await http.post(KEYBOARD_END_POINT.CREATE, payload)
   return response.data
