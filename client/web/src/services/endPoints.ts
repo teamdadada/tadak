@@ -64,7 +64,6 @@ export const KEYBOARD_END_POINT = {
     `/keyboard/barebone?layout=${layoutId}&material=${materialId}`,
   SWITCH_PRODUCTS: (typeId: number) =>
     `/keyboard/switch?type=${typeId}`,
-  SELECTED_PRODUCTS: (keyboardId: number) => `/keyboard/${keyboardId}/products`,
   UPDATE_PRODUCTS: (keyboardId: number) => `/keyboards/${keyboardId}/products`,
   MODEL_3D: (keyboardId: number) => `/keyboard/${keyboardId}/model`,
 }

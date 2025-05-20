@@ -1,5 +1,5 @@
 import { useState } from 'react'
-
+import { useSearchParams } from 'react-router-dom'
 import MypageSideTab from './MypageSidebar.tsx'
 import UserProfile from './UserProfile.tsx'
 import UserLikes from './UserLikes.tsx'
@@ -16,7 +16,10 @@ export type MenuType =
   | '작성한 리뷰'
 
 const MyPage = () => {
-  const [selectedMenu, setSelectedMenu] = useState<MenuType>('회원 정보')
+  const [searchParams] = useSearchParams()
+  const tabParam = searchParams.get('tab') as MenuType | null
+
+  const [selectedMenu, setSelectedMenu] = useState<MenuType>(tabParam || '회원 정보')
 
   const handleMenuChange = (menu: MenuType) => {
     setSelectedMenu(menu)
