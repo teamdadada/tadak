@@ -15,8 +15,8 @@ const KakaoShareButton = ({ kbtiType }: { kbtiType: string }) => {
   const handleShare = () => {
     const shareUrl = `${import.meta.env.VITE_SHARE_URL}/kbti/result?type=${kbtiType}`
     const imageUrl =
-      kbtiDescriptions[kbtiType as keyof typeof kbtiDescriptions]?.image ??
-      `${import.meta.env.VITE_SHARE_URL}/images/default-kbti.jpg`
+      kbtiDescriptions[kbtiType as keyof typeof kbtiDescriptions]?.shareImage ??
+      `${import.meta.env.VITE_SHARE_URL}/tadak.png`
 
     Kakao.Share.sendDefault({
       objectType: 'feed',
