@@ -41,12 +41,20 @@ const ReviewWritePage = () => {
 
     const selectedFiles = Array.from(e.target.files)
 
+    const validImageFiles = selectedFiles.filter((file) => {
+      if (!file.type.startsWith('image/')) {
+        toast.error(`이미지 파일만 업로드할 수 있습니다. (${file.name})`)
+        return false
+      }
+      return true
+    })
+
     setImages((prevImages) => {
       const existingSet = new Set(
         prevImages.map((file) => `${file.name}-${file.size}`),
       )
 
-      const newFiles = selectedFiles.filter(
+      const newFiles = validImageFiles.filter(
         (file) => !existingSet.has(`${file.name}-${file.size}`),
       )
 
