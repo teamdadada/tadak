@@ -13,6 +13,9 @@ import { renderStars } from '@/utils/renderStarts'
 import { useQueryClient } from '@tanstack/react-query'
 import { getMyReviews } from '@/services/reviewService'
 import { toast } from 'sonner'
+import { useUserStore } from '@/store/userStore'
+import LoginRequiredModal from '../common/LoginRequiredModal'
+import { useState } from 'react'
 
 interface ReviewSectionProps {
   product: ProductDetailBase
@@ -20,12 +23,19 @@ interface ReviewSectionProps {
 
 const ReviewSection = ({ product }: ReviewSectionProps) => {
   const navigate = useNavigate()
+  const [showLoginModal, setShowLoginModal] = useState(false)
+  const isLoggedIn = useUserStore((state) => state.getIsLoggedIn())
 
   const { data: reviewList } = useReviewList(product.productId)
   const { data: reviewScore } = useReviewScore(product.productId)
 
   const queryClient = useQueryClient()
   const handleWriteClick = async () => {
+    if (!isLoggedIn) {
+      setShowLoginModal(true)
+      return
+    }
+
     const { reviews } = await queryClient.fetchQuery({
       queryKey: ['myReviews'],
       queryFn: getMyReviews,
@@ -103,9 +113,9 @@ const ReviewSection = ({ product }: ReviewSectionProps) => {
 
         <div className="mt-4 space-y-6">
           {reviewCount === 0 ? (
-            <div className="py-12 flex flex-col items-center justify-center text-center">
-              <MessageSquarePlus className="w-16 h-16 text-tadak-gray/50 mb-4" />
-              <p className="text-sm text-tadak-dark-gray mb-4">
+            <div className="flex flex-col items-center justify-center py-12 text-center">
+              <MessageSquarePlus className="w-16 h-16 mb-4 text-tadak-gray/50" />
+              <p className="mb-4 text-sm text-tadak-dark-gray">
                 아직 작성된 리뷰가 없습니다
               </p>
             </div>
@@ -139,6 +149,10 @@ const ReviewSection = ({ product }: ReviewSectionProps) => {
           </div>
         )}
       </div>
+
+      {showLoginModal && (
+        <LoginRequiredModal onClose={() => setShowLoginModal(false)} />
+      )}
     </section>
   )
 }
