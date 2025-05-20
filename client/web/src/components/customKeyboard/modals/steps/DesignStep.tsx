@@ -40,25 +40,44 @@ interface DesignStepProps {
   setSwitchProduct: (product: Product | null) => void
   keycapProduct: Product | null
   setKeycapProduct: (product: Product | null) => void
+  onClose: () => void
+  onRefresh: () => void
+  onOpenCartConfirmModal: () => void
 }
 
-const DesignStep = ({ step, setStep, keyboardOptions }: DesignStepProps) => {
-  const [layout, setLayout] = useState<'풀배열' | '텐키리스'>('풀배열')
-  const [material, setMaterial] = useState<'금속' | '플라스틱'>('금속')
-  const [outerColor, setOuterColor] = useState('#ffffff')
-  const [basicColor, setBasicColor] = useState('#ffffff')
-
-  const [pointColor, setPointColor] = useState('#FFFFFF')
-  const [pointOption, setPointOption] = useState<'none' | 'set' | 'custom'>('none')
-  const [focusedKey, setFocusedKey] = useState<string | null>(null)
-  const [customKeyMap, setCustomKeyMap] = useState<Record<string, string>>({})
-
-  const [bareboneProduct, setBareboneProduct] = useState<Product | null>(null)
-  const [switchProduct, setSwitchProduct] = useState<Product | null>(null)
-  const [keycapProduct, setKeycapProduct] = useState<Product | null>(null)
-
+const DesignStep = ({
+  step,
+  setStep,
+  keyboardOptions,
+  layout,
+  setLayout,
+  material,
+  setMaterial,
+  outerColor,
+  setOuterColor,
+  basicColor,
+  setBasicColor,
+  pointColor,
+  setPointColor,
+  pointOption,
+  setPointOption,
+  focusedKey,
+  setFocusedKey,
+  customKeyMap,
+  setCustomKeyMap,
+  switchTypeName,
+  setSwitchTypeName,
+  bareboneProduct,
+  setBareboneProduct,
+  switchProduct,
+  setSwitchProduct,
+  keycapProduct,
+  setKeycapProduct,
+  onClose,
+  onRefresh,
+  onOpenCartConfirmModal,
+}: DesignStepProps) => {
   const [switchTypeId, setSwitchTypeId] = useState<number | null>(null)
-  const [switchTypeName, setSwitchTypeName] = useState<string>('청축')
   const [keyboardName, setKeyboardName] = useState<string>('')
 
   const previewRef = useRef<KeyboardPreview3DHandle>(null)
@@ -209,6 +228,8 @@ const DesignStep = ({ step, setStep, keyboardOptions }: DesignStepProps) => {
               keyboardName={keyboardName}
               layout={layout}
               material={material}
+              switchTypeName={switchTypeName}
+              keyboardOptions={keyboardOptions}
               outerColor={outerColor}
               basicColor={basicColor}
               pointColor={pointColor}
@@ -231,6 +252,9 @@ const DesignStep = ({ step, setStep, keyboardOptions }: DesignStepProps) => {
               }
               exportGLB={previewRef.current?.exportGLB}
               captureImage={previewRef.current?.captureImage}
+              onClose={onClose}
+              onRefresh={onRefresh}
+              onOpenCartConfirmModal={onOpenCartConfirmModal}
             />
           )}
         </div>
