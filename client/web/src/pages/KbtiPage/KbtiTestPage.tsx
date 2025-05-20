@@ -1,11 +1,14 @@
 import ProgressBar from '@/components/kbti/ProgressBar'
 import QuestionDisplay from '@/components/kbti/QuestionDisplay'
+import { Button } from '@/components/ui/button'
 import { kbtiQuestions } from '@/types/kbti'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 const KbtiTestPage = () => {
   const navigate = useNavigate()
+  const [answers, setAnswers] = useState<number[]>([])
+
   const [scores, setScores] = useState<Record<string, number>>({
     Q: 0,
     E: 0,
@@ -24,12 +27,28 @@ const KbtiTestPage = () => {
     newScores[axis[choice]] += 1
     setScores(newScores)
 
+    setAnswers((prev) => [...prev, choice])
+
     if (currentQuestion < kbtiQuestions.length - 1) {
       setCurrentQuestion(currentQuestion + 1)
     } else {
       const result = calculateKBTI(newScores)
       navigate(`/kbti/result?type=${result}`)
     }
+  }
+
+  const handleBack = () => {
+    if (currentQuestion === 0) return
+
+    const prevChoice = answers[currentQuestion - 1]
+    const prevAxis = kbtiQuestions[currentQuestion - 1].axis
+
+    const newScores = { ...scores }
+    newScores[prevAxis[prevChoice]] -= 1
+    setScores(newScores)
+
+    setAnswers((prev) => prev.slice(0, -1)) // 마지막 선택 제거
+    setCurrentQuestion(currentQuestion - 1)
   }
 
   const calculateKBTI = (scores: Record<string, number>) => {
@@ -47,6 +66,11 @@ const KbtiTestPage = () => {
             handleAnswer(kbtiQuestions[currentQuestion].axis, choice)
           }
         />
+      </div>
+      <div className="flex justify-start w-full mt-6">
+        <Button onClick={handleBack} disabled={currentQuestion === 0}>
+          이전
+        </Button>
       </div>
     </div>
   )

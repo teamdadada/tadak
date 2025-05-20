@@ -27,9 +27,9 @@ const QuestionDisplay = ({ question, onAnswer }: QuestionDisplayProps) => {
       <div className="flex flex-col items-center justify-center min-w-full gap-2 mt-4 space-y-2">
         {question.options.map((option, index) => (
           <button
-            key={index}
+            key={`${question.id}-${index}`}
             onClick={() => onAnswer(index)}
-            className="block w-full px-4 py-2 text-lg font-medium text-left text-black border rounded-md hover:bg-tadak-primary hover:text-white bg-tadak-white"
+            className="block w-full px-4 py-2 text-lg font-medium text-left text-black border rounded-md hover:bg-tadak-primary hover:text-white bg-tadak-white focus:outline-none"
           >
             {option}
           </button>
