@@ -14,6 +14,7 @@ const ReviewItem = ({ review, productId }: ReviewItemProps) => {
   const me = userStore.getUserUuid()
   const containerRef = useRef<HTMLDivElement>(null)
   const [visibleImageCount, setVisibleImageCount] = useState(6)
+  const [showAllImages, setShowAllImages] = useState(false)
 
   // 이미지 로딩 상태 관리
   const [imageLoaded, setImageLoaded] = useState<Record<number, boolean>>({})
@@ -56,19 +57,27 @@ const ReviewItem = ({ review, productId }: ReviewItemProps) => {
     if (images.length === 0) return null
 
     // 표시할 이미지 수 계산
-    const displayCount = Math.min(images.length, visibleImageCount)
-    const hasMore = images.length > displayCount
+    const displayCount = showAllImages
+      ? images.length
+      : Math.min(images.length, visibleImageCount)
+
+    const hasMore = images.length > visibleImageCount
 
     return (
       <div
         ref={containerRef}
-        className="flex gap-1 overflow-x-auto py-2 pb-3 scrollbar-hide"
+        className="grid gap-2 py-2 pb-3"
+        style={{
+          gridTemplateColumns: `repeat(auto-fill, minmax(80px, 1fr))`,
+        }}
       >
         {images.slice(0, displayCount).map((imgUrl, idx) => (
-          <div key={idx} className="relative flex-shrink-0 w-20 h-20">
+          <div key={idx} className="relative w-20 h-20">
             {/* 이미지 로딩 플레이스홀더 */}
             <div
-              className={`absolute inset-0 bg-tadak-light-gray/70 border border-tadak-light-gray ${imageLoaded[idx] ? 'hidden' : 'block'}`}
+              className={`absolute inset-0 bg-tadak-light-gray/70 border border-tadak-light-gray ${
+                imageLoaded[idx] ? 'hidden' : 'block'
+              }`}
             ></div>
 
             {/* 실제 이미지 */}
@@ -79,14 +88,27 @@ const ReviewItem = ({ review, productId }: ReviewItemProps) => {
               onLoad={() => handleImageLoad(idx)}
             />
 
-            {/* 추가 이미지 카운터 */}
-            {idx === displayCount - 1 && hasMore && (
-              <div className="absolute top-0 right-0 bg-black/70 text-white text-xs font-medium p-1 z-10">
-                +{images.length - displayCount}
-              </div>
+            {/* 마지막 이미지에 +N 표시 */}
+            {!showAllImages && idx === visibleImageCount - 1 && hasMore && (
+              <button
+                onClick={() => setShowAllImages(true)}
+                className="absolute top-0 right-0 z-10 p-1 text-xs font-medium text-tadak-white bg-tadak-black/70"
+              >
+                +{images.length - visibleImageCount}
+              </button>
             )}
           </div>
         ))}
+
+        {/* 접기 버튼 */}
+        {showAllImages && hasMore && (
+          <button
+            onClick={() => setShowAllImages(false)}
+            className="flex items-center justify-center flex-shrink-0 w-20 h-20 text-xs border rounded border-tadak-light-gray text-tadak-gray hover:bg-tadak-light-gray/50"
+          >
+            접기
+          </button>
+        )}
       </div>
     )
   }
@@ -94,13 +116,13 @@ const ReviewItem = ({ review, productId }: ReviewItemProps) => {
   return (
     <div className="flex flex-col gap-2 min-h-[120px]">
       {/* 상단: 프로필 및 정보 */}
-      <div className="flex justify-between items-start">
+      <div className="flex items-start justify-between">
         {/* 왼쪽: 프로필 이미지, 이름, 별점 */}
         <div className="flex items-start">
           <img
             src={profileImg}
             alt="User Profile"
-            className="object-cover w-14 h-14 rounded-full"
+            className="object-cover rounded-full w-14 h-14"
           />
 
           <div className="flex flex-col px-3">
@@ -118,7 +140,7 @@ const ReviewItem = ({ review, productId }: ReviewItemProps) => {
       </div>
 
       {/* 리뷰 내용 */}
-      <div className="mt-2 text-sm text-tadak-black whitespace-pre-line pl-2">
+      <div className="pl-2 mt-2 text-sm whitespace-pre-line text-tadak-black">
         {content}
       </div>
 
