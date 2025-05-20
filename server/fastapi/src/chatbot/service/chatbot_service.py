@@ -182,7 +182,8 @@ def get_response(user_id: int, query: str):
         answer += "\n\n 타닥샵에 있는 이런 상품은 어때 덕?\n"
 
     if len(recommendations) < 1:
-        answer = answer.replace("\n\n 타닥샵에 있는 이런 상품은 어때 덕?\n", "")
+        answer = answer.replace("타닥샵에 있는 이런 상품은 어때 덕?", "")
+        answer = answer.rstrip()
 
     memory.chat_memory.add_user_message(query)
     memory.chat_memory.add_ai_message(
