@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import StepIndicator from './StepIndicator'
-import KeyboardPreview3D from './KeyboardPreview3D'
+import KeyboardPreview3D, { KeyboardPreview3DHandle } from './KeyboardPreview3D'
 import ProductSummary from './ProductSummary'
 import StepNavigation from './StepNavigation'
 import StepBarebone from './StepBarebone'
@@ -9,7 +9,7 @@ import StepKeycap from './StepKeycap'
 import FinalProductList from './FinalProductList'
 import FinalActions from './FinalActions'
 import { KeyboardOptionsResponse } from '@/types/keyboard'
-import { fetchSwitchProduct } from '@/services/keyboardService' 
+import { fetchSwitchProduct } from '@/services/keyboardService'
 import { Product } from '@/types/product'
 
 interface DesignStepProps {
@@ -59,6 +59,9 @@ const DesignStep = ({ step, setStep, keyboardOptions }: DesignStepProps) => {
 
   const [switchTypeId, setSwitchTypeId] = useState<number | null>(null)
   const [switchTypeName, setSwitchTypeName] = useState<string>('청축')
+  const [keyboardName, setKeyboardName] = useState<string>('')
+
+  const previewRef = useRef<KeyboardPreview3DHandle>(null)
 
   const switchOption = keyboardOptions.switch.type.find(opt => opt.name === switchTypeName)
 
@@ -82,6 +85,7 @@ const DesignStep = ({ step, setStep, keyboardOptions }: DesignStepProps) => {
         <div className="flex flex-col flex-1">
           <div className="flex items-center justify-center h-[400px]">
             <KeyboardPreview3D
+              ref={previewRef}
               layout={layout}
               materialType={material}
               outerColor={outerColor}
@@ -118,6 +122,8 @@ const DesignStep = ({ step, setStep, keyboardOptions }: DesignStepProps) => {
                     type="text"
                     maxLength={10}
                     placeholder="예: 내 커스텀 키보드 (최대 10자)"
+                    value={keyboardName}
+                    onChange={(e) => setKeyboardName(e.target.value)}
                     className="w-[280px] h-8 px-3 py-1 border border-gray-300 rounded-md text-sm"
                   />
                 </div>
@@ -199,8 +205,34 @@ const DesignStep = ({ step, setStep, keyboardOptions }: DesignStepProps) => {
             {step <= 3 ? (
               <StepNavigation step={step} setStep={setStep} />
             ) : (
-              <FinalActions />
-            )}
+              <FinalActions
+              keyboardName={keyboardName}
+              layout={layout}
+              material={material}
+              outerColor={outerColor}
+              basicColor={basicColor}
+              pointColor={pointColor}
+              pointOption={pointOption}
+              customKeyMap={customKeyMap}
+              selectedProductIds={[
+                bareboneProduct?.productId!,
+                switchProduct?.productId!,
+                keycapProduct?.productId!,
+              ]}
+              totalPrice={
+                (bareboneProduct?.price || 0) +
+                (switchProduct?.price || 0) +
+                (keycapProduct?.price || 0) +
+                (pointOption === 'set'
+                  ? 5500
+                  : pointOption === 'custom'
+                  ? Object.keys(customKeyMap).length * 500
+                  : 0)
+              }
+              exportGLB={previewRef.current?.exportGLB}
+              captureImage={previewRef.current?.captureImage}
+            />
+          )}
         </div>
       </div>
     </>
