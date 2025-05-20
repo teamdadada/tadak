@@ -22,7 +22,7 @@ const KakaoShareButton = ({ kbtiType }: { kbtiType: string }) => {
       objectType: 'feed',
       content: {
         title: `나의 KBTI 결과는 ${kbtiType}!`,
-        description: '나만의 키보드 성향을 확인해보세요!',
+        description: 'KBTI가 무엇인지 궁금하다면? \n결과를 확인해보세요!',
         imageUrl: imageUrl,
         link: {
           mobileWebUrl: shareUrl,
