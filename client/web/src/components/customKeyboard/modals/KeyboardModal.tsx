@@ -2,8 +2,8 @@
 import { useKeyboardOptions } from '@/hooks/useKeyboard'
 import { X } from 'lucide-react'
 import DesignStep from './steps/DesignStep'
-import FinalStep from './final/FinalStep'
 import { useState } from 'react'
+import { Product } from '@/types/product'
 
 interface KeyboardModalProps {
   onClose: () => void
@@ -12,6 +12,20 @@ interface KeyboardModalProps {
 const KeyboardModal = ({ onClose }: KeyboardModalProps) => {
   const [step, setStep] = useState(1)
   const { data: keyboardOptions, isLoading } = useKeyboardOptions()
+
+  const [layout, setLayout] = useState<'풀배열' | '텐키리스'>('풀배열')
+  const [material, setMaterial] = useState<'금속' | '플라스틱'>('금속')
+  const [outerColor, setOuterColor] = useState('#ffffff')
+  const [basicColor, setBasicColor] = useState('#ffffff')
+  const [pointColor, setPointColor] = useState('#FFFFFF')
+  const [pointOption, setPointOption] = useState<'none' | 'set' | 'custom'>('none')
+  const [focusedKey, setFocusedKey] = useState<string | null>(null)
+  const [customKeyMap, setCustomKeyMap] = useState<Record<string, string>>({})
+  const [switchTypeName, setSwitchTypeName] = useState<string>('청축')
+
+  const [bareboneProduct, setBareboneProduct] = useState<Product | null>(null)
+  const [switchProduct, setSwitchProduct] = useState<Product | null>(null)
+  const [keycapProduct, setKeycapProduct] = useState<Product | null>(null)
 
   if (isLoading || !keyboardOptions) return null
 
@@ -25,11 +39,35 @@ const KeyboardModal = ({ onClose }: KeyboardModalProps) => {
           <X className="w-6 h-6" />
         </button>
 
-        {step <= 3 ? (
-          <DesignStep step={step} setStep={setStep} keyboardOptions={keyboardOptions}/>
-        ) : (
-          <FinalStep setStep={setStep} />
-        )}
+        <DesignStep
+          step={step}
+          setStep={setStep}
+          keyboardOptions={keyboardOptions}
+          layout={layout}
+          setLayout={setLayout}
+          material={material}
+          setMaterial={setMaterial}
+          outerColor={outerColor}
+          setOuterColor={setOuterColor}
+          basicColor={basicColor}
+          setBasicColor={setBasicColor}
+          pointColor={pointColor}
+          setPointColor={setPointColor}
+          pointOption={pointOption}
+          setPointOption={setPointOption}
+          focusedKey={focusedKey}
+          setFocusedKey={setFocusedKey}
+          customKeyMap={customKeyMap}
+          setCustomKeyMap={setCustomKeyMap}
+          switchTypeName={switchTypeName}
+          setSwitchTypeName={setSwitchTypeName}
+          bareboneProduct={bareboneProduct}
+          setBareboneProduct={setBareboneProduct}
+          switchProduct={switchProduct}
+          setSwitchProduct={setSwitchProduct}
+          keycapProduct={keycapProduct}
+          setKeycapProduct={setKeycapProduct}
+        />
       </div>
     </div>
   )

@@ -15,7 +15,7 @@ const ProductInfoBarebone = ({ data }: ProductInfoBareboneProps) => {
 
       <ul className="mt-8 space-y-2">
         <InfoItem title="제조사" value={data.manufacturer || '-'} />
-        <InfoItem title="키 레이아웃" value={data.keyLayout || '-'} />
+        <InfoItem title="키 레이아웃" value={data.layout || '-'} />
         <InfoItem
           title="특징"
           value={data.features ? data.features.join(', ') : '-'}

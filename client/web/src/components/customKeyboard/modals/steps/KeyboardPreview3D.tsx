@@ -36,6 +36,8 @@ const KeyboardModel = ({
   const groupRef = useRef<Group>(null)
 
   useEffect(() => {
+    if (!scene) return
+
     scene.traverse((obj) => {
       if ((obj as THREE.Mesh).isMesh) {
         const mesh = obj as THREE.Mesh
