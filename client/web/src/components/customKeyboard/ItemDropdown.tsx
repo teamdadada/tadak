@@ -63,6 +63,8 @@ const ItemDropdown = ({
       setShowConfirmModal(true)
     } else if (action === 'set' && itemType === 'desk') {
       toast.info('곧 서비스가 오픈될 예정이에요 🙌')
+    } else if (itemType === 'keyboard' && (action === 'cart' || action === 'edit' || action === 'place')) {
+      toast.info('해당 기능은 곧 오픈될 예정이에요 🙌')
     } else {
       console.log(`Action "${action}" on item #${itemId}`)
     }

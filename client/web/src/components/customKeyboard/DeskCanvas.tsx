@@ -14,7 +14,7 @@ interface DeskCanvasProps {
   setIsDirty: (dirty: boolean) => void
 }
 
-// ✅ forwardRef로 외부에서 ref 접근 가능하도록 구성
+// forwardRef로 외부에서 ref 접근 가능하도록 구성
 const DeskCanvas = forwardRef<THREE.Object3D, DeskCanvasProps>(({ setIsDirty }, ref) => {
   const [isControlActive, setIsControlActive] = useState(false)
   const [horizontalRotation, setHorizontalRotation] = useState(0)
@@ -23,7 +23,7 @@ const DeskCanvas = forwardRef<THREE.Object3D, DeskCanvasProps>(({ setIsDirty }, 
 
   const modelRef = useRef<THREE.Object3D>(null)
 
-  // ✅ 부모에서 modelRef에 접근할 수 있도록 연결
+  // 부모에서 modelRef에 접근할 수 있도록 연결
   useImperativeHandle(ref, () => modelRef.current!)
 
   const handleSetRotationMode = (mode: RotationMode) => {
