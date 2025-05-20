@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { fetchKeyboardList, fetchKeyboardOptions, fetchBareboneProducts } from '@/services/keyboardService'
+import { fetchKeyboardList, fetchKeyboardOptions, fetchBareboneProduct } from '@/services/keyboardService'
 
 export const useKeyboardList = () => {
   return useQuery({
@@ -18,7 +18,7 @@ export const useKeyboardOptions = () => {
 export const useBareboneProducts = (layoutId: number, materialId: number) => {
   return useQuery({
     queryKey: ['bareboneProducts', layoutId, materialId],
-    queryFn: () => fetchBareboneProducts(layoutId, materialId),
+    queryFn: () => fetchBareboneProduct(layoutId, materialId),
     enabled: !!layoutId && !!materialId, // id 있을 때만 호출
   })
 }

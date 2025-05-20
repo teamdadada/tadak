@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import StepIndicator from './StepIndicator'
 import KeyboardPreview3D from './KeyboardPreview3D'
 import ProductSummary from './ProductSummary'
@@ -7,6 +7,7 @@ import StepBarebone from './StepBarebone'
 import StepSwitch from './StepSwitch'
 import StepKeycap from './StepKeycap'
 import { KeyboardOptionsResponse } from '@/types/keyboard'
+import { fetchSwitchProduct } from '@/services/keyboardService' 
 import { Product } from '@/types/product'
 
 interface DesignStepProps {
@@ -27,6 +28,21 @@ const DesignStep = ({ step, setStep, keyboardOptions }: DesignStepProps) => {
   const [customKeyMap, setCustomKeyMap] = useState<Record<string, string>>({})
 
   const [bareboneProduct, setBareboneProduct] = useState<Product | null>(null)
+  const [switchProduct, setSwitchProduct] = useState<Product | null>(null)
+  const [keycapProduct, setKeycapProduct] = useState<Product | null>(null)
+
+  const [switchTypeId, setSwitchTypeId] = useState<number | null>(null)
+  const [switchTypeName, setSwitchTypeName] = useState<string>('청축')
+
+  const switchOption = keyboardOptions.switch.type.find(opt => opt.name === switchTypeName)
+
+  useEffect(() => {
+    if (!switchTypeId && switchOption) {
+      setSwitchTypeId(switchOption.id)
+    }
+  }, [switchTypeId, switchOption])
+
+  const summaryStep = step === 1 ? 0 : step === 2 ? 1 : 2
 
   return (
     <>
@@ -50,10 +66,17 @@ const DesignStep = ({ step, setStep, keyboardOptions }: DesignStepProps) => {
           </div>
           <div className="mt-6 h-48 items-center justify-center">
             <ProductSummary
-              product={bareboneProduct}
+              step={summaryStep}
               layout={layout}
               material={material}
               outerColor={outerColor}
+              type={switchTypeName}
+              basicColor={basicColor}
+              pointOption={pointOption}
+              customKeyMap={customKeyMap}
+              bareboneProduct={bareboneProduct}
+              switchProduct={switchProduct}
+              keycapProduct={keycapProduct}
             />
           </div>
         </div>
@@ -73,7 +96,22 @@ const DesignStep = ({ step, setStep, keyboardOptions }: DesignStepProps) => {
                 onProductChange={setBareboneProduct}
               />
             )}
-            {step === 2 && <StepSwitch />}
+            {step === 2 && (
+              <StepSwitch
+                switchOptions={keyboardOptions.switch.type}
+                selectedName={switchTypeName}
+                onSelect={async (id, name) => {
+                  setSwitchTypeId(id)
+                  setSwitchTypeName(name)
+                  try {
+                    const res = await fetchSwitchProduct(id)
+                    setSwitchProduct(res?.[0] ?? null)
+                  } catch {
+                    setSwitchProduct(null)
+                  }
+                }}
+              />
+            )}
             {step === 3 && (
               <StepKeycap
                 basicColor={basicColor}
@@ -86,6 +124,7 @@ const DesignStep = ({ step, setStep, keyboardOptions }: DesignStepProps) => {
                 setFocusedKey={setFocusedKey}
                 customKeyMap={customKeyMap}
                 setCustomKeyMap={setCustomKeyMap}
+                onProductChange={setKeycapProduct}
               />
             )}
           </div>

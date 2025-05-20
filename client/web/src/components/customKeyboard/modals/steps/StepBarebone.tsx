@@ -1,7 +1,7 @@
 // components/customKeyboard/modals/steps/StepBarebone.tsx
 import { HexColorPicker } from 'react-colorful'
 import { useEffect, useState } from 'react'
-import { fetchBareboneProducts } from '@/services/keyboardService'
+import { fetchBareboneProduct } from '@/services/keyboardService'
 import { Product } from '@/types/product'
 
 interface StepBareboneProps {
@@ -39,7 +39,7 @@ const StepBarebone = ({
     const materialId = materialOptions.find((o) => o.name === material)?.id
 
     if (layoutId && materialId) {
-      fetchBareboneProducts(layoutId, materialId)
+      fetchBareboneProduct(layoutId, materialId)
         .then((products) => {
           onProductChange(products?.[0] ?? null)
         })

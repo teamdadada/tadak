@@ -2,6 +2,8 @@
 import { useState, useEffect } from 'react'
 import { HexColorPicker } from 'react-colorful'
 import Tabs from '@/components/ui/Tabs'
+import { fetchKeycapProduct } from '@/services/keyboardService'
+import { Product } from '@/types/product'
 
 interface StepKeycapProps {
   basicColor: string
@@ -14,6 +16,7 @@ interface StepKeycapProps {
   setFocusedKey: (key: string | null) => void
   customKeyMap: Record<string, string>
   setCustomKeyMap: React.Dispatch<React.SetStateAction<Record<string, string>>>
+  onProductChange: (product: Product | null) => void
 }
 
 const StepKeycap = ({
@@ -27,10 +30,13 @@ const StepKeycap = ({
   setFocusedKey,
   customKeyMap,
   setCustomKeyMap,
+  onProductChange,
 }: StepKeycapProps) => {
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [inputValue, setInputValue] = useState(basicColor.replace('#', '').toUpperCase())
   const [pointInput, setPointInput] = useState(pointColor.replace('#', '').toUpperCase())
+
+  const defaultKeys = ['W', 'A', 'S', 'D', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Enter', 'Space', 'Esc']
 
   // 기본 키캡 색상 input 동기화
   useEffect(() => {
@@ -42,25 +48,56 @@ const StepKeycap = ({
     setPointInput(pointColor.replace('#', '').toUpperCase())
   }, [pointColor])
 
-  // 포인트 키캡 구성 전환 시 초기화
   useEffect(() => {
-    if (pointOption !== 'custom') {
-      setCustomKeyMap({})
-    }
+    fetchKeycapProduct()
+      .then(res => onProductChange(res?.[0] ?? null))
+      .catch(() => onProductChange(null))
+  }, [onProductChange])
 
-    // 초기화 먼저
+  // 탭 전환에 따라 포인트 구성 방식 변경
+  const handlePointOptionChange = (option: 'none' | 'set' | 'custom') => {
+    setPointOption(option)
     setFocusedKey(null)
     setPointColor('#FFFFFF')
     setPointInput('FFFFFF')
-  }, [pointOption])
 
-  // 키 클릭 시 해당 키 색상 동기화 (없으면 기본 키캡 색상)
+    if (option === 'none') {
+      setCustomKeyMap({})
+    }
+
+    if (option === 'none') {
+      setCustomKeyMap({})
+    } else if (option === 'set') {
+      const newMap: Record<string, string> = {}
+      defaultKeys.forEach(key => {
+        newMap[key] = '#FFFFFF'
+      })
+      setCustomKeyMap(newMap)
+    } else if (option === 'custom') {
+      setCustomKeyMap({})
+    }
+  }
+
+  // focusedKey 색상 동기화
   useEffect(() => {
     if (!focusedKey) return
     const color = customKeyMap[focusedKey] ?? basicColor
     setPointColor(color)
     setPointInput(color.replace('#', '').toUpperCase())
   }, [focusedKey, customKeyMap, basicColor])
+
+  // set일 때 pointColor 바뀌면 customKeyMap도 갱신
+  useEffect(() => {
+    if (pointOption === 'set') {
+      setCustomKeyMap(prev => {
+        const updatedMap = { ...prev }
+        defaultKeys.forEach(key => {
+          updatedMap[key] = pointColor
+        })
+        return updatedMap
+      })
+    }
+  }, [pointColor, pointOption])
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value.toUpperCase()
@@ -131,13 +168,13 @@ const StepKeycap = ({
           <div className="flex gap-4 mb-2">
             <button
               className={`w-72 h-12 text-base font-medium rounded-lg border transition-colors ${getPointTabStyle(pointOption === 'none')}`}
-              onClick={() => setPointOption('none')}
+              onClick={() => handlePointOptionChange('none')}
             >
               포인트 키캡 없음
             </button>
             <button
               className={`w-72 h-12 text-base font-medium rounded-lg border transition-colors ${getPointTabStyle(pointOption !== 'none')}`}
-              onClick={() => setPointOption('set')}
+              onClick={() => handlePointOptionChange('set')}
             >
               포인트 키캡 추가
             </button>
@@ -156,7 +193,7 @@ const StepKeycap = ({
               <Tabs
                 items={['세트 구성', '내 맘대로 구성']}
                 selectedIndex={pointOption === 'set' ? 0 : 1}
-                onChange={(i) => setPointOption(i === 0 ? 'set' : 'custom')}
+                onChange={(i) => handlePointOptionChange(i === 0 ? 'set' : 'custom')}
                 tabWidth={120}
                 indicatorWidth={120}
                 indicatorHeight={2}

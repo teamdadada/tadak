@@ -49,14 +49,22 @@ export const fetchKeyboardOptions = async (): Promise<KeyboardOptionsResponse> =
 
 // 카테고리별 키보드 상품 목록 조회
 // 베어본
-export const fetchBareboneProducts = async (layoutId: number, materialId: number) => {
+export const fetchBareboneProduct = async (layoutId: number, materialId: number) => {
   const response = await http.get(KEYBOARD_END_POINT.BAREBONE_PRODUCTS(layoutId, materialId))
   return response.data
 }
 
-//스위치
+// 스위치
+export const fetchSwitchProduct = async (typeId: number) => {
+  const response = await http.get(KEYBOARD_END_POINT.SWITCH_PRODUCTS(typeId))
+  return response.data
+}
 
 // 키캡
+export const fetchKeycapProduct = async () => {
+  const response = await http.get(KEYBOARD_END_POINT.KEYCAP_PRODUCTS)
+  return response.data
+}
 
 // TODO: 특정 키보드의 상품 정보 변경
 export const updateKeyboardProducts = async (keyboardId: number, payload: any) => {
