@@ -63,8 +63,7 @@ export const KEYBOARD_END_POINT = {
   KEYCAP_PRODUCTS: '/keyboard/keycap',
   BAREBONE_PRODUCTS: (layoutId: number, materialId: number) =>
     `/keyboard/barebone?layout=${layoutId}&material=${materialId}`,
-  SWITCH_PRODUCTS: (typeId: number) =>
-    `/keyboard/switch?type=${typeId}`,
+  SWITCH_PRODUCTS: (typeId: number) => `/keyboard/switch?type=${typeId}`,
   UPDATE_PRODUCTS: (keyboardId: number) => `/keyboards/${keyboardId}/products`,
   MODEL_3D: (keyboardId: number) => `/keyboard/${keyboardId}/model`,
 }
@@ -81,6 +80,8 @@ export const PLACEMENT_END_POINT = {
 // cartService
 export const CART_END_POINT = {
   ADD: '/cart',
+  LIST: '/cart',
+  DELETE: '/cart',
 }
 
 // minioService
