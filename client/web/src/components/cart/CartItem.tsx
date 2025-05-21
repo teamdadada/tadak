@@ -2,7 +2,12 @@ import { cartItem } from '@/types/cart'
 import { Loader2 } from 'lucide-react'
 import { useState } from 'react'
 
-const CartItem = (cartItem: cartItem) => {
+interface CartItemProps {
+  cartItem: cartItem
+  onClick: () => void
+}
+
+const CartItem = ({ cartItem, onClick }: CartItemProps) => {
   // 이미지 로딩 상태
   const [imageLoading, setImageLoading] = useState(true)
   const [imageError, setImageError] = useState(false)
@@ -18,7 +23,10 @@ const CartItem = (cartItem: cartItem) => {
 
   return (
     <>
-      <div className="relative flex flex-col items-center justify-between w-full p-5 rounded-lg cursor-pointer bg-tadak-white">
+      <div
+        className="relative flex flex-col items-center justify-between w-full p-5 rounded-lg cursor-pointer bg-tadak-white"
+        onClick={onClick}
+      >
         <div className="relative w-full rounded-md">
           {/* 이미지 로딩 스켈레톤 */}
           {imageLoading && (
