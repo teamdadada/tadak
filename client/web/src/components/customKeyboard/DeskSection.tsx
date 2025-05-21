@@ -18,16 +18,33 @@ const DeskSection = () => {
     selectedKeyboardId,
     setSelectedKeyboardId,
     setDefaultTransform,
+    setDeskImageUrl,
+    setDeskImageId,
+    deskImageUrl,
+    deskImageId,
   } = useDeskStore()
 
   const queryClient = useQueryClient()
   
-  // model3dUrl이 변경될 때 저장 버튼을 표시
+  // model3dUrl 혹은 데스크 이미지 변경될 때 저장 버튼을 표시
   useEffect(() => {
+    if (!placement) return
+  
+    // 3D 모델 변경됐을 때
     if (model3dUrl) {
       setIsDirty(true)
+      return
     }
-  }, [model3dUrl])
+  
+    // 데스크 이미지가 변경됐을 때
+    if (deskImageUrl && deskImageUrl !== placement.imageUrl) {
+      setIsDirty(true)
+      return
+    }
+  
+    // 초기 상태 유지
+    setIsDirty(false)
+  }, [model3dUrl, deskImageUrl, placement])
 
   // placement 초기 transform store에 저장
   useEffect(() => {
@@ -51,7 +68,7 @@ const DeskSection = () => {
     }
 
     const body = {
-      placementId: placement.placementId,
+      placementId: deskImageId ?? placement.placementId,
       keyboardId: selectedKeyboardId ?? placement.keyboardId, // 상태에서 가져온 키보드 ID
       imageId: placement.imageId,
       position: {
@@ -72,11 +89,13 @@ const DeskSection = () => {
 
     try {
       await updatePlacement(body)
-      toast.success('배치 정보가 저장되었어요!')
+      toast.success('데스크 이미지가 저장되었어요!')
       setIsDirty(false)
       setModel3dUrl(null) // 상태 초기화
       setSelectedKeyboardId(null)
       setDefaultTransform(null)
+      setDeskImageUrl(null)
+      setDeskImageId(null)
       canvasRef.current?.resetControls() // EditorToolbar 초기화
       await queryClient.invalidateQueries({ queryKey: ['defaultPlacement'] })
     } catch (error) {
@@ -99,7 +118,7 @@ const DeskSection = () => {
     })
     setModel3dUrl(placement.model3dUrl)
     setSelectedKeyboardId(placement.keyboardId)
-
+    setDeskImageUrl(null)
     canvasRef.current?.resetControls()
     setIsDirty(false)
     toast.success('변경 내용을 되돌렸어요.')
@@ -117,7 +136,7 @@ const DeskSection = () => {
             ref={canvasRef}
             setIsDirty={setIsDirty}
             model3dUrl={placement?.model3dUrl || null}
-            imageUrl={placement?.imageUrl}
+            imageUrl={deskImageUrl || placement?.imageUrl || ''}
           />
         )}
       </div>

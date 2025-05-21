@@ -15,9 +15,10 @@ interface ItemCardProps {
   itemType: 'keyboard' | 'desk'
   isOpen: boolean
   onOpenChange: (open: boolean) => void
+  onDirtyChange?: (dirty: boolean) => void
 }
 
-const ItemCard = ({ item, itemType, isOpen, onOpenChange }: ItemCardProps) => {
+const ItemCard = ({ item, itemType, isOpen, onOpenChange, onDirtyChange }: ItemCardProps) => {
   return (
     <div
       className={`relative w-[181px] h-28 rounded-sm p-1 bg-white hover:shadow-sm box-border ${
@@ -39,9 +40,11 @@ const ItemCard = ({ item, itemType, isOpen, onOpenChange }: ItemCardProps) => {
         <ItemDropdown
           itemId={item.id}
           itemType={itemType}
+          imageUrl={item.imageUrl}
           open={isOpen}
           onOpenChange={onOpenChange}
           canDelete={item.canDelete}
+          onDirtyChange={onDirtyChange}
         >
           {isOpen ? (
             <DropupIcon className="w-4 h-4 text-gray-500 cursor-pointer" />
