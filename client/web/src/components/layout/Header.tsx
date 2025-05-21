@@ -121,7 +121,10 @@ const Header = () => {
                   </button>
                 </div>
                 <div>
-                  <SearchBar isMobile={true} />
+                  <SearchBar
+                    isMobile={true}
+                    onSearch={() => setIsMenuOpen(false)}
+                  />
                 </div>
                 <nav className="flex flex-col space-y-6 text-lg font-medium text-[#242424]">
                   <Link

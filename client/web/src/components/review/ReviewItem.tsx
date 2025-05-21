@@ -3,6 +3,7 @@ import ReviewDeleteDialog from './ReviewDeleteDialog'
 import { useUserStore } from '@/store/userStore'
 import { renderStars } from '@/utils/renderStarts'
 import { useEffect, useRef, useState } from 'react'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 
 interface ReviewItemProps {
   review: Review
@@ -16,6 +17,10 @@ const ReviewItem = ({ review, productId }: ReviewItemProps) => {
   const [visibleImageCount, setVisibleImageCount] = useState(6)
   const [showAllImages, setShowAllImages] = useState(false)
 
+  // 이미지 모달 관련 상태
+  const [showImageModal, setShowImageModal] = useState(false)
+  const [currentImageIdx, setCurrentImageIdx] = useState(0)
+
   // 이미지 로딩 상태 관리
   const [imageLoaded, setImageLoaded] = useState<Record<number, boolean>>({})
 
@@ -28,13 +33,13 @@ const ReviewItem = ({ review, productId }: ReviewItemProps) => {
       if (!containerRef.current) return
 
       const containerWidth = containerRef.current.clientWidth
-      const imageWidth = 84 // 이미지 너비(20) + 간격(2) × 2
+      const imageWidth = 100 // 이미지 너비(20) + 간격(2) × 2
 
       // 컨테이너에 들어갈 수 있는 최대 이미지 수 계산
       const maxImages = Math.floor(containerWidth / imageWidth)
 
       // 최소 1개, 최대 12개까지 표시
-      setVisibleImageCount(Math.max(1, Math.min(maxImages, 12)))
+      setVisibleImageCount(Math.max(1, Math.min(maxImages, 10)))
     }
 
     // 초기 계산
@@ -52,6 +57,44 @@ const ReviewItem = ({ review, productId }: ReviewItemProps) => {
     setImageLoaded((prev) => ({ ...prev, [idx]: true }))
   }
 
+  // 이미지 클릭 핸들러 - 모달 열기
+  const handleImageClick = (idx: number) => {
+    setCurrentImageIdx(idx)
+    setShowImageModal(true)
+  }
+
+  // 모달에서 다음 이미지로 이동
+  const handleNextImage = () => {
+    setCurrentImageIdx((prev) => (prev + 1) % images.length)
+  }
+
+  // 모달에서 이전 이미지로 이동
+  const handlePrevImage = () => {
+    setCurrentImageIdx((prev) => (prev - 1 + images.length) % images.length)
+  }
+
+  // 키보드 네비게이션 (좌우 화살표, ESC 키)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!showImageModal) return
+
+      switch (e.key) {
+        case 'ArrowRight':
+          handleNextImage()
+          break
+        case 'ArrowLeft':
+          handlePrevImage()
+          break
+        case 'Escape':
+          setShowImageModal(false)
+          break
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [showImageModal, images.length])
+
   // 이미지 렌더링 함수
   const renderImages = (images: string[]) => {
     if (images.length === 0) return null
@@ -66,13 +109,13 @@ const ReviewItem = ({ review, productId }: ReviewItemProps) => {
     return (
       <div
         ref={containerRef}
-        className="grid gap-2 py-2 pb-3"
+        className="grid gap-6 py-2 pb-3"
         style={{
           gridTemplateColumns: `repeat(auto-fill, minmax(80px, 1fr))`,
         }}
       >
         {images.slice(0, displayCount).map((imgUrl, idx) => (
-          <div key={idx} className="relative w-20 h-20">
+          <div key={idx} className="relative w-24 h-24">
             {/* 이미지 로딩 플레이스홀더 */}
             <div
               className={`absolute inset-0 bg-tadak-light-gray/70 border border-tadak-light-gray ${
@@ -84,8 +127,9 @@ const ReviewItem = ({ review, productId }: ReviewItemProps) => {
             <img
               src={imgUrl}
               alt={`리뷰 이미지 ${idx + 1}`}
-              className={`object-cover w-full h-full border border-tadak-light-gray ${imageLoaded[idx] ? 'opacity-100' : 'opacity-0'}`}
+              className={`object-cover w-full h-full border border-tadak-light-gray cursor-pointer hover:opacity-80 transition ${imageLoaded[idx] ? 'opacity-100' : 'opacity-0'}`}
               onLoad={() => handleImageLoad(idx)}
+              onClick={() => handleImageClick(idx)}
             />
 
             {/* 마지막 이미지에 +N 표시 */}
@@ -140,12 +184,76 @@ const ReviewItem = ({ review, productId }: ReviewItemProps) => {
       </div>
 
       {/* 리뷰 내용 */}
-      <div className="pl-2 mt-2 text-sm whitespace-pre-line text-tadak-black">
+      <div
+        className="pl-2 mt-2 text-sm whitespace-pre-line text-tadak-black"
+        style={{
+          overflowWrap: 'break-word',
+        }}
+      >
         {content}
       </div>
 
       {/* 이미지 슬라이드 */}
       {images.length > 0 && renderImages(images)}
+
+      {/* 이미지 모달 */}
+      {showImageModal && images.length > 0 && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80"
+          onClick={() => setShowImageModal(false)}
+        >
+          <div
+            className="relative max-w-4xl max-h-[80vh]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* 이미지 */}
+            <img
+              src={images[currentImageIdx]}
+              alt={`리뷰 이미지 확대 ${currentImageIdx + 1}`}
+              className="max-w-full max-h-[80vh] object-contain"
+            />
+
+            {/* 이미지 카운터 */}
+            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black/60 text-white px-3 py-1 rounded-full text-sm">
+              {currentImageIdx + 1} / {images.length}
+            </div>
+
+            {/* 닫기 버튼 */}
+            <button
+              className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-black/60 text-white hover:bg-black/80"
+              onClick={() => setShowImageModal(false)}
+            >
+              ✕
+            </button>
+
+            {/* 이전 버튼 */}
+            {images.length > 1 && (
+              <button
+                className="absolute top-1/2 left-4 transform -translate-y-1/2 w-10 h-10 flex items-center justify-center rounded-full bg-black/60 text-white hover:bg-black/80"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  handlePrevImage()
+                }}
+              >
+                <ChevronLeft />
+              </button>
+            )}
+
+            {/* 다음 버튼 */}
+            {images.length > 1 && (
+              <button
+                className="absolute top-1/2 right-4 transform -translate-y-1/2 w-10 h-10 flex items-center justify-center rounded-full bg-black/60 text-white hover:bg-black/80"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  handleNextImage()
+                }}
+              >
+                <ChevronRight />
+              </button>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   )
 }
