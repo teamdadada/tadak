@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ssafy.tadak.spring.auth.dto.UserInfo;
 import com.ssafy.tadak.spring.common.annotation.AuthUser;
 import com.ssafy.tadak.spring.common.enums.SortType;
+import com.ssafy.tadak.spring.product.domain.entity.PopularProduct;
 import com.ssafy.tadak.spring.product.dto.request.ProductsCursorRequest;
 import com.ssafy.tadak.spring.product.dto.request.list.BareboneListRequest;
 import com.ssafy.tadak.spring.product.dto.request.list.KeycapListRequest;
@@ -25,6 +26,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -63,11 +66,10 @@ public class ProductController {
 
     @GetMapping("/top/list")
     public ResponseEntity<ProductListResponse> getTopProductList(
-            @RequestParam(name = "cursor", defaultValue = "2147483647_2147483647") String cursor,
+            @RequestParam(name = "cursor", defaultValue = "0") Long cursor,
             @RequestParam(name = "size", defaultValue = "10") int size
     ) {
-        return ResponseEntity.ok(productService.getProductListByQuery(
-                "",
+        return ResponseEntity.ok(productService.getPopularProductList(
                 cursor,
                 size
         ));
