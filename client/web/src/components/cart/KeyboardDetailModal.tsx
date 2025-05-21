@@ -83,7 +83,7 @@ const KeyboardDetailModal = ({
           <ComponentCard
             label={detail.selectedProducts.barebone.name}
             product={detail.selectedProducts.barebone}
-            description={`${getOptionName(keyboardOptions?.barebone.layout, detail.options[0]?.bareboneOption.layout)} / ${getOptionName(keyboardOptions?.barebone.material, detail.options[0]?.bareboneOption.material)} / ${detail.colors.outerColor.toUpperCase()}`}
+            description={`${getOptionName(keyboardOptions?.barebone.layout, detail.options[0]?.bareboneOption.layout)} / ${getOptionName(keyboardOptions?.barebone.material, detail.options[0]?.bareboneOption.material)} / ${(detail.colors.outerColor ?? '').toUpperCase()}`}
           />
           <ComponentCard
             label={detail.selectedProducts.switch.name}
