@@ -17,7 +17,7 @@ import static com.ssafy.tadak.spring.minio.exception.MinioErrorCode.FILE_NOTFOUN
 public class ProductConverter {
     private final MinioUtil minioUtil;
 
-    public List<GetProductListResponse.ProductInfo> convertToProductInfoList(List<? extends ProductOption> options) {
+    public List<GetProductListResponse> convertToProductInfoList(List<? extends ProductOption> options) {
         return options.stream()
                 .map(op -> {
                     Image image = op.getImage();
@@ -27,7 +27,7 @@ public class ProductConverter {
                     } catch (Exception e) {
                         throw new MinioException.MinioNotFoundException(FILE_NOTFOUND);
                     }
-                    return GetProductListResponse.ProductInfo.builder()
+                    return GetProductListResponse.builder()
                             .productId(op.getId())
                             .name(op.getName())
                             .price(op.getPrice())
