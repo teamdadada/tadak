@@ -1,6 +1,6 @@
 import { Canvas } from '@react-three/fiber'
 import { OrbitControls, Environment } from '@react-three/drei'
-import { useRef, useState, forwardRef, useImperativeHandle } from 'react'
+import { useRef, useState, forwardRef, useImperativeHandle, useEffect } from 'react'
 import * as THREE from 'three'
 
 import EditorToolbar from './EditorToolbar'
@@ -46,6 +46,16 @@ const DeskCanvas = forwardRef<DeskCanvasHandle, DeskCanvasProps>(
     } = useDeskStore()
 
     const effectiveModel3dUrl = dynamicModel3dUrl || initialModel3dUrl
+
+    useEffect(() => {
+      if (defaultTransform && modelRef.current) {
+        const { position, rotation, scale } = defaultTransform
+
+        modelRef.current.position.set(position.x, position.y, position.z ?? 0)
+        modelRef.current.rotation.set(rotation.x, rotation.y, rotation.z)
+        modelRef.current.scale.set(scale.x, scale.y, scale.z)
+      }
+    }, [defaultTransform])
 
     useImperativeHandle(ref, () => ({
       object: modelRef.current!,
