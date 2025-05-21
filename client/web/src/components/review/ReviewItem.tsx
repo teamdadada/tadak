@@ -33,13 +33,13 @@ const ReviewItem = ({ review, productId }: ReviewItemProps) => {
       if (!containerRef.current) return
 
       const containerWidth = containerRef.current.clientWidth
-      const imageWidth = 84 // 이미지 너비(20) + 간격(2) × 2
+      const imageWidth = 100 // 이미지 너비(20) + 간격(2) × 2
 
       // 컨테이너에 들어갈 수 있는 최대 이미지 수 계산
       const maxImages = Math.floor(containerWidth / imageWidth)
 
       // 최소 1개, 최대 12개까지 표시
-      setVisibleImageCount(Math.max(1, Math.min(maxImages, 12)))
+      setVisibleImageCount(Math.max(1, Math.min(maxImages, 10)))
     }
 
     // 초기 계산
@@ -109,13 +109,13 @@ const ReviewItem = ({ review, productId }: ReviewItemProps) => {
     return (
       <div
         ref={containerRef}
-        className="grid gap-2 py-2 pb-3"
+        className="grid gap-6 py-2 pb-3"
         style={{
           gridTemplateColumns: `repeat(auto-fill, minmax(80px, 1fr))`,
         }}
       >
         {images.slice(0, displayCount).map((imgUrl, idx) => (
-          <div key={idx} className="relative w-20 h-20">
+          <div key={idx} className="relative w-24 h-24">
             {/* 이미지 로딩 플레이스홀더 */}
             <div
               className={`absolute inset-0 bg-tadak-light-gray/70 border border-tadak-light-gray ${
