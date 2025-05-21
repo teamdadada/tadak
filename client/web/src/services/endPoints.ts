@@ -87,6 +87,7 @@ export const PLACEMENT_END_POINT = {
 export const CART_END_POINT = {
   ADD: '/cart',
   LIST: '/cart',
+  DELETE: '/cart',
 }
 
 // minioService

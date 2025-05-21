@@ -12,3 +12,9 @@ export const getCart = async (): Promise<cartItem[]> => {
   const { data } = await http.get(CART_END_POINT.LIST)
   return data
 }
+
+export const deleteCart = async (keyboardIdList: number[]) => {
+  return await http.delete(CART_END_POINT.DELETE, {
+    data: { keyboardIdList },
+  })
+}
