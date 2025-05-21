@@ -57,7 +57,7 @@ const ChatbotInput = ({ onSend, disabled = false }: ChatbotInputProps) => {
             disabled ? '타덕이 대답 중...' : '메시지를 입력하세요...'
           }
           disabled={disabled}
-          className={`flex-1 border p-5 border-tadak-light-gray rounded-lg ${
+          className={`flex-1 border p-5 min-w-44 border-tadak-light-gray rounded-lg ${
             disabled ? 'bg-tadak-light-gray text-tadak-black' : ''
           }`}
         />
