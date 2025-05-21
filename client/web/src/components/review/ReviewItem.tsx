@@ -184,7 +184,12 @@ const ReviewItem = ({ review, productId }: ReviewItemProps) => {
       </div>
 
       {/* 리뷰 내용 */}
-      <div className="pl-2 mt-2 text-sm whitespace-pre-line text-tadak-black">
+      <div
+        className="pl-2 mt-2 text-sm whitespace-pre-line text-tadak-black"
+        style={{
+          overflowWrap: 'break-word',
+        }}
+      >
         {content}
       </div>
 
