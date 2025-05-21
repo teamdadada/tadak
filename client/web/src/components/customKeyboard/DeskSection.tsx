@@ -1,6 +1,9 @@
 import { useRef, useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import DeskCanvas, { DeskCanvasHandle } from './DeskCanvas'
 import ActionButtons from './ActionButtons'
+import LoginRequiredModal from '@/components/common/LoginRequiredModal'
+import { useUserStore } from '@/store/userStore'
 import { useDefaultPlacement } from '@/hooks/usePlacement'
 import { useDeskStore } from '@/store/deskStore'
 import { updatePlacement } from '@/services/placementService'
@@ -8,10 +11,15 @@ import { toast } from 'sonner'
 import { useQueryClient } from '@tanstack/react-query'
 
 const DeskSection = () => {
+  const navigate = useNavigate()
+  const isLoggedIn = useUserStore((state) => state.getIsLoggedIn())
   const [isDirty, setIsDirty] = useState(false)
   const canvasRef = useRef<DeskCanvasHandle>(null)
 
-  const { data: placement, isLoading } = useDefaultPlacement()
+  const { data: placement, isLoading } = useDefaultPlacement({
+    enabled: isLoggedIn, // 로그인 시에만 호출되도록 설정
+  })
+
   const {
     model3dUrl,
     setModel3dUrl,
@@ -122,6 +130,10 @@ const DeskSection = () => {
     canvasRef.current?.resetControls()
     setIsDirty(false)
     toast.success('변경 내용을 되돌렸어요.')
+  }
+
+  if (!isLoggedIn) {
+    return <LoginRequiredModal onClose={() => navigate('/main')} />
   }
 
   return (
