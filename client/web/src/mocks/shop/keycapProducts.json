@@ -1,0 +1,54 @@
+{
+  "content": [
+    {
+      "id": 11,
+      "name": "SPM Soulcat 염료승화 키캡 107키",
+      "price": 23750,
+      "imageUrl": "https://cataas.com/cat?11",
+      "liked": true,
+      "keycapMaterial": "PBT",
+      "engravingPosition": "한글 상단",
+      "keyCount": "107개"
+    },
+    {
+      "id": 12,
+      "name": "Akko Neon ASA 키캡 158키",
+      "price": 49000,
+      "imageUrl": "https://cataas.com/cat?12",
+      "liked": false,
+      "keycapMaterial": "ABS",
+      "engravingPosition": "영문 중앙",
+      "keyCount": "158개"
+    },
+    {
+      "id": 13,
+      "name": "Ducky Pudding 키캡 108키",
+      "price": 38000,
+      "imageUrl": "https://cataas.com/cat?13",
+      "liked": true,
+      "keycapMaterial": "PBT",
+      "engravingPosition": "영문 상단",
+      "keyCount": "108개"
+    },
+    {
+      "id": 14,
+      "name": "Leopold 염료승화 키캡 104키",
+      "price": 45000,
+      "imageUrl": "https://cataas.com/cat?14",
+      "liked": false,
+      "keycapMaterial": "PBT",
+      "engravingPosition": "한글 중앙",
+      "keyCount": "104개"
+    },
+    {
+      "id": 15,
+      "name": "키랩 클래식 ABS 키캡 132키",
+      "price": 29500,
+      "imageUrl": "https://cataas.com/cat?15",
+      "liked": true,
+      "keycapMaterial": "ABS",
+      "engravingPosition": "영문 측면",
+      "keyCount": "132개"
+    }
+  ]
+}
