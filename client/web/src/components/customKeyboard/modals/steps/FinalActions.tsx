@@ -90,7 +90,7 @@ const FinalActions = ({
             ...(pointOption === 'custom' && Object.keys(customKeyMap).length > 0
               ? { pointColors: customKeyMap }
               : pointOption === 'set'
-              ? { pointColors: {} }
+              ? { pointColors: customKeyMap }
               : {}),
           },
         },

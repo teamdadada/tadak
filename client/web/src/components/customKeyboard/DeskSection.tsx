@@ -58,12 +58,12 @@ const DeskSection = () => {
   useEffect(() => {
     if (placement) {
       setDefaultTransform({
-        // position: placement.position,
-        // rotation: placement.rotation,
-        // scale: placement.scale,
-        position: { x: 0, y: -1.5, z: 0 },
-        rotation: { x: 0, y: 0, z: 0 },
-        scale: { x: 0.5, y: 0.5, z: 0.5 },
+        position: placement.position,
+        rotation: placement.rotation,
+        scale: placement.scale,
+        // position: { x: 0, y: -1.5, z: 0 },
+        // rotation: { x: 0, y: 0, z: 0 },
+        // scale: { x: 0.5, y: 0.5, z: 0.5 },
       })
     }
   }, [placement, setDefaultTransform])

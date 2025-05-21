@@ -47,22 +47,6 @@ const EditorToolbar = ({
       >
         <RotateHorizontalIcon className="w-6 h-6" />
       </Button>
-      
-      {/* 크기 조정 모드 */}
-      <Button
-        onClick={() => {
-          toggleTransform()
-          setTransformMode('scale')
-        }}
-        variant="outline"
-        size="icon"
-        className={cn(
-          'rounded-full text-tadak-dark-gray',
-          isControlActive && transformMode === 'scale' && 'border-tadak-secondary bg-tadak-light-secondary text-tadak-secondary'
-        )}
-      >
-        <SizeIcon className="w-6 h-6" />
-      </Button>
 
       {/* 이동 모드 */}
       <Button
@@ -78,6 +62,22 @@ const EditorToolbar = ({
         )}
       >
         <MoveIcon className="w-8 h-8" />
+      </Button>
+      
+      {/* 크기 조정 모드 */}
+      <Button
+        onClick={() => {
+          toggleTransform()
+          setTransformMode('scale')
+        }}
+        variant="outline"
+        size="icon"
+        className={cn(
+          'rounded-full text-tadak-dark-gray',
+          isControlActive && transformMode === 'scale' && 'border-tadak-secondary bg-tadak-light-secondary text-tadak-secondary'
+        )}
+      >
+        <SizeIcon className="w-6 h-6" />
       </Button>
     </div>
   )

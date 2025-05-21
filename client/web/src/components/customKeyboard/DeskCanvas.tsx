@@ -6,7 +6,6 @@ import * as THREE from 'three'
 import EditorToolbar from './EditorToolbar'
 import KeyboardModel from './KeyboardModel'
 import NoKeyboardPlaceholder from './NoKeyboardPlaceholder'
-import { ReactComponent as FullscreenIcon } from '@/assets/icons/fullscreen.svg'
 
 import { useDeskStore } from '@/store/deskStore'
 
@@ -45,7 +44,7 @@ const DeskCanvas = forwardRef<DeskCanvasHandle, DeskCanvasProps>(
       model3dUrl: dynamicModel3dUrl,
       defaultTransform,
     } = useDeskStore()
-    
+
     const effectiveModel3dUrl = dynamicModel3dUrl || initialModel3dUrl
 
     useImperativeHandle(ref, () => ({
@@ -135,7 +134,7 @@ const DeskCanvas = forwardRef<DeskCanvasHandle, DeskCanvasProps>(
         </div>
 
         {rotationMode === 'horizontal' && (
-          <div className="absolute bottom-2.5 left-1/2 -translate-x-1/2 z-20 bg-tadak-white border border-tadak-secondary rounded-xl px-4 py-2 flex items-center gap-2 w-[320px]">
+          <div className="absolute bottom-3 left-2/3 -translate-x-1/2 z-20 bg-tadak-white border border-tadak-secondary rounded-xl px-4 py-2 flex items-center gap-2 w-[320px]">
             <span className="text-sm text-tadak-secondary">-90°</span>
             <input
               type="range"
@@ -166,12 +165,12 @@ const DeskCanvas = forwardRef<DeskCanvasHandle, DeskCanvasProps>(
           </div>
         )}
 
-        <button
+        {/* <button
           className="absolute top-3 right-3 border p-2 rounded-md hover:bg-gray-100 z-20 bg-white bg-opacity-70 backdrop-blur"
           aria-label="전체화면"
         >
           <FullscreenIcon className="w-4 h-4" />
-        </button>
+        </button> */}
       </div>
     )
   }
