@@ -121,13 +121,13 @@ public class PlacementService {
                                             .image(image)
                                             .canDelete(true)
                                             .locationX(0D)
-                                            .locationY(0D)
+                                            .locationY(-1.5D)
                                             .rotationX(0D)
                                             .rotationY(0D)
                                             .rotationZ(0D)
-                                            .scaleX(0D)
-                                            .scaleY(0D)
-                                            .scaleZ(0D)
+                                            .scaleX(0.5D)
+                                            .scaleY(0.5D)
+                                            .scaleZ(0.5D)
                                     .build());
     }
 
