@@ -89,37 +89,53 @@ public class ProductRepositoryCustom {
             // 1. 필터: product_id가 대상인 문서 찾기
             Bson filter = Filters.eq("product_id", productId);
 
-            // 2. 업데이트 파이프라인 정의
+            // 2. Update Pipeline
             List<Document> updatePipeline = List.of(
                     new Document("$set", new Document()
-                            .append("hit", new Document("$add", List.of(new Document("$ifNull", List.of("$hit", 0)), hits)))
+                            // hit 필드 증가
+                            .append("hit",
+                                    new Document("$add", List.of(
+                                            new Document("$ifNull", List.of("$hit", 0)),
+                                            hits
+                                    ))
+                            )
+                            // popular_sort_key 생성
                             .append("popular_sort_key",
                                     new Document("$concat", List.of(
-                                            // 8자리 Zero Padding (hits + Redis hits)
+                                            // 8자리 Zero-padding(hit)
                                             new Document("$substrCP", List.of(
-                                                    new Document("$concat", List.of("00000000",
-                                                            new Document("$toString", new Document("$add", List.of("$hit", hits)))
+                                                    new Document("$concat", List.of(
+                                                            "00000000",
+                                                            new Document("$toString", new Document("$add", List.of(
+                                                                    new Document("$ifNull", List.of("$hit", 0)),
+                                                                    hits
+                                                            )))
                                                     )),
                                                     new Document("$subtract", List.of(
-                                                            8,
-                                                            new Document("$strLenCP",
-                                                                    new Document("$toString", new Document("$add", List.of("$hit", hits)))
-                                                            )
+                                                            new Document("$strLenCP", new Document("$concat", List.of(
+                                                                    "00000000",
+                                                                    new Document("$toString", new Document("$add", List.of(
+                                                                            new Document("$ifNull", List.of("$hit", 0)),
+                                                                            hits
+                                                                    )))
+                                                            ))),
+                                                            8
                                                     )),
                                                     8
                                             )),
-                                            new Document("$literal", "_"),
-                                            // 4자리 Zero Padding (product_id)
+                                            "_",
+                                            // 4자리 Zero-padding(product_id)
                                             new Document("$substrCP", List.of(
                                                     new Document("$concat", List.of(
                                                             "0000",
                                                             new Document("$toString", "$product_id")
                                                     )),
                                                     new Document("$subtract", List.of(
-                                                            4,
-                                                            new Document("$strLenCP",
+                                                            new Document("$strLenCP", new Document("$concat", List.of(
+                                                                    "0000",
                                                                     new Document("$toString", "$product_id")
-                                                            )
+                                                            ))),
+                                                            4
                                                     )),
                                                     4
                                             ))
