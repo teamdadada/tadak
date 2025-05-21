@@ -21,7 +21,7 @@ const UserReview = () => {
             className="flex flex-col gap-2 px-2 py-2 border-b border-tadak-light-gray"
           >
             <ProductSummaryItem
-              name={review.product?.name || '삭제된 상품'}
+              name={review.product?.name}
               thumbnail={review.product?.thumbnail}
             />
             <MyReviewItem
