@@ -54,14 +54,14 @@ const KeyboardModel = forwardRef<THREE.Object3D, KeyboardModelProps>(({
       modelRef.current.rotation.set(rotation.x, rotation.y, rotation.z)
       modelRef.current.scale.set(scale.x, scale.y, scale.z)
 
-      console.log('📦 초기 키보드 배치 정보')
-      console.log('position:', modelRef.current.position)
-      console.log('rotation (deg):', {
-        x: THREE.MathUtils.radToDeg(rotation.x),
-        y: THREE.MathUtils.radToDeg(rotation.y),
-        z: THREE.MathUtils.radToDeg(rotation.z),
-      })
-      console.log('scale:', modelRef.current.scale)
+      // console.log('📦 초기 키보드 배치 정보')
+      // console.log('position:', modelRef.current.position)
+      // console.log('rotation (deg):', {
+      //   x: THREE.MathUtils.radToDeg(rotation.x),
+      //   y: THREE.MathUtils.radToDeg(rotation.y),
+      //   z: THREE.MathUtils.radToDeg(rotation.z),
+      // })
+      // console.log('scale:', modelRef.current.scale)
 
       setModelReady(true)
       onModelReady?.()
