@@ -31,6 +31,7 @@ export const SHOP_END_POINT = {
   },
   PRODUCT: {
     LIST: '/product/list',
+    TOP_LIST: '/product/top/list',
     DETAIL: (type: string) => `/product/${type}`,
   },
 }

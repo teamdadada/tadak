@@ -28,6 +28,8 @@ const keyTypeMap = {
   CapsLock: 'enter',
 }
 
+const soundTypes = ['normal', 'space', 'enter']
+
 const TypingArea = () => {
   const [activeKeys, setActiveKeys] = useState<string[]>([])
   const [typedText, setTypedText] = useState('')
@@ -39,6 +41,12 @@ const TypingArea = () => {
   // 오디오 객체
   const audioRef = useRef<Record<string, HTMLAudioElement>>({})
 
+  // 오디오 프리로드
+  const preloadedAudioMap = useRef<Record<string, HTMLAudioElement>>({})
+
+  // 프리로드 완료된 사운드 키
+  const preloadedSoundKeyRef = useRef<string | null>(null)
+
   // 마지막 키 입력 시간
   const lastKeyPressTimeRef = useRef<Record<string, number>>({})
 
@@ -46,6 +54,57 @@ const TypingArea = () => {
   const currentPlayingRef = useRef<Record<string, boolean>>({})
 
   const selectedSoundKey = useSoundStore((state) => state.selectedSoundKey)
+
+  // 오디오 프리로더 함수
+  const preloadAudios = useCallback(() => {
+    // 선택된 사운드가 없거나 이미 프리로드된 경우 종료
+    if (
+      !selectedSoundKey ||
+      preloadedSoundKeyRef.current === selectedSoundKey
+    ) {
+      return
+    }
+
+    // 선택된 사운드 키에서 키보드 타입과 색상 추출
+    const lastSpaceIndex = selectedSoundKey.lastIndexOf(' ')
+    const korKeyboardType = selectedSoundKey.substring(0, lastSpaceIndex)
+    const korColor = selectedSoundKey.substring(lastSpaceIndex + 1)
+
+    const keyboardType =
+      keyboardTypeMap[korKeyboardType as keyof typeof keyboardTypeMap]
+    const color = colorMap[korColor as keyof typeof colorMap]
+
+    let loadedCount = 0
+    const totalFiles = soundTypes.length
+
+    // 오디오 파일 프리로드
+    soundTypes.forEach((soundType) => {
+      const soundPath = `/sounds/${keyboardType}_${color}_${soundType}.mp3`
+      const soundKey = `${keyboardType}_${color}_${soundType}`
+
+      // 이미 프리로드 되었는지 확인
+      if (preloadedAudioMap.current[soundKey]) {
+        loadedCount++
+        if (loadedCount === totalFiles) {
+          preloadedSoundKeyRef.current = selectedSoundKey
+        }
+        return
+      }
+
+      const audio = new Audio()
+
+      audio.src = soundPath
+      audio.load()
+      preloadedAudioMap.current[soundKey] = audio
+    })
+  }, [selectedSoundKey])
+
+  // 선택된 사운드가 변경될 때 프리로딩 실행
+  useEffect(() => {
+    if (selectedSoundKey && preloadedSoundKeyRef.current !== selectedSoundKey) {
+      preloadAudios()
+    }
+  }, [selectedSoundKey, preloadAudios])
 
   // 자동 포커스
   useEffect(() => {
@@ -95,14 +154,24 @@ const TypingArea = () => {
         keyTypeMap[keyCode as keyof typeof keyTypeMap] || 'normal'
 
       const soundPath = `/sounds/${keyboardType}_${color}_${soundType}.mp3` // 최종 소리 파일 경로 생성
+      const soundKey = `${keyboardType}_${color}_${soundType}`
+
+      // 프리로드된 오디오 객체 사용
+      const preloadedAudio = preloadedAudioMap.current[soundKey]
 
       // 새 오디오 객체 생성 또는 재사용
       let audio = audioRef.current[keyCode]
+
       if (!audio) {
-        audio = new Audio(soundPath)
+        if (preloadedAudio) {
+          audio = new Audio(soundPath)
+        } else {
+          audio = new Audio(soundPath)
+        }
         audioRef.current[keyCode] = audio
-      } else {
-        audio.src = soundPath // 경로가 변경되었을 수 있으므로 업데이트
+      } else if (audio.src !== soundPath) {
+        // 경로가 변경된 경우에만 업데이트
+        audio.src = soundPath
       }
 
       // 재생 완료 시 상태 업데이트를 위한 이벤트 리스너
@@ -128,6 +197,7 @@ const TypingArea = () => {
     },
     [selectedSoundKey],
   )
+
   // 현재 문장
   const currentSentence = selectedSentences[currentSentenceIndex] ?? ''
 
@@ -149,12 +219,7 @@ const TypingArea = () => {
       }
 
       // Win 키/Alt 키가 눌렸을 경우 타이머로 자동 해제
-      if (
-        e.code === 'MetaLeft' ||
-        e.code === 'MetaRight' ||
-        e.code == 'AltLeft' ||
-        e.code == 'AltRight'
-      ) {
+      if (['MetaLeft', 'MetaRight', 'AltLeft', 'AltRight'].includes(e.code)) {
         setTimeout(() => {
           setActiveKeys((prev) => prev.filter((key) => key !== e.code))
         }, 200)
@@ -183,6 +248,14 @@ const TypingArea = () => {
         audio.src = ''
       })
       audioRef.current = {}
+
+      // 프리로드된 오디오 객체도 정리
+      Object.values(preloadedAudioMap.current).forEach((audio) => {
+        audio.pause()
+        audio.src = ''
+      })
+      preloadedAudioMap.current = {}
+      preloadedSoundKeyRef.current = null
     }
   }, [])
 
@@ -238,6 +311,7 @@ const TypingArea = () => {
       )
     })
   }
+
   return (
     <div className="bg-white rounded-lg p-6 shadow-[0px_2px_8px_0px_rgba(99,99,99,0.2)]">
       <div className="bg-tadak-black px-5 py-3 rounded-lg text-lg font-medium mb-4">

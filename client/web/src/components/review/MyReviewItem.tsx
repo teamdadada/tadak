@@ -90,7 +90,12 @@ const ReviewItem = ({ review, productId }: ReviewItemProps) => {
         </div>
       </div>
       {/* 리뷰 내용 */}
-      <div className="mt-2 text-sm whitespace-pre-line text-tadak-black">
+      <div
+        style={{
+          overflowWrap: 'break-word',
+        }}
+        className="mt-2 text-sm whitespace-pre-line text-tadak-black"
+      >
         {content}
       </div>
       {/* 이미지 슬라이드 */}

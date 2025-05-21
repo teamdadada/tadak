@@ -91,6 +91,21 @@ export const getSearchedProducts = async ({
   }
 }
 
+export const getTopProducts = async ({
+  cursor = null,
+  size = 5,
+}): Promise<ProductListResponse> => {
+  const { data } = await http.get(SHOP_END_POINT.PRODUCT.TOP_LIST, {
+    params: { cursor, size },
+  })
+
+  return {
+    list: data.list,
+    hasNext: data.hasNext,
+    lastCursor: data.lastCursor,
+  }
+}
+
 export const getProductDetail = async (
   type: ProductType,
   id: string | number,

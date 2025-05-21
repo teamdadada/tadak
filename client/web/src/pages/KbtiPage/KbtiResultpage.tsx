@@ -22,16 +22,21 @@ const KbtiResultPage = () => {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center w-full gap-8 p-4">
+    <div className="flex flex-col items-center justify-center w-full gap-4 p-4">
       <h2 className="w-full text-xl font-semibold text-start">
         당신의 KBTI 결과는....?
       </h2>
       <div className="text-center">
-        <h1 className="mb-4 text-3xl font-bold">{result}</h1>
-        <h2 className="text-xl font-semibold">{kbti.nickname}</h2>
+        {kbti.image && (
+          <img
+            src={kbti.image}
+            alt={kbti.nickname}
+            className="w-full max-w-sm mx-auto mb-4 rounded-sm"
+          />
+        )}
       </div>
-      <p className="w-full mt-2 text-lg">{kbti.description}</p>
-      <ul className="mt-4 space-y-2">
+      {/* <p className="w-full mt-2 text-lg">{kbti.description}</p> */}
+      <ul className="space-y-2">
         {kbti.expressions?.map((expression, index) => (
           <li key={index} className="text-center text-md">
             "{expression}"
