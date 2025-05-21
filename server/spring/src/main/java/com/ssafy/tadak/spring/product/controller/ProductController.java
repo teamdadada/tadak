@@ -61,6 +61,18 @@ public class ProductController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/top/list")
+    public ResponseEntity<ProductListResponse> getTopProductList(
+            @RequestParam(name = "cursor", defaultValue = "2147483647_2147483647") String cursor,
+            @RequestParam(name = "size", defaultValue = "10") int size
+    ) {
+        return ResponseEntity.ok(productService.getProductListByQuery(
+                "",
+                cursor,
+                size
+        ));
+    }
+
     @GetMapping(value = "/list", params = "!query")
     public ResponseEntity<ProductListResponse> getProductList(
             @RequestParam(name = "query", required = false) String keyword,

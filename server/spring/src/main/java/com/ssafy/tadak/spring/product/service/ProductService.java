@@ -79,6 +79,7 @@ public class ProductService {
         int hitC = cursorInfo[0];
         int idC = cursorInfo[1];
         List<Product> products = productRepository.searchByNameWithCursor(keyword, hitC, idC, size);
+        System.out.println(products);
         Map<ProductType, List<Long>> productIds = new HashMap<>();
         products.forEach(p ->
                 productIds
