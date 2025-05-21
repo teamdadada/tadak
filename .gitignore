@@ -1,6 +1,8 @@
 # Created by https://www.toptal.com/developers/gitignore/api/intellij,pycharm,windows,macos,visualstudiocode
 # Edit at https://www.toptal.com/developers/gitignore?templates=intellij,pycharm,windows,macos,visualstudiocode
 
+.env
+
 ### Intellij ###
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio, WebStorm and Rider
 # Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
@@ -283,4 +285,5 @@ pip-selfcheck.json
 
 # End of https://www.toptal.com/developers/gitignore/api/venv
 
-# End of https://www.toptal.com/developers/gitignore/api/intellij,pycharm,windows,macos,visualstudiocode
+!client/web/src/lib/
+!client/web/src/lib/**
