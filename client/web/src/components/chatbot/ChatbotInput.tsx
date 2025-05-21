@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { useState, FormEvent, KeyboardEvent } from 'react'
+import { useState, FormEvent, KeyboardEvent, useRef, useEffect } from 'react'
 
 interface ChatbotInputProps {
   onSend: (message: string) => void
@@ -9,6 +9,13 @@ interface ChatbotInputProps {
 
 const ChatbotInput = ({ onSend, disabled = false }: ChatbotInputProps) => {
   const [input, setInput] = useState('')
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    if (inputRef.current && !disabled) {
+      inputRef.current.focus()
+    }
+  }, [disabled])
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
@@ -26,6 +33,12 @@ const ChatbotInput = ({ onSend, disabled = false }: ChatbotInputProps) => {
     if (input.trim() && !disabled) {
       onSend(input)
       setInput('')
+
+      setTimeout(() => {
+        if (inputRef.current) {
+          inputRef.current.focus()
+        }
+      })
     }
   }
 
@@ -36,6 +49,7 @@ const ChatbotInput = ({ onSend, disabled = false }: ChatbotInputProps) => {
     >
       <div className="flex gap-4 items-center">
         <Input
+          ref={inputRef}
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
