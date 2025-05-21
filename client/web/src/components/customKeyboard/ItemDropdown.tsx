@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { useDeskStore } from '@/store/deskStore'
 
-import { deletePlacement } from '@/services/placementService'
+import { deletePlacement, getPlacementDetail } from '@/services/placementService'
 import { deleteKeyboard, fetchKeyboardModel3D } from '@/services/keyboardService'
 
 import DeskDeleteModal from './modals/DeskDeleteModal'
@@ -43,6 +43,7 @@ const ItemDropdown = ({
     setSelectedKeyboardId,
     setDeskImageUrl,
     setDeskImageId,
+    setDefaultTransform,
     setIsDirty,
   } = useDeskStore()
 
@@ -83,7 +84,7 @@ const ItemDropdown = ({
 
   const toggleDropdown = () => onOpenChange(!open)
 
-  const handleAction = (action: string) => {
+  const handleAction = async (action: string) => {
     if (action === 'delete') {
       setShowConfirmModal(true)
     } else if (action === 'set' && itemType === 'desk') {
@@ -91,11 +92,23 @@ const ItemDropdown = ({
         toast.error('이미지 정보가 없어요.')
         return
       }
-      setDeskImageUrl(imageUrl)
-      setDeskImageId(itemId)
-      onDirtyChange?.(true)
-      setIsDirty(true)
-      toast.success('나의 타닥 데스크 배경으로 설정했어요.')
+      try {
+        const placement = await getPlacementDetail(itemId)
+        setDeskImageUrl(placement.imageUrl)
+        setDeskImageId(placement.placementId)
+
+        setDefaultTransform({
+          position: placement.position,
+          rotation: placement.rotation,
+          scale: placement.scale,
+        })
+
+        onDirtyChange?.(true)
+        setIsDirty(true)
+        toast.success('나의 타닥 데스크 배경으로 설정했어요.')
+      } catch (error) {
+        toast.error('배치 정보를 불러오는 데 실패했어요.')
+      }
     } else if (itemType === 'keyboard' && action === 'place') {
       fetchModel3D(itemId)
     } else if (itemType === 'keyboard' && (action === 'cart' || action === 'edit')) {

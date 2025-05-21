@@ -46,27 +46,19 @@ const KeyboardModel = forwardRef<THREE.Object3D, KeyboardModelProps>(({
   }, [model3dUrl])
 
   useEffect(() => {
-    if (modelRef.current && !modelReady) {
-      // 초기 transform 설정
+    if (modelRef.current) {
       const { position, rotation, scale } = defaultTransform
 
       modelRef.current.position.set(position.x, position.y, position.z)
       modelRef.current.rotation.set(rotation.x, rotation.y, rotation.z)
       modelRef.current.scale.set(scale.x, scale.y, scale.z)
 
-      // console.log('📦 초기 키보드 배치 정보')
-      // console.log('position:', modelRef.current.position)
-      // console.log('rotation (deg):', {
-      //   x: THREE.MathUtils.radToDeg(rotation.x),
-      //   y: THREE.MathUtils.radToDeg(rotation.y),
-      //   z: THREE.MathUtils.radToDeg(rotation.z),
-      // })
-      // console.log('scale:', modelRef.current.scale)
-
-      setModelReady(true)
-      onModelReady?.()
+      if (!modelReady) {
+        setModelReady(true)
+        onModelReady?.()
+      }
     }
-  }, [modelReady, defaultTransform])
+  }, [defaultTransform])
 
   useEffect(() => {
     if (modelRef.current && rotationMode) {
