@@ -19,7 +19,9 @@ const MyPage = () => {
   const [searchParams] = useSearchParams()
   const tabParam = searchParams.get('tab') as MenuType | null
 
-  const [selectedMenu, setSelectedMenu] = useState<MenuType>(tabParam || '회원 정보')
+  const [selectedMenu, setSelectedMenu] = useState<MenuType>(
+    tabParam || '회원 정보',
+  )
 
   const handleMenuChange = (menu: MenuType) => {
     setSelectedMenu(menu)
@@ -43,7 +45,7 @@ const MyPage = () => {
   }
 
   return (
-    <div className="container mx-auto min-h-screen">
+    <div className="container mx-auto min-h-screen max-w-7xl">
       {/* 모바일 메뉴 */}
       <div className="md:hidden">
         <MypageMobileMenuBar
@@ -62,7 +64,7 @@ const MyPage = () => {
           onMenuChange={handleMenuChange}
         />
 
-        <div className="flex-1 mt-14 px-6">
+        <div className="flex-1 mt-14 px-6 overflow-hidden w-full">
           <h1 className="text-3xl font-bold mb-10 px-3">{selectedMenu}</h1>
           {renderContent()}
         </div>

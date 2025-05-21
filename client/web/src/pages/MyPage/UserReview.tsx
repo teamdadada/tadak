@@ -20,13 +20,17 @@ const UserReview = () => {
             key={review.reviewId}
             className="flex flex-col gap-2 px-2 py-2 border-b border-tadak-light-gray"
           >
-            <ProductSummaryItem
-              name={review.product.name}
-              thumbnail={review.product.thumbnail}
-            />
+            <a
+              href={`/product/${review.product?.type}/${review.product?.productId}`}
+            >
+              <ProductSummaryItem
+                name={review.product?.name}
+                thumbnail={review.product?.thumbnail}
+              />
+            </a>
             <MyReviewItem
               review={review}
-              productId={review.product.productId}
+              productId={review.product?.productId}
             />
           </div>
         ))

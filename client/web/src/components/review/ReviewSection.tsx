@@ -26,8 +26,8 @@ const ReviewSection = ({ product }: ReviewSectionProps) => {
   const [showLoginModal, setShowLoginModal] = useState(false)
   const isLoggedIn = useUserStore((state) => state.getIsLoggedIn())
 
-  const { data: reviewList } = useReviewList(product.productId)
-  const { data: reviewScore } = useReviewScore(product.productId)
+  const { data: reviewList } = useReviewList(product?.productId)
+  const { data: reviewScore } = useReviewScore(product?.productId)
 
   const queryClient = useQueryClient()
   const handleWriteClick = async () => {
@@ -42,7 +42,7 @@ const ReviewSection = ({ product }: ReviewSectionProps) => {
     })
 
     const hasReviewed = reviews.some(
-      (review) => review.product.productId === product.productId,
+      (review) => review.product?.productId === product?.productId,
     )
 
     if (hasReviewed) {
@@ -51,7 +51,7 @@ const ReviewSection = ({ product }: ReviewSectionProps) => {
     }
 
     sessionStorage.setItem('reviewProduct', JSON.stringify(product))
-    navigate(`/product/${product.productId}/review/write`)
+    navigate(`/product/${product?.productId}/review/write`)
   }
 
   const reviewCount = reviewList?.count ?? 0
