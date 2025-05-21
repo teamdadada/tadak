@@ -3,6 +3,7 @@ import { TransformControls, useGLTF } from '@react-three/drei'
 import * as THREE from 'three'
 
 type RotationMode = 'horizontal' | 'vertical' | null
+type TransformMode = 'translate' | 'scale'
 
 interface Transform {
   position: { x: number; y: number; z: number }
@@ -15,9 +16,11 @@ interface KeyboardModelProps {
   horizontalRotation: number
   verticalRotation: number
   rotationMode: RotationMode
+  transformMode: TransformMode
   setIsDirty: (dirty: boolean) => void
   model3dUrl: string
   defaultTransform: Transform
+  onModelReady?: () => void
 }
 
 const KeyboardModel = forwardRef<THREE.Object3D, KeyboardModelProps>(({
@@ -25,9 +28,11 @@ const KeyboardModel = forwardRef<THREE.Object3D, KeyboardModelProps>(({
   horizontalRotation,
   verticalRotation,
   rotationMode,
+  transformMode,
   setIsDirty,
   model3dUrl,
   defaultTransform,
+  onModelReady,
 }, ref) => {
   const { scene } = useGLTF(model3dUrl)
   const mesh = scene
@@ -35,6 +40,10 @@ const KeyboardModel = forwardRef<THREE.Object3D, KeyboardModelProps>(({
   const initialQuat = useRef<THREE.Quaternion | null>(null)
 
   const [modelReady, setModelReady] = useState(false)
+
+  useEffect(() => {
+    setModelReady(false)
+  }, [model3dUrl])
 
   useEffect(() => {
     if (modelRef.current && !modelReady) {
@@ -55,6 +64,7 @@ const KeyboardModel = forwardRef<THREE.Object3D, KeyboardModelProps>(({
       console.log('scale:', modelRef.current.scale)
 
       setModelReady(true)
+      onModelReady?.()
     }
   }, [modelReady, defaultTransform])
 
@@ -85,9 +95,10 @@ const KeyboardModel = forwardRef<THREE.Object3D, KeyboardModelProps>(({
   return isControlActive && modelRef.current ? (
     <TransformControls
       object={modelRef.current}
-      mode="translate"
+      mode={transformMode}
       showX
       showY
+      showZ={transformMode === 'scale'}
       onMouseUp={() => setIsDirty(true)}
     >
       <primitive object={mesh} ref={modelRef} />

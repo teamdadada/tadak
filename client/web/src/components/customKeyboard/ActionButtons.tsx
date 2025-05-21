@@ -4,21 +4,22 @@ import { toast } from 'sonner'
 const ActionButtons = ({
   isDirty,
   onSave,
+  onCancel,
 }: {
   isDirty: boolean
   onSave?: () => void
+  onCancel?: () => void
 }) => {
   const handleShareClick = () => {
     toast.info('공유하기 기능은 곧 오픈될 예정이에요 🙌')
   }
 
   const handleSaveClick = () => {
-    toast.info('저장 기능은 곧 오픈될 예정이에요 🙌')
     onSave?.()
   }
 
   const handleCancelClick = () => {
-    toast.info('취소 기능은 곧 오픈될 예정이에요 🙌')
+    onCancel?.()
   }
 
   return (

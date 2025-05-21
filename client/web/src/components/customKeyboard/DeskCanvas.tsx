@@ -2,37 +2,60 @@ import { Canvas } from '@react-three/fiber'
 import { OrbitControls, Environment } from '@react-three/drei'
 import { useRef, useState, forwardRef, useImperativeHandle } from 'react'
 import * as THREE from 'three'
+
 import EditorToolbar from './EditorToolbar'
 import KeyboardModel from './KeyboardModel'
 import NoKeyboardPlaceholder from './NoKeyboardPlaceholder'
 import { ReactComponent as FullscreenIcon } from '@/assets/icons/fullscreen.svg'
+
+import { useDeskStore } from '@/store/deskStore'
+
 import '@/assets/styles/Slider.css'
 
 type RotationMode = 'horizontal' | 'vertical' | null
+type TransformMode = 'translate' | 'scale'
 
-interface Transform {
+export interface Transform {
   position: { x: number; y: number; z: number }
   rotation: { x: number; y: number; z: number }
   scale: { x: number; y: number; z: number }
 }
 
-interface DeskCanvasProps {
+export interface DeskCanvasProps {
   setIsDirty: (dirty: boolean) => void
   model3dUrl: string | null
-  defaultTransform: Transform | null
   imageUrl: string
 }
 
-const DeskCanvas = forwardRef<THREE.Object3D, DeskCanvasProps>(
-  ({ setIsDirty, model3dUrl, defaultTransform, imageUrl }, ref) => {
+export type DeskCanvasHandle = {
+  object: THREE.Object3D
+  resetControls: () => void
+}
+
+const DeskCanvas = forwardRef<DeskCanvasHandle, DeskCanvasProps>(
+  ({ setIsDirty, model3dUrl: initialModel3dUrl, imageUrl }, ref) => {
     const [isControlActive, setIsControlActive] = useState(false)
     const [horizontalRotation, setHorizontalRotation] = useState(0)
     const [verticalRotation, setVerticalRotation] = useState(0.6)
     const [rotationMode, setRotationMode] = useState<RotationMode>(null)
+    const [transformMode, setTransformMode] = useState<TransformMode>('translate')
 
     const modelRef = useRef<THREE.Object3D>(null)
+    const {
+      model3dUrl: dynamicModel3dUrl,
+      defaultTransform,
+    } = useDeskStore()
+    
+    const effectiveModel3dUrl = dynamicModel3dUrl || initialModel3dUrl
 
-    useImperativeHandle(ref, () => modelRef.current!)
+    useImperativeHandle(ref, () => ({
+      object: modelRef.current!,
+      resetControls: () => {
+        setIsControlActive(false)
+        setRotationMode(null)
+        setTransformMode('translate')
+      },
+    }))
 
     const handleSetRotationMode = (mode: RotationMode) => {
       if (modelRef.current) {
@@ -70,7 +93,7 @@ const DeskCanvas = forwardRef<THREE.Object3D, DeskCanvasProps>(
           <ambientLight intensity={2} />
           <directionalLight position={[2, 5, 2]} intensity={0.8} />
           <Environment preset="city" />
-          {model3dUrl && defaultTransform && (
+          {effectiveModel3dUrl && defaultTransform && (
             <KeyboardModel
               ref={modelRef}
               isControlActive={isControlActive}
@@ -78,14 +101,15 @@ const DeskCanvas = forwardRef<THREE.Object3D, DeskCanvasProps>(
               verticalRotation={verticalRotation}
               rotationMode={rotationMode}
               setIsDirty={setIsDirty}
-              model3dUrl={model3dUrl}
+              model3dUrl={effectiveModel3dUrl}
               defaultTransform={defaultTransform}
+              transformMode={transformMode}
             />
           )}
           <OrbitControls enableRotate={false} />
         </Canvas>
 
-        {!model3dUrl && (
+        {!effectiveModel3dUrl && (
           <div className="absolute inset-0 z-20 flex justify-center items-center pointer-events-none">
             <NoKeyboardPlaceholder />
           </div>
@@ -102,8 +126,11 @@ const DeskCanvas = forwardRef<THREE.Object3D, DeskCanvasProps>(
               setRotationMode(null)
             }}
             setRotationMode={handleSetRotationMode}
+            setTransformMode={setTransformMode}
             isControlActive={isControlActive}
             rotationMode={rotationMode}
+            transformMode={transformMode}
+            
           />
         </div>
 
