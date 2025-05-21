@@ -26,3 +26,39 @@ export interface KeyboardOptionsResponse {
     op: null
   }
 }
+
+export interface SelectedProduct {
+  productId: number
+  name: string
+  price: number
+  quantity: number
+  imageUrl: string
+}
+
+export interface KeyboardDetailResponse {
+  keyboardId: number
+  name: string
+  options: {
+    bareboneOption: {
+      layout: number
+      material: number
+    }
+    switchOption: {
+      type: number
+    }
+  }[]
+  colors: {
+    outerColor: string
+    keycap: {
+      basicColor: string
+      pointColors: Record<string, string>
+    }
+  }
+  selectedProducts: {
+    barebone: SelectedProduct
+    keycap: SelectedProduct
+    switch: SelectedProduct
+  }
+  thumbnailUrl: string
+  model3dUrl: string
+}
