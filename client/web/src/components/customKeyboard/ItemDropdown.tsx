@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
+import { useDeskStore } from '@/store/deskStore'
 
 import { deletePlacement } from '@/services/placementService'
-import { deleteKeyboard } from '@/services/keyboardService'
+import { deleteKeyboard, fetchKeyboardModel3D } from '@/services/keyboardService'
 
 import DeskDeleteModal from './modals/DeskDeleteModal'
 import KeyBoardDeleteModal from './modals/KeyboardDeleteModal'
@@ -17,27 +18,38 @@ import { ReactComponent as DeleteIcon } from '@/assets/icons/delete.svg'
 interface ItemDropdownProps {
   itemId: number
   itemType: 'keyboard' | 'desk'
+  imageUrl?: string
   children: ReactNode
   open: boolean
   onOpenChange: (value: boolean) => void
+  onDirtyChange?: (dirty: boolean) => void
   canDelete?: boolean
 }
 
 const ItemDropdown = ({
   itemId,
   itemType,
+  imageUrl,
   children,
   open,
   onOpenChange,
+  onDirtyChange,
   canDelete = true,
 }: ItemDropdownProps) => {
   const [showConfirmModal, setShowConfirmModal] = useState(false)
   const queryClient = useQueryClient()
+  const {
+    setModel3dUrl,
+    setSelectedKeyboardId,
+    setDeskImageUrl,
+    setDeskImageId,
+    setIsDirty,
+  } = useDeskStore()
 
   const { mutate: mutateDeletePlacement } = useMutation({
     mutationFn: deletePlacement,
     onSuccess: () => {
-      toast.success('삭제가 완료되었어요.')
+      toast.success('데스크 이미지가 삭제되었어요.')
       queryClient.invalidateQueries({ queryKey: ['placementList'] }) // 리스트 새로고침
     },
     onError: () => {
@@ -56,14 +68,37 @@ const ItemDropdown = ({
     },
   })
 
+  // 3D 모델 요청 및 처리
+  const { mutate: fetchModel3D } = useMutation({
+    mutationFn: fetchKeyboardModel3D,
+    onSuccess: (data) => {
+      toast.success('나의 타닥 데스크에 키보드 모델이 로드되었어요.')
+      setModel3dUrl(data.model3dUrl)
+      setSelectedKeyboardId(itemId)  // 현재 선택된 키보드 ID 저장
+    },
+    onError: () => {
+      toast.error('3D 모델 불러오기 실패')
+    },
+  })
+
   const toggleDropdown = () => onOpenChange(!open)
 
   const handleAction = (action: string) => {
     if (action === 'delete') {
       setShowConfirmModal(true)
     } else if (action === 'set' && itemType === 'desk') {
-      toast.info('곧 서비스가 오픈될 예정이에요 🙌')
-    } else if (itemType === 'keyboard' && (action === 'cart' || action === 'edit' || action === 'place')) {
+      if (!imageUrl) {
+        toast.error('이미지 정보가 없어요.')
+        return
+      }
+      setDeskImageUrl(imageUrl)
+      setDeskImageId(itemId)
+      onDirtyChange?.(true)
+      setIsDirty(true)
+      toast.success('나의 타닥 데스크 배경으로 설정했어요.')
+    } else if (itemType === 'keyboard' && action === 'place') {
+      fetchModel3D(itemId)
+    } else if (itemType === 'keyboard' && (action === 'cart' || action === 'edit')) {
       toast.info('해당 기능은 곧 오픈될 예정이에요 🙌')
     } else {
       console.log(`Action "${action}" on item #${itemId}`)

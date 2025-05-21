@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useUserStore } from '@/store/userStore'
+import { useDeskStore } from '@/store/deskStore'
 import ItemCard from './ItemCard'
 import { ReactComponent as PlusIcon } from '@/assets/icons/plus.svg'
 import KeyboardModal from './modals/KeyboardModal'
@@ -25,6 +26,7 @@ const ItemGrid = ({ items, itemType, refetchPlacements }: ItemGridProps) => {
   const [showLoginModal, setShowLoginModal] = useState(false)
 
   const isLoggedIn = useUserStore((state) => state.getIsLoggedIn())
+  const setIsDirty = useDeskStore((state) => state.setIsDirty)
 
   const handleAddClick = () => {
     if (!isLoggedIn) {
@@ -49,6 +51,7 @@ const ItemGrid = ({ items, itemType, refetchPlacements }: ItemGridProps) => {
             itemType={itemType}
             isOpen={openItemId === item.id}
             onOpenChange={(open) => setOpenItemId(open ? item.id : null)}
+            onDirtyChange={setIsDirty}
           />
         ))}
 

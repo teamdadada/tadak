@@ -69,13 +69,6 @@ export const KEYBOARD_END_POINT = {
   MODEL_3D: (keyboardId: number) => `/keyboard/${keyboardId}/model`,
 }
 
-// backgroundService
-export const BACKGROUND_END_POINT = {
-  LIST: '/background',
-  CREATE: '/background',
-  DELETE: (backgroundId: number) => `/background/${backgroundId}`,
-}
-
 export const PLACEMENT_END_POINT = {
   DEFAULT: '/placement/default', // 디폴트 배치 정보 조회
   LIST: '/placement', // 배치 리스트 조회
