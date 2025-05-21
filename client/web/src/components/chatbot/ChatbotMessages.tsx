@@ -43,14 +43,20 @@ const ChatbotMessages = ({ messages, isLoading }: ChatbotMessagesProps) => {
                   <div
                     className={`text-[15px] py-3 px-4 max-w-sm rounded-lg whitespace-pre-wrap
                     ${message.type === 'human' ? 'ml-auto border border-tadak-gray/30 ' : 'mr-auto bg-tadak-light-gray'}`}
+                    style={{
+                      overflowWrap: 'break-word',
+                    }}
                   >
                     {message.content}
                   </div>
                 ) : (
                   /* 추천 항목을 표시하는 경우 */
                   <div
-                    className={`text-[15px] py-3 px-4 max-w-sm rounded-lg whitespace-pre-wrap
+                    className={`wrap-anywhere text-[15px] py-3 px-4 max-w-sm rounded-lg whitespace-pre-wrap
                     ${message.type === 'human' ? 'ml-auto border border-tadak-gray/30' : 'mr-auto bg-tadak-light-gray'}`}
+                    style={{
+                      overflowWrap: 'break-word',
+                    }}
                   >
                     {message.content}
                     <Recommendations
