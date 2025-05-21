@@ -1,4 +1,6 @@
 import { KbtiQuestion } from '@/types/kbti'
+import { motion } from 'framer-motion'
+import GradientButton from './GradientButton'
 
 interface QuestionDisplayProps {
   question: KbtiQuestion
@@ -7,34 +9,35 @@ interface QuestionDisplayProps {
 
 const QuestionDisplay = ({ question, onAnswer }: QuestionDisplayProps) => {
   return (
-    <div className="flex flex-col items-center gap-4 w-full max-w-[600px]">
-      <h1 className="min-w-full mb-2 text-2xl font-bold text-start min-h-[5.5rem]">
-        {question.text}
-      </h1>
+    <div className="flex flex-1 flex-col items-center gap-16 w-full max-w-[600px] py-8 px-4">
+      {/* 질문 헤더 */}
+      <motion.div
+        className="w-full"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <h1 className="text-lg font-semibold text-center">{question.text}</h1>
+      </motion.div>
 
-      <div className="flex items-center justify-center h-[30vh] w-full max-w-[500px]">
-        {question.image ? (
-          <img
-            src={question.image}
-            alt="질문 이미지"
-            className="min-h-[30vh] max-h-[30vh] w-auto object-contain"
-          />
-        ) : (
-          <div className="w-full h-[30vh]"></div>
-        )}
-      </div>
-
-      <div className="flex flex-col items-center justify-center min-w-full gap-2 mt-4 space-y-2">
+      {/* 답변 버튼 */}
+      <motion.div
+        className="flex flex-col items-center justify-center w-full gap-5 mt-2"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.3 }}
+      >
         {question.options.map((option, index) => (
-          <button
+          <GradientButton
             key={`${question.id}-${index}`}
             onClick={() => onAnswer(index)}
-            className="block w-full px-4 py-2 text-lg font-medium text-left text-black border rounded-md hover:bg-tadak-primary hover:text-white bg-tadak-white focus:outline-none"
+            id={`option-${index}`}
+            className="w-full px-8 py-6"
           >
             {option}
-          </button>
+          </GradientButton>
         ))}
-      </div>
+      </motion.div>
     </div>
   )
 }

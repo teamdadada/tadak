@@ -2,6 +2,7 @@ import ProgressBar from '@/components/kbti/ProgressBar'
 import QuestionDisplay from '@/components/kbti/QuestionDisplay'
 import { Button } from '@/components/ui/button'
 import { kbtiQuestions } from '@/types/kbti'
+import { ChevronLeft } from 'lucide-react'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
@@ -56,10 +57,10 @@ const KbtiTestPage = () => {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center w-full h-full gap-4 p-8">
+    <div className="flex flex-col items-center w-full max-h-screen gap-4 p-8 justify-between">
       <ProgressBar current={currentQuestion + 1} total={kbtiQuestions.length} />
 
-      <div className="flex flex-col items-center w-full gap-4 justify-evenly">
+      <div className="flex flex-col items-center w-full gap-4 ">
         <QuestionDisplay
           question={kbtiQuestions[currentQuestion]}
           onAnswer={(choice) =>
@@ -68,7 +69,12 @@ const KbtiTestPage = () => {
         />
       </div>
       <div className="flex justify-start w-full mt-6">
-        <Button onClick={handleBack} disabled={currentQuestion === 0}>
+        <Button
+          onClick={handleBack}
+          disabled={currentQuestion === 0}
+          className="bg-transparent shadow-none text-tadak-black hover:bg-transparent hover:scale-110"
+        >
+          <ChevronLeft />
           이전
         </Button>
       </div>

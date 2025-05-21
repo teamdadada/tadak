@@ -43,13 +43,13 @@ export const kbtiQuestions: KbtiQuestion[] = [
   },
   {
     id: 2,
-    text: 'RGB나 조명이 있는 키보드가 마음에 드시나요?',
+    text: 'RGB나 조명이 있는 키보드는 어때요?',
     options: ['눈에 띄는 건 별로예요', '감성적으로 너무 좋아요'],
     axis: ['Q', 'E'],
   },
   {
     id: 3,
-    text: '소리가 적은 키보드와 반짝이는 키보드 중 고른다면?',
+    text: '조용한 키보드와 반짝이는 키보드 중 고른다면?',
     options: ['조용한 키보드가 더 좋아요', '시각적으로 화려한 게 더 좋아요'],
     axis: ['Q', 'E'],
   },
@@ -67,7 +67,7 @@ export const kbtiQuestions: KbtiQuestion[] = [
   },
   {
     id: 6,
-    text: '키보드 설명에서 어떤 부분이 먼저 눈에 들어오나요?',
+    text: '키보드를 볼 때 무엇이 먼저 눈에 들어오나요?',
     options: ['스펙과 기능 정보', '이미지와 디자인 포인트'],
     axis: ['T', 'A'],
   },
