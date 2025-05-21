@@ -1,0 +1,54 @@
+{
+  "content": [
+    {
+      "id": 6,
+      "name": "Gateron 갈축 (35개)",
+      "price": 15000,
+      "imageUrl": "https://cataas.com/cat?6",
+      "liked": true,
+      "switchType": "리니어",
+      "keyForce": "45g",
+      "quantity": "35개"
+    },
+    {
+      "id": 7,
+      "name": "Kailh 박스화이트 (70개)",
+      "price": 28000,
+      "imageUrl": "https://cataas.com/cat?7",
+      "liked": false,
+      "switchType": "클릭",
+      "keyForce": "50g",
+      "quantity": "70개"
+    },
+    {
+      "id": 8,
+      "name": "CHERRY 적축 (35개)",
+      "price": 24000,
+      "imageUrl": "https://cataas.com/cat?8",
+      "liked": false,
+      "switchType": "리니어",
+      "keyForce": "45g",
+      "quantity": "35개"
+    },
+    {
+      "id": 9,
+      "name": "Holy Panda (36개)",
+      "price": 32000,
+      "imageUrl": "https://cataas.com/cat?9",
+      "liked": true,
+      "switchType": "택타일",
+      "keyForce": "67g",
+      "quantity": "36개"
+    },
+    {
+      "id": 10,
+      "name": "TTC 골드핑거 (90개)",
+      "price": 37000,
+      "imageUrl": "https://cataas.com/cat?10",
+      "liked": false,
+      "switchType": "리니어",
+      "keyForce": "55g",
+      "quantity": "90개"
+    }
+  ]
+}

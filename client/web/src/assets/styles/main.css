@@ -1,0 +1,8 @@
+/* 스크롤은 동작하지만 시각적으로 숨김 */
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;  /* IE & Edge */
+    scrollbar-width: none;     /* Firefox */
+  }  

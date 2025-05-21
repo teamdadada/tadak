@@ -1,0 +1,103 @@
+{
+  "bearbone": {
+    "28477667": {
+      "name": "몬스타 몬스타기어 닌자87PRO v2 유무선 기계식 커스텀 베어본 (화이트)",
+      "manufacturer": "몬스타 몬스타기어",
+      "releaseDate": "2023년 09월",
+      "size": "텐키리스",
+      "connectionType": "유선+무선",
+      "contactType": "기계식",
+      "keyLayout": "87키",
+      "interfaceType": "USB",
+      "features": [
+        "S/W매크로",
+        "숫자키없음",
+        "RGB 백라이트",
+        "스위치 교체형",
+        "흡음재",
+        "착탈식 케이블"
+      ],
+      "minPrice": "49000",
+      "thumbnail": "https://img.danawa.com/prod_img/500000/667/477/img/28477667_1.jpg",
+      "detailImage": "https://iws.danawa.com/prod_img/500000/763/477/desc/prod_28477763/add_1/20230926163421313_16D2MP0T.jpg",
+      "url": "https://prod.danawa.com/info/?pcode=28477667&cate=11454264"
+    }
+  },
+  "switch": {
+    "6": {
+      "name": "Gateron 갈축 (35개)",
+      "manufacturer": "Gateron",
+      "releaseDate": "2023년 05월",
+      "size": "-",
+      "connectionType": "-",
+      "contactType": "기계식",
+      "keyLayout": "-",
+      "interfaceType": "-",
+      "features": ["기본형", "저소음 아님", "MX 호환"],
+      "minPrice": "15000",
+      "thumbnail": "https://cataas.com/cat?6",
+      "detailImage": "https://cataas.com/cat?6",
+      "url": "https://example.com/product/6"
+    },
+    "7": {
+      "name": "Kailh 박스화이트 (70개)",
+      "manufacturer": "Kailh",
+      "releaseDate": "2023년 03월",
+      "size": "-",
+      "connectionType": "-",
+      "contactType": "기계식",
+      "keyLayout": "-",
+      "interfaceType": "-",
+      "features": ["박스 스위치", "클릭 타입", "내구성 ↑"],
+      "minPrice": "28000",
+      "thumbnail": "https://cataas.com/cat?7",
+      "detailImage": "https://cataas.com/cat?7",
+      "url": "https://example.com/product/7"
+    },
+    "8": {
+      "name": "CHERRY 적축 (35개)",
+      "manufacturer": "CHERRY",
+      "releaseDate": "2022년 12월",
+      "size": "-",
+      "connectionType": "-",
+      "contactType": "기계식",
+      "keyLayout": "-",
+      "interfaceType": "-",
+      "features": ["리니어", "부드러운 타건감", "정통 적축"],
+      "minPrice": "24000",
+      "thumbnail": "https://cataas.com/cat?8",
+      "detailImage": "https://cataas.com/cat?8",
+      "url": "https://example.com/product/8"
+    },
+    "9": {
+      "name": "Holy Panda (36개)",
+      "manufacturer": "Drop",
+      "releaseDate": "2023년 07월",
+      "size": "-",
+      "connectionType": "-",
+      "contactType": "기계식",
+      "keyLayout": "-",
+      "interfaceType": "-",
+      "features": ["택타일", "묵직한 반발력", "팬 인기 ↑"],
+      "minPrice": "32000",
+      "thumbnail": "https://cataas.com/cat?9",
+      "detailImage": "https://cataas.com/cat?9",
+      "url": "https://example.com/product/9"
+    },
+    "10": {
+      "name": "TTC 골드핑거 (90개)",
+      "manufacturer": "TTC",
+      "releaseDate": "2023년 01월",
+      "size": "-",
+      "connectionType": "-",
+      "contactType": "기계식",
+      "keyLayout": "-",
+      "interfaceType": "-",
+      "features": ["빠른 입력", "금도금 접점", "고급형"],
+      "minPrice": "37000",
+      "thumbnail": "https://cataas.com/cat?10",
+      "detailImage": "https://cataas.com/cat?10",
+      "url": "https://example.com/product/10"
+    }
+  }
+}
