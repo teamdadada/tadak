@@ -16,23 +16,23 @@ const UserReview = () => {
         </div>
       ) : (
         data.reviews.map((review) => (
-          <a
-            href={`/product/${review.product?.type}/${review.product?.productId}`}
+          <div
+            key={review.reviewId}
+            className="flex flex-col gap-2 px-2 py-2 border-b border-tadak-light-gray"
           >
-            <div
-              key={review.reviewId}
-              className="flex flex-col gap-2 px-2 py-2 border-b border-tadak-light-gray"
+            <a
+              href={`/product/${review.product?.type}/${review.product?.productId}`}
             >
               <ProductSummaryItem
                 name={review.product?.name}
                 thumbnail={review.product?.thumbnail}
               />
-              <MyReviewItem
-                review={review}
-                productId={review.product?.productId}
-              />
-            </div>
-          </a>
+            </a>
+            <MyReviewItem
+              review={review}
+              productId={review.product?.productId}
+            />
+          </div>
         ))
       )}
     </div>
