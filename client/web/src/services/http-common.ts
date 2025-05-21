@@ -4,10 +4,10 @@ import { useAuthStore } from '@/store/authStore'
 import { logoutUtil } from '@/utils/auth'
 
 // 환경에 따른 baseURL 설정
-// const BASE_URL = import.meta.env.VITE_API_BASE_URL
+const BASE_URL = import.meta.env.VITE_API_BASE_URL
 
 const http = axios.create({
-  baseURL: 'https://dapi.tadak.kr',
+  baseURL: BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -15,7 +15,7 @@ const http = axios.create({
 })
 
 export const refreshHttp = axios.create({
-  baseURL: 'https://dapi.tadak.kr',
+  baseURL: BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
