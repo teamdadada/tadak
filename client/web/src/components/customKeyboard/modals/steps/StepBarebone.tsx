@@ -1,6 +1,8 @@
 // components/customKeyboard/modals/steps/StepBarebone.tsx
 import { HexColorPicker } from 'react-colorful'
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
+import { fetchBareboneProduct } from '@/services/keyboardService'
+import { Product } from '@/types/product'
 
 interface StepBareboneProps {
   layout: '풀배열' | '텐키리스'
@@ -9,6 +11,9 @@ interface StepBareboneProps {
   setMaterial: (material: '금속' | '플라스틱') => void
   outerColor: string
   setOuterColor: (color: string) => void
+  layoutOptions: { id: number; name: string }[]
+  materialOptions: { id: number; name: string }[]
+  onProductChange: (product: Product | null) => void
 }
 
 const StepBarebone = ({
@@ -18,12 +23,29 @@ const StepBarebone = ({
   setMaterial,
   outerColor,
   setOuterColor,
+  layoutOptions,
+  materialOptions,
+  onProductChange,
 }: StepBareboneProps) => {
   const [inputValue, setInputValue] = useState(outerColor.replace('#', '').toUpperCase())
 
   useEffect(() => {
     setInputValue(outerColor.replace('#', '').toUpperCase())
   }, [outerColor])
+
+  // 초기값 또는 옵션 변경 시 상품 호출
+  useEffect(() => {
+    const layoutId = layoutOptions.find((o) => o.name === layout)?.id
+    const materialId = materialOptions.find((o) => o.name === material)?.id
+
+    if (layoutId && materialId) {
+      fetchBareboneProduct(layoutId, materialId)
+        .then((products) => {
+          onProductChange(products?.[0] ?? null)
+        })
+        .catch(() => onProductChange(null))
+    }
+  }, [layout, material, layoutOptions, materialOptions])
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.toUpperCase()
@@ -32,9 +54,6 @@ const StepBarebone = ({
       setOuterColor(`#${value}`)
     }
   }
-
-  const layoutButtons = ['풀배열', '텐키리스']
-  const materialButtons = ['금속', '플라스틱']
 
   const getButtonStyle = (selected: boolean) => {
     return selected
@@ -48,15 +67,15 @@ const StepBarebone = ({
       <div>
         <h3 className="text-xl font-semibold mb-2">배열</h3>
         <div className="flex gap-4 mb-2">
-          {layoutButtons.map((label) => (
+          {layoutOptions.map((option) => (
             <button
-              key={label}
+              key={option.id}
               className={`w-72 h-12 text-base font-medium rounded-lg border transition-colors ${getButtonStyle(
-                layout === label
+                layout === option.name
               )}`}
-              onClick={() => setLayout(label as '풀배열' | '텐키리스')}
+              onClick={() => setLayout(option.name as '풀배열' | '텐키리스')}
             >
-              {label}
+              {option.name}
             </button>
           ))}
         </div>
@@ -66,15 +85,15 @@ const StepBarebone = ({
       <div>
         <h3 className="text-xl font-semibold mb-2">외관 재질</h3>
         <div className="flex gap-4 mb-2">
-          {materialButtons.map((label) => (
+          {materialOptions.map((option) => (
             <button
-              key={label}
+              key={option.id}
               className={`w-72 h-12 text-base font-medium rounded-lg border transition-colors ${getButtonStyle(
-                material === label
+                material === option.name
               )}`}
-              onClick={() => setMaterial(label as '금속' | '플라스틱')}
+              onClick={() => setMaterial(option.name as '금속' | '플라스틱')}
             >
-              {label}
+              {option.name}
             </button>
           ))}
         </div>

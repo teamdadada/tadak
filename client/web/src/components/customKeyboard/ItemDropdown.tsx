@@ -3,7 +3,10 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 
 import { deletePlacement } from '@/services/placementService'
+import { deleteKeyboard } from '@/services/keyboardService'
+
 import DeskDeleteModal from './modals/DeskDeleteModal'
+import KeyBoardDeleteModal from './modals/KeyboardDeleteModal'
 
 import { ReactNode } from 'react'
 import { ReactComponent as DeskIcon } from '@/assets/icons/desk.svg'
@@ -31,7 +34,7 @@ const ItemDropdown = ({
   const [showConfirmModal, setShowConfirmModal] = useState(false)
   const queryClient = useQueryClient()
 
-  const { mutate: mutateDelete } = useMutation({
+  const { mutate: mutateDeletePlacement } = useMutation({
     mutationFn: deletePlacement,
     onSuccess: () => {
       toast.success('삭제가 완료되었어요.')
@@ -42,13 +45,26 @@ const ItemDropdown = ({
     },
   })
 
+  const { mutate: mutateDeleteKeyboard } = useMutation({
+    mutationFn: deleteKeyboard,
+    onSuccess: () => {
+      toast.success('키보드가 삭제되었어요.')
+      queryClient.invalidateQueries({ queryKey: ['keyboardList'] })
+    },
+    onError: () => {
+      toast.error('삭제 중 오류가 발생했어요.')
+    },
+  })
+
   const toggleDropdown = () => onOpenChange(!open)
 
   const handleAction = (action: string) => {
-    if (action === 'delete' && itemType === 'desk') {
+    if (action === 'delete') {
       setShowConfirmModal(true)
     } else if (action === 'set' && itemType === 'desk') {
-      toast.info('곧 서비스가 오픈될 예정이에요 🙌') // 안내 메시지
+      toast.info('곧 서비스가 오픈될 예정이에요 🙌')
+    } else if (itemType === 'keyboard' && (action === 'cart' || action === 'edit' || action === 'place')) {
+      toast.info('해당 기능은 곧 오픈될 예정이에요 🙌')
     } else {
       console.log(`Action "${action}" on item #${itemId}`)
     }
@@ -56,7 +72,11 @@ const ItemDropdown = ({
   }
 
   const handleDeleteConfirm = () => {
-    mutateDelete(itemId)
+    if (itemType === 'desk') {
+      mutateDeletePlacement(itemId)
+    } else {
+      mutateDeleteKeyboard(itemId)
+    }
     setShowConfirmModal(false)
   }
 
@@ -88,10 +108,17 @@ const ItemDropdown = ({
 
       {/* 삭제 확인 모달 */}
       {showConfirmModal && (
-        <DeskDeleteModal
-          onConfirm={handleDeleteConfirm}
-          onCancel={() => setShowConfirmModal(false)}
-        />
+        itemType === 'keyboard' ? (
+          <KeyBoardDeleteModal
+            onConfirm={handleDeleteConfirm}
+            onCancel={() => setShowConfirmModal(false)}
+          />
+        ) : (
+          <DeskDeleteModal
+            onConfirm={handleDeleteConfirm}
+            onCancel={() => setShowConfirmModal(false)}
+          />
+        )
       )}
     </div>
   )

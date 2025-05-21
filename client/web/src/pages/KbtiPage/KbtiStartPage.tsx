@@ -16,7 +16,7 @@ const KbtiStartPage = () => {
         <img
           src={KbtiStartImage}
           alt="KBTI 시작 이미지"
-          className="min-h-[470px] h-[70vh]"
+          className="min-w-[300px] min-h-[470px] h-[70vh] object-contain"
         />
       </div>
       <div className="flex justify-center w-full p-4">

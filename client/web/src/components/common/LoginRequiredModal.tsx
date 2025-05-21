@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { X } from 'lucide-react'
-import runDuck from '@/assets/images/run.png' // 이미지 경로는 프로젝트에 맞게 수정
+import runDuck from '@/assets/images/run.png'
 
 interface LoginRequiredModalProps {
   onClose: () => void

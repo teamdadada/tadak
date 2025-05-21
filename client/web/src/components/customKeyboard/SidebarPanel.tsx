@@ -17,7 +17,7 @@ const SidebarPanel = () => {
   const {
     data: keyboards = [],
     isLoading: isKeyboardLoading,
-  } = useKeyboardList()
+  } = isLoggedIn ? useKeyboardList() : { data: [], isLoading: false }
 
   // 로그인한 경우에만 placement API 호출
   const {

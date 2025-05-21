@@ -1,23 +1,14 @@
 import http from '@/services/http-common'
 import { KEYBOARD_END_POINT } from './endPoints'
-// import { KeyboardSummary } from '@/types/keyboard'
-import { KeyboardOptionsResponse } from '@/types/keyboard'
-import { mockKeyboardList } from '@/mocks/keyboard/mockKeyboardList'
-import { mockKeyboardOptions } from '@/mocks/keyboard/mockKeyboardOptions'
+import { KeyboardSummary, KeyboardOptionsResponse } from '@/types/keyboard'
 
 // 키보드 목록 조회
-// Mock 데이터
-export const fetchKeyboardList = async () => {
-  return mockKeyboardList // 목업 데이터 반환
+export const fetchKeyboardList = async (): Promise<KeyboardSummary[]> => {
+  const response = await http.get(KEYBOARD_END_POINT.LIST)
+  return response.data
 }
 
-// 실제 API
-// export const fetchKeyboardList = async (): Promise<KeyboardSummary[]> => {
-//   const response = await http.get(KEYBOARD_END_POINT.LIST)
-//   return response.data
-// }
-
-// TODO: 키보드 디자인 등록
+// 키보드 디자인 등록
 export const createKeyboard = async (payload: any) => {
   const response = await http.post(KEYBOARD_END_POINT.CREATE, payload)
   return response.data
@@ -42,28 +33,28 @@ export const deleteKeyboard = async (keyboardId: number) => {
 }
 
 // 키보드 추가 버튼 눌렀을 때 카테고리별 선택지 조회
-// Mock 데이터
 export const fetchKeyboardOptions = async (): Promise<KeyboardOptionsResponse> => {
-  console.log('📦 [fetchKeyboardOptions] 호출됨')
-  console.log('[fetchKeyboardOptions] 반환값:', mockKeyboardOptions)
-  return mockKeyboardOptions
+  const response = await http.get<KeyboardOptionsResponse>(KEYBOARD_END_POINT.OPTION)
+  // console.log(response.data)
+  return response.data
 }
 
-// 실제 API
-// export const fetchKeyboardOptions = async (): Promise<KeyboardOptionsResponse> => {
-//   const response = await http.get<KeyboardOptionsResponse>(KEYBOARD_END_POINT.OPTION)
-//   return response.data
-// }
+// 카테고리별 키보드 상품 목록 조회
+// 베어본
+export const fetchBareboneProduct = async (layoutId: number, materialId: number) => {
+  const response = await http.get(KEYBOARD_END_POINT.BAREBONE_PRODUCTS(layoutId, materialId))
+  return response.data
+}
 
-// TODO: 카테고리별 키보드 상품 목록 조회
-// export const fetchProductsByCategory = async (categoryName: string) => {
-//   const response = await http.get(KEYBOARD_END_POINT.PRODUCT_BY_CATEGORY(categoryName))
-//   return response.data
-// }
+// 스위치
+export const fetchSwitchProduct = async (typeId: number) => {
+  const response = await http.get(KEYBOARD_END_POINT.SWITCH_PRODUCTS(typeId))
+  return response.data
+}
 
-// TODO: 키보드별 설정(선택된) 상품 목록 조회
-export const fetchSelectedProducts = async (keyboardId: number) => {
-  const response = await http.get(KEYBOARD_END_POINT.SELECTED_PRODUCTS(keyboardId))
+// 키캡
+export const fetchKeycapProduct = async () => {
+  const response = await http.get(KEYBOARD_END_POINT.KEYCAP_PRODUCTS)
   return response.data
 }
 
