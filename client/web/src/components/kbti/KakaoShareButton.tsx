@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
-import { Button } from '../ui/button'
 import { kbtiDescriptions } from '@/types/kbti'
+import GradientButton from './GradientButton'
 
 const { Kakao } = window
 
@@ -50,13 +50,25 @@ const KakaoShareButton = ({ kbtiType }: { kbtiType: string }) => {
   }
 
   return (
-    <Button
-      size="lg"
-      onClick={handleShare}
-      className="bg-[#FEE500] rounded-lg text-tadak-black hover:bg-[#FEE500] hover:text-tadak-black"
-    >
-      카카오톡 공유하기
-    </Button>
+    <GradientButton onClick={handleShare} className="h-12 w-full">
+      <div className="flex flex-row justify-center items-center gap-2">
+        {/* 카카오톡 로고 아이콘 */}
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M12 3C6.477 3 2 6.477 2 10.8C2 13.654 3.858 16.112 6.5 17.424V21L10.25 18.475C10.821 18.557 11.404 18.6 12 18.6C17.523 18.6 22 15.123 22 10.8C22 6.477 17.523 3 12 3Z"
+            fill="#3A1D1D"
+          />
+        </svg>
+
+        <span className="text-sm font-bold">카카오톡 공유하기</span>
+      </div>
+    </GradientButton>
   )
 }
 
