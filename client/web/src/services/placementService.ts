@@ -28,7 +28,6 @@ export const getPlacementDetail = async (placementId: number) => {
 // 배치 리스트 조회
 export const getPlacementList = async () => {
   const response = await http.get(PLACEMENT_END_POINT.LIST)
-  console.log(response.data)
   return response.data
 }
 
