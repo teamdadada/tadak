@@ -55,6 +55,7 @@ object JwtUtil {
                 userType = userType
             )
         } catch (e: Exception) {
+            println("Failed to verify JWT token: $e")
             throw UnauthorizedException(AuthErrorCode.INVALID_JWT_TOKEN.toErrorCode())
         }
     }
