@@ -1,5 +1,7 @@
 package com.ssafy.tadak.spring.keyboard.service;
 
+import com.ssafy.tadak.spring.cart.domain.entity.CartItem;
+import com.ssafy.tadak.spring.cart.domain.repository.CartItemJpaRepository;
 import com.ssafy.tadak.spring.common.exception.ErrorCode;
 import com.ssafy.tadak.spring.common.exception.GlobalException;
 import com.ssafy.tadak.spring.common.exception.status.NotFoundException;
@@ -63,6 +65,7 @@ public class KeyboardService {
     private final BareboneOptionJpaRepository bareboneOptionJpaRepository;
     private final ProductConverter productConverter;
     private final KeyboardMapper keyboardMapper;
+    private final CartItemJpaRepository cartItemJpaRepository;
 
     //todo: 중복 썸네일, 모델,  에러처리
     /** 커스텀 키보드를 생성하는 메소드입니다.
@@ -345,10 +348,13 @@ public class KeyboardService {
     public void deleteKeyboard(Long userId, Long keyboardId) throws Exception {
         Keyboard keyboard = getKeyboard(userId, keyboardId);
 
-        Image thumbnail = keyboard.getThumbnail();
-        Image model = keyboard.getModel();
-        minioUtil.deleteFile(thumbnail.getFilePath(), thumbnail.getBucket().getName());
-        minioUtil.deleteFile(model.getFilePath(), model.getBucket().getName());
+        List<CartItem> item = cartItemJpaRepository.getReferenceByKeyboard(keyboard);
+
+        if(item != null && item.size() > 0){
+            for(CartItem cartItem : item){
+                cartItemJpaRepository.deleteById(cartItem.getId());
+            }
+        }
 
         keyboardJpaRepository.delete(keyboard);
     }
