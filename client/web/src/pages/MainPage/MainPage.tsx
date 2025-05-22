@@ -249,13 +249,8 @@ const MainPage = () => {
 
       {/* 지금 인기 있는 타닥템 */}
       <section className="w-full max-w-[1100px] px-4 mb-20">
-        <div className="flex items-end justify-between mb-3">
-          <div className="text-xl font-bold text-tadak-black">
-            🔥지금 인기 있는 타닥템
-          </div>
-          <button className="font-medium text-orange-400 text-medium hover:underline">
-            + 더보기
-          </button>
+        <div className="text-xl font-bold text-tadak-black mb-1">
+          🔥지금 인기 있는 타닥템
         </div>
         <p className="pl-2 mb-4 font-semibold text-medium text-tadak-dark-gray">
           타닥 유저들이 선택한 인기 상품들을 확인해보세요!
@@ -289,13 +284,8 @@ const MainPage = () => {
 
       {/* 따끈따끈, 새로 들어온 타닥템 */}
       <section className="w-full max-w-[1100px] px-4 mb-24">
-        <div className="flex items-end justify-between mb-3">
-          <div className="text-xl font-bold text-tadak-black">
-            ✨따끈따끈, 새로 들어온 타닥템
-          </div>
-          <button className="font-medium text-orange-400 text-medium hover:underline">
-            + 더보기
-          </button>
+        <div className="text-xl font-bold text-tadak-black mb-1">
+          ✨따끈따끈, 새로 들어온 타닥템
         </div>
         <p className="pl-2 mb-4 font-semibold text-medium text-tadak-dark-gray">
           방금 도착한 신상, 타닥에 갓 등록된 상품들을 지금 구경해보세요!
