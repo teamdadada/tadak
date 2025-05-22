@@ -1,0 +1,5 @@
+{
+  "manufacturer": ["Keychron", "Leopold", "Akko", "COX"],
+  "keyLayout": ["60%", "65%", "75%", "TKL", "Full-size"],
+  "features": ["무보강", "핫스왑", "가스켓마운트", "무선지원"]
+}
