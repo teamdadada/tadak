@@ -29,6 +29,7 @@ public class MinioService {
     private final int URL_EXPIRE = 600;
     private static final List<String> ALLOWED_CONTENT_TYPES = List.of(
             "image/jpeg",
+            "image/jpg",
             "image/png",
             "image/gif",
             "image/webp",
