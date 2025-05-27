@@ -4,8 +4,6 @@
 
 <img style="width: 100vh;" src='/docs/images/tadak_banner.png' alt='로고 이미지'/>
 
-<img style="width: 100vh;" src='/docs/gif/tadak_intro.gif' alt=''/>
-
 
 ## 🐥 프로젝트 소개
 
@@ -14,6 +12,8 @@
 복잡한 용어 없이 제품을 탐색하고, 온라인 타건 체험과 데스크 시뮬레이션을 통해 실제 사용 환경을 고려한 키보드를 직접 디자인할 수 있도록 지원합니다.
 
 [🔍 프로젝트 기획안 상세보기](https://docs.google.com/document/d/1T6DmM5NNeiNxnTVFGu0HiEOSpdz5PYQXiRDnVgLJ1hc/edit?usp=sharing)  
+
+<img style="width: 100vh;" src='/docs/gif/tadak_intro.gif' alt=''/>
 
 
 ## 💡 주요 기능
@@ -29,9 +29,17 @@
 - 각 제품 구매를 위한 외부 링크 연결 제공, 제품 리뷰 제공, 관심 제품(좋아요) 등록 기능 제공
 - 최근 사용자들의 행동 동향을 통계내어 상품을 추천하는 트렌딩 기능 제공
 
+[메인페이지]
+
 <img style="width: 100vh;" src='/docs/gif/shop_main.gif' alt='메인 페이지 쇼핑 예시'/>
 
+
+[쇼핑페이지 - 목록 조회]
+
 <img style="width: 100vh;" src='/docs/gif/shop_list.gif' alt='쇼핑 목록 조회 예시'/>
+
+
+[쇼핑페이지 - 상세 조회]
 
 <img style="width: 100vh;" src='/docs/gif/shop_detail.gif' alt='쇼핑 상세 조회 예시'/>
 
@@ -41,11 +49,15 @@
 - 커스텀 키보드 관련 QnA, 제품 추천 제공
 - 보안 필터링 적용으로 프롬프트 인젝션 차단, 역할 고정 프롬프팅으로 명확한 답변 제공
 
+[챗봇]
+
 <img style="width: 100vh;" src='/docs/gif/taduck.gif' alt='챗봇 예시'/>
 
 
 ### 3️⃣ 온라인 타건샵 (타닥 타건샵)
 - 일반축부터 저소음축까지 키보드 맵핑을 통해 사용자 키보드 입력 시 실시간으로 타건 소리 출력
+
+[타닥 타건샵 페이지]
 
 <img style="width: 100vh;" src='/docs/gif/key_sound.gif' alt='타건샵 예시'/>
 
@@ -59,9 +71,17 @@
     - 기본 제공 이미지 및 사용자가 촬영한 데스크 사진에 디자인한 키보드를 배치하여 키보드 회전, 이동, 크기 조절 등 시뮬레이션 진행
     - 각 데스크의 배치 정보를 저장해 사용성 향상
 
+[타닥 키보드 만들기 페이지 - 키보드 디자인]
+
 <img style="width: 100vh;" src='/docs/gif/design.gif' alt='키보드 디자인 예시'/>
 
+
+[타닥 키보드 만들기 페이지 - 배치 시뮬레이션(데스크 이미지 변경)]
+
 <img style="width: 100vh;" src='/docs/gif/simul1.gif' alt='배치 시뮬레이션 예시 1'/>
+
+
+[타닥 키보드 만들기 페이지 - 배치 시뮬레이션(키보드 조정)]
 
 <img style="width: 100vh;" src='/docs/gif/simul2.gif' alt='배치 시뮬레이션 예시 2'/>
 
