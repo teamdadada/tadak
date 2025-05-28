@@ -174,7 +174,7 @@
 <td align="center"><img src='/docs/images/KTY_L.jpg' alt='김태영' width="100"><br><strong>김태영👑</strong><br>팀장, FE 리더</td>
 <td align="center"><img src='/docs/images/박민경.jpg' alt='박민경' width="100"><br><strong>박민경</strong><br>FE</td>
 <td align="center"><img src='/docs/images/배승호.jpeg' alt='배승호' width="100"><br><strong>배승호</strong><br>BE 리더, Infra</td>
-<td align="center"><img src='/docs/images/이다이.jpeg' alt='이다이' width="100"><br><strong>이다이</strong><br>BE</td>
+<td align="center"><img src='/docs/images/이다이.jpeg' alt='이다이' width="100"><br><strong>이다이</strong><br>FE</td>
 <td align="center"><img src='/docs/images/주재완.jpg' alt='주재완' width="100"><br><strong>주재완</strong><br>BE</td>
 </tr>
 </table>
